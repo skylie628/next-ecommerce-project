@@ -18,7 +18,7 @@ export function GridTileImage({
   };
 } & React.ComponentProps<typeof Image>) {
   return (
-    <div
+    <article
       className={clsx(
         "flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black",
         {
@@ -46,6 +46,6 @@ export function GridTileImage({
           position={label.position}
         />
       ) : null}
-    </div>
+    </article>
   );
 }

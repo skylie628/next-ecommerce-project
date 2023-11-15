@@ -10,6 +10,7 @@ import {
   ProductOrderField,
   OrderDirection,
   ProductMediaType,
+  GetProductBySlugDocument,
 } from "./generated/graphql";
 import { saleorProductToSadidaProduct } from "./mapper";
 import { invariant } from "./utils";
@@ -185,6 +186,22 @@ export async function getCollectionProducts({
 }
 
 // PRODUCTS
+
+export async function getProduct(slug: string): Promise<Product | undefined> {
+  const saleorProduct = await saleorFetch({
+    query: GetProductBySlugDocument,
+    variables: {
+      slug,
+    },
+    tags: [TAGS.products],
+  });
+
+  if (!saleorProduct.product) {
+    throw new Error(`Product not found: ${slug}`);
+  }
+
+  return saleorProductToSadidaProduct(saleorProduct.product);
+}
 export type GetProductBySlugQuery = {
   product?: {
     id: string;
@@ -221,6 +238,13 @@ export type GetProductBySlugQuery = {
   } | null;
 };
 
+export async function getProductRecommendations(
+  productId: string
+): Promise<Product[]> {
+  // @todo
+  // tags: [TAGS.products],
+  return [];
+}
 export async function getMenu(handle: string): Promise<Menu[]> {
   const handleToSlug: Record<string, string> = {
     "next-js-frontend-footer-menu": "footer",

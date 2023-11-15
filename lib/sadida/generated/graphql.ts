@@ -589,3 +589,81 @@ export type GetProductBySlugQuery = {
     }> | null;
   } | null;
 };
+export type GetProductBySlugQueryVariables = Exact<{
+  slug: Scalars["String"];
+}>;
+
+export const GetProductBySlugDocument = new TypedDocumentString(`
+    query GetProductBySlug($slug: String!) {
+  product(channel: "default-channel", slug: $slug) {
+    ...ProductDetails
+  }
+}
+    fragment ProductDetails on Product {
+  id
+  slug
+  name
+  isAvailableForPurchase
+  description
+  seoTitle
+  seoDescription
+  pricing {
+    priceRange {
+      start {
+        gross {
+          currency
+          amount
+        }
+      }
+      stop {
+        gross {
+          currency
+          amount
+        }
+      }
+    }
+  }
+  media {
+    url(size: 1080)
+    type
+    alt
+  }
+  collections {
+    name
+  }
+  updatedAt
+  variants {
+    ...Variant
+  }
+}
+fragment Variant on ProductVariant {
+  id
+  name
+  attributes {
+    attribute {
+      slug
+      name
+      choices(first: 100) {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+    values {
+      name
+    }
+  }
+  pricing {
+    price {
+      gross {
+        currency
+        amount
+      }
+    }
+  }
+}`) as unknown as TypedDocumentString<
+  GetProductBySlugQuery,
+  GetProductBySlugQueryVariables
+>;

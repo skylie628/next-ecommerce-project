@@ -404,6 +404,49 @@ export const GetCategoryProductsBySlugDocument = new TypedDocumentString(`
 >;
 
 //COLLECTION
+export type GetCollectionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCollectionsQuery = {
+  collections?: {
+    edges: Array<{
+      node: {
+        id: string;
+        name: string;
+        slug: string;
+        description?: string | null;
+        seoTitle?: string | null;
+        seoDescription?: string | null;
+        products?: { edges: Array<{ node: { updatedAt: string } }> } | null;
+      };
+    }>;
+  } | null;
+};
+export const GetCollectionsDocument = new TypedDocumentString(`
+    query GetCollections {
+  collections(channel: "default-channel", first: 100) {
+    edges {
+      node {
+        id
+        name
+        slug
+        description
+        seoTitle
+        seoDescription
+        products(first: 1, sortBy: {field: LAST_MODIFIED_AT, direction: DESC}) {
+          edges {
+            node {
+              updatedAt
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<
+  GetCollectionsQuery,
+  GetCollectionsQueryVariables
+>;
 export type GetCollectionProductsBySlugQueryVariables = Exact<{
   slug: Scalars["String"];
   sortBy: ProductOrderField;
@@ -667,3 +710,135 @@ fragment Variant on ProductVariant {
   GetProductBySlugQuery,
   GetProductBySlugQueryVariables
 >;
+
+export const SearchProductsDocument = new TypedDocumentString(`
+    query SearchProducts($search: String!, $sortBy: ProductOrderField!, $sortDirection: OrderDirection!) {
+  products(
+    first: 100
+    channel: "default-channel"
+    sortBy: {field: $sortBy, direction: $sortDirection}
+    filter: {search: $search}
+  ) {
+    edges {
+      node {
+        id
+        slug
+        name
+        isAvailableForPurchase
+        description
+        seoTitle
+        seoDescription
+        pricing {
+          priceRange {
+            start {
+              gross {
+                currency
+                amount
+              }
+            }
+            stop {
+              gross {
+                currency
+                amount
+              }
+            }
+          }
+        }
+        media {
+          url(size: 2160)
+          type
+          alt
+        }
+        collections {
+          name
+        }
+        updatedAt
+        variants {
+          ...Variant
+        }
+      }
+    }
+  }
+}
+    fragment Variant on ProductVariant {
+  id
+  name
+  attributes {
+    attribute {
+      slug
+      name
+      choices(first: 100) {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+    }
+    values {
+      name
+    }
+  }
+  pricing {
+    price {
+      gross {
+        currency
+        amount
+      }
+    }
+  }
+}`) as unknown as TypedDocumentString<
+  SearchProductsQuery,
+  SearchProductsQueryVariables
+>;
+export type SearchProductsQueryVariables = Exact<{
+  search: Scalars["String"];
+  sortBy: ProductOrderField;
+  sortDirection: OrderDirection;
+}>;
+
+export type SearchProductsQuery = {
+  products?: {
+    edges: Array<{
+      node: {
+        id: string;
+        slug: string;
+        name: string;
+        isAvailableForPurchase?: boolean | null;
+        description?: string | null;
+        seoTitle?: string | null;
+        seoDescription?: string | null;
+        updatedAt: string;
+        pricing?: {
+          priceRange?: {
+            start?: { gross: { currency: string; amount: number } } | null;
+            stop?: { gross: { currency: string; amount: number } } | null;
+          } | null;
+        } | null;
+        media?: Array<{
+          url: string;
+          type: ProductMediaType;
+          alt: string;
+        }> | null;
+        collections?: Array<{ name: string }> | null;
+        variants?: Array<{
+          id: string;
+          name: string;
+          attributes: Array<{
+            attribute: {
+              slug?: string | null;
+              name?: string | null;
+              choices?: {
+                edges: Array<{ node: { name?: string | null } }>;
+              } | null;
+            };
+            values: Array<{ name?: string | null }>;
+          }>;
+          pricing?: {
+            price?: { gross: { currency: string; amount: number } } | null;
+          } | null;
+        }> | null;
+      };
+    }>;
+  } | null;
+};

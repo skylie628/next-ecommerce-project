@@ -11,6 +11,8 @@ import {
   OrderDirection,
   ProductMediaType,
   GetProductBySlugDocument,
+  SearchProductsDocument,
+  GetCollectionsDocument,
 } from "./generated/graphql";
 import { saleorProductToSadidaProduct } from "./mapper";
 import { invariant } from "./utils";
@@ -100,6 +102,45 @@ function flattenMenuItems(
     }) || []
   );
 }
+export async function getMenu(handle: string): Promise<Menu[]> {
+  const handleToSlug: Record<string, string> = {
+    "next-js-frontend-footer-menu": "footer",
+    "next-js-frontend-header-menu": "navbar",
+  };
+  const saleorMenu = await saleorFetch({
+    query: GetMenuBySlugDocument,
+    variables: {
+      slug: handleToSlug[handle] || handle,
+    },
+  });
+
+  if (!saleorMenu.menu) {
+    throw new Error(`Menu not found: ${handle}`);
+  }
+
+  const saleorUrl = new URL(endpoint!);
+  saleorUrl.pathname = "";
+
+  const result = flattenMenuItems(saleorMenu.menu.items)
+    .filter(
+      // unique by path
+      (item1, idx, arr) =>
+        arr.findIndex((item2) => item2.path === item1.path) === idx
+    )
+    .map((item) => ({
+      ...item,
+      path: item.path.replace(
+        "http://localhost:8000",
+        saleorUrl.toString().slice(0, -1)
+      ),
+    }));
+
+  if (handle === "next-js-frontend-header-menu") {
+    // limit number of items in header to 3
+    return result.slice(0, 3);
+  }
+  return result;
+}
 const _getCollectionProducts = async ({
   collection,
   reverse,
@@ -184,6 +225,32 @@ export async function getCollectionProducts({
     ) || []
   );
 }
+//COLLECTION
+export async function getCollections(): Promise<Collection[]> {
+  const saleorCollections = await saleorFetch({
+    query: GetCollectionsDocument,
+    variables: {},
+    tags: [TAGS.collections],
+  });
+
+  return (
+    saleorCollections.collections?.edges
+      .map((edge) => {
+        return {
+          handle: edge.node.slug,
+          title: edge.node.name,
+          description: edge.node.description as string,
+          seo: {
+            title: edge.node.seoTitle || edge.node.name,
+            description: edge.node.seoDescription || "",
+          },
+          updatedAt: edge.node.products?.edges?.[0]?.node.updatedAt || "",
+          path: `/search/${edge.node.slug}`,
+        };
+      })
+      .filter((el) => !el.handle.startsWith(`hidden-`)) ?? []
+  );
+}
 
 // PRODUCTS
 
@@ -245,42 +312,33 @@ export async function getProductRecommendations(
   // tags: [TAGS.products],
   return [];
 }
-export async function getMenu(handle: string): Promise<Menu[]> {
-  const handleToSlug: Record<string, string> = {
-    "next-js-frontend-footer-menu": "footer",
-    "next-js-frontend-header-menu": "navbar",
-  };
-  const saleorMenu = await saleorFetch({
-    query: GetMenuBySlugDocument,
+
+export async function getProducts({
+  query,
+  reverse,
+  sortKey,
+}: {
+  query?: string;
+  reverse?: boolean;
+  sortKey?: ProductOrderField;
+}): Promise<Product[]> {
+  const saleorProducts = await saleorFetch({
+    query: SearchProductsDocument,
     variables: {
-      slug: handleToSlug[handle] || handle,
+      search: query || "",
+      sortBy: query
+        ? sortKey || ProductOrderField.Rank
+        : sortKey === ProductOrderField.Rank
+        ? ProductOrderField.Rating
+        : sortKey || ProductOrderField.Rating,
+      sortDirection: reverse ? OrderDirection.Desc : OrderDirection.Asc,
     },
+    tags: [TAGS.products],
   });
 
-  if (!saleorMenu.menu) {
-    throw new Error(`Menu not found: ${handle}`);
-  }
-
-  const saleorUrl = new URL(endpoint!);
-  saleorUrl.pathname = "";
-
-  const result = flattenMenuItems(saleorMenu.menu.items)
-    .filter(
-      // unique by path
-      (item1, idx, arr) =>
-        arr.findIndex((item2) => item2.path === item1.path) === idx
-    )
-    .map((item) => ({
-      ...item,
-      path: item.path.replace(
-        "http://localhost:8000",
-        saleorUrl.toString().slice(0, -1)
-      ),
-    }));
-
-  if (handle === "next-js-frontend-header-menu") {
-    // limit number of items in header to 3
-    return result.slice(0, 3);
-  }
-  return result;
+  return (
+    saleorProducts.products?.edges.map((product) =>
+      saleorProductToSadidaProduct(product.node)
+    ) || []
+  );
 }

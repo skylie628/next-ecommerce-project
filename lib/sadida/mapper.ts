@@ -1,5 +1,9 @@
-import { GetProductBySlugQuery, VariantFragment } from "./generated/graphql";
-import { Product } from "./types";
+import {
+  GetProductBySlugQuery,
+  VariantFragment,
+  CheckoutFragment,
+} from "./generated/graphql";
+import { Product, Cart } from "./types";
 import { parseEditorJsToHtml } from "./editorjs";
 export function saleorVariantsToSadidaOptions(
   variants: VariantFragment[] | null | undefined
@@ -100,5 +104,66 @@ export function saleorProductToSadidaProduct(
     },
     tags: product.collections?.map((c) => c.name) || [],
     updatedAt: product.updatedAt,
+  };
+}
+export function saleorCheckoutToSadidaCart(checkout: CheckoutFragment): Cart {
+  const domain = new URL(process.env.SALEOR_INSTANCE_URL!).hostname;
+  const checkoutUrl = new URL(`https://demo.saleor.io/checkout/`);
+  checkoutUrl.searchParams.append("checkout", checkout.id);
+  checkoutUrl.searchParams.append("locale", `en-US`);
+  checkoutUrl.searchParams.append("channel", `default-channel`);
+  checkoutUrl.searchParams.append(
+    "saleorApiUrl",
+    process.env.SALEOR_INSTANCE_URL!
+  );
+  checkoutUrl.searchParams.append("domain", domain);
+
+  return {
+    id: checkout.id,
+    checkoutUrl: checkoutUrl.toString(),
+    cost: {
+      subtotalAmount: {
+        amount: checkout.subtotalPrice.gross.amount.toString(),
+        currencyCode: checkout.subtotalPrice.gross.currency,
+      },
+      totalAmount: {
+        amount: checkout.totalPrice.gross.amount.toString(),
+        currencyCode: checkout.totalPrice.gross.currency,
+      },
+      totalTaxAmount: {
+        amount: checkout.totalPrice.tax.amount.toString(),
+        currencyCode: checkout.totalPrice.tax.currency,
+      },
+    },
+    lines: checkout.lines.map((line) => {
+      const title =
+        line.variant.name.trim() === line.variant.id
+          ? ""
+          : line.variant.name.trim();
+      return {
+        id: line.id,
+        quantity: line.quantity,
+        cost: {
+          totalAmount: {
+            amount: line.variant.pricing?.price?.gross.amount.toString() || "0",
+            currencyCode: line.variant.pricing?.price?.gross.currency || "",
+          },
+        },
+        merchandise: {
+          id: line.variant.id,
+          title,
+          selectedOptions: line.variant.attributes.flatMap((attribute) => {
+            return attribute.values.map((value) => {
+              return {
+                name: attribute.attribute.name || "",
+                value: value.name || "",
+              };
+            });
+          }),
+          product: saleorProductToSadidaProduct(line.variant.product),
+        },
+      };
+    }),
+    totalQuantity: checkout.quantity,
   };
 }

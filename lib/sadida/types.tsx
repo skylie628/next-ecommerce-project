@@ -64,3 +64,46 @@ export type Product = Omit<SadiddaCommerceProduct, "variants" | "images"> & {
   variants: ProductVariant[];
   images: Image[];
 };
+// CART
+export type CartItem = {
+  id: string;
+  quantity: number;
+  cost: {
+    totalAmount: Money;
+  };
+  merchandise: {
+    id: string;
+    title: string;
+    selectedOptions: {
+      name: string;
+      value: string;
+    }[];
+    product: Product;
+  };
+};
+
+export type SadidaCommerceCart = {
+  id: string;
+  checkoutUrl: string;
+  cost: {
+    subtotalAmount: Money;
+    totalAmount: Money;
+    totalTaxAmount: Money;
+  };
+  lines: Connection<CartItem>;
+  totalQuantity: number;
+};
+export type Cart = Omit<SadidaCommerceCart, "lines"> & {
+  lines: CartItem[];
+};
+//Collection
+export type SadidaCommerceCollection = {
+  handle: string;
+  title: string;
+  description: string;
+  seo: SEO;
+  updatedAt: string;
+};
+export type Collection = SadidaCommerceCollection & {
+  path: string;
+};

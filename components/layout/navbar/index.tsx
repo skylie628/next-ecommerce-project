@@ -1,7 +1,7 @@
 import React from "react";
 import Cart from "@/components/cart";
-import OpenCart from "@/components/cart/open-cart";
 import MobileMenu from "./mobile-menu";
+import OpenCart from "@/components/cart/open-cart";
 import { getMenu } from "@/lib/sadida";
 import { Suspense } from "react";
 import Link from "next/link";

@@ -13,11 +13,17 @@ import {
   GetProductBySlugDocument,
   SearchProductsDocument,
   GetCollectionsDocument,
+  GetCheckoutByIdDocument,
+  CreateCheckoutDocument,
+  CheckoutAddLineDocument,
 } from "./generated/graphql";
-import { saleorProductToSadidaProduct } from "./mapper";
+import {
+  saleorProductToSadidaProduct,
+  saleorCheckoutToSadidaCart,
+} from "./mapper";
 import { invariant } from "./utils";
 //types
-import { Menu, Product } from "./types";
+import { Menu, Product, Cart, Collection } from "./types";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
 invariant(endpoint, `Missing SALEOR_INSTANCE_URL!`);
 type GraphQlError = {
@@ -341,4 +347,64 @@ export async function getProducts({
       saleorProductToSadidaProduct(product.node)
     ) || []
   );
+}
+//Cart
+export async function getCart(cartId: string): Promise<Cart | null> {
+  const saleorCheckout = await saleorFetch({
+    query: GetCheckoutByIdDocument,
+    variables: {
+      id: cartId,
+    },
+    cache: "no-store",
+  });
+
+  if (!saleorCheckout.checkout) {
+    return null;
+  }
+
+  return saleorCheckoutToSadidaCart(saleorCheckout.checkout);
+}
+
+export async function createCart(): Promise<Cart> {
+  const saleorCheckout = await saleorFetch({
+    query: CreateCheckoutDocument,
+    variables: {
+      input: {
+        channel: "default-channel",
+        lines: [],
+      },
+    },
+    cache: "no-store",
+  });
+
+  if (!saleorCheckout.checkoutCreate?.checkout) {
+    console.error(saleorCheckout.checkoutCreate?.errors);
+    throw new Error(`Couldn't create checkout.`);
+  }
+
+  return saleorCheckoutToSadidaCart(saleorCheckout.checkoutCreate.checkout);
+}
+
+export async function addToCart(
+  cartId: string,
+  lines: { merchandiseId: string; quantity: number }[]
+): Promise<Cart> {
+  const saleorCheckout = await saleorFetch({
+    query: CheckoutAddLineDocument,
+    variables: {
+      checkoutId: cartId,
+      lines: lines.map(({ merchandiseId, quantity }) => ({
+        variantId: merchandiseId,
+        quantity,
+      })),
+    },
+    cache: "no-store",
+  });
+
+  if (!saleorCheckout.checkoutLinesAdd?.checkout) {
+    console.error(saleorCheckout.checkoutLinesAdd?.errors);
+    throw new Error(`Couldn't add lines to checkout.`);
+  }
+
+  return saleorCheckoutToSadidaCart(saleorCheckout.checkoutLinesAdd.checkout);
 }

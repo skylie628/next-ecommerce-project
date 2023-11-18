@@ -7,7 +7,6 @@ export default async function Cart() {
   let cart;
 
   if (cartId) {
-    console.log("backend");
     cart = await getCart(cartId);
   }
 

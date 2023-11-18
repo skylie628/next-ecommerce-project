@@ -1,6 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import LoadingDots from "../LoadingDot";
 import { useRouter } from "next/navigation";
+import { removeItem } from "./actions";
 import clsx from "clsx";
 import type { CartItem } from "@/lib/sadida/types";
 import { useTransition } from "react";
@@ -12,7 +13,15 @@ export default function DeleteItemButton({ item }: { item: CartItem }) {
   return (
     <button
       aria-label="Remove cart item"
-      onClick={() => {}}
+      onClick={() => {
+        startTransition(async () => {
+          const error = await removeItem(item.id);
+          if (error) {
+            throw new Error(error.toString());
+          }
+          router.refresh();
+        });
+      }}
       disabled={isPending}
       className={clsx(
         "ease flex h-[17px] w-[17px] items-center justify-center rounded-full bg-neutral-500 transition-all duration-200",

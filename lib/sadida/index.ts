@@ -16,6 +16,8 @@ import {
   GetCheckoutByIdDocument,
   CreateCheckoutDocument,
   CheckoutAddLineDocument,
+  CheckoutDeleteLineDocument,
+  CheckoutUpdateLineDocument,
 } from "./generated/graphql";
 import {
   saleorProductToSadidaProduct,
@@ -407,4 +409,50 @@ export async function addToCart(
   }
 
   return saleorCheckoutToSadidaCart(saleorCheckout.checkoutLinesAdd.checkout);
+}
+
+export async function removeFromCart(
+  cartId: string,
+  lineIds: string[]
+): Promise<Cart> {
+  const saleorCheckout = await saleorFetch({
+    query: CheckoutDeleteLineDocument,
+    variables: {
+      checkoutId: cartId,
+      lineIds,
+    },
+    cache: "no-store",
+  });
+
+  if (!saleorCheckout.checkoutLinesDelete?.checkout) {
+    console.error(saleorCheckout.checkoutLinesDelete?.errors);
+    throw new Error(`Couldn't remove lines from checkout.`);
+  }
+
+  return saleorCheckoutToSadidaCart(
+    saleorCheckout.checkoutLinesDelete.checkout
+  );
+}
+
+export async function updateCart(
+  cartId: string,
+  lines: { id: string; merchandiseId: string; quantity: number }[]
+): Promise<Cart> {
+  const saleorCheckout = await saleorFetch({
+    query: CheckoutUpdateLineDocument,
+    variables: {
+      checkoutId: cartId,
+      lines: lines.map(({ id, quantity }) => ({ lineId: id, quantity })),
+    },
+    cache: "no-store",
+  });
+
+  if (!saleorCheckout.checkoutLinesUpdate?.checkout) {
+    console.error(saleorCheckout.checkoutLinesUpdate?.errors);
+    throw new Error(`Couldn't update lines in checkout.`);
+  }
+
+  return saleorCheckoutToSadidaCart(
+    saleorCheckout.checkoutLinesUpdate.checkout
+  );
 }

@@ -9,14 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.5",
+    "@as-integrations/next": "^3.0.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "clsx": "^2.0.0",
+    "graphql-request": "^6.1.0",
+    "graphql-tag": "^2.12.6",
     "heroicons": "^2.0.18",
+    "mongoose": "^8.0.1",
     "next": "14.0.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "redis": "^4.6.10"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -26,6 +32,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.0",
     "postcss": "^8",
+    "prisma": "^5.6.0",
     "tailwindcss": "^3",
     "typescript": "^5"
   }

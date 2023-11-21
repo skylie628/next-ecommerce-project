@@ -2835,6 +2835,23 @@ fragment Variant on ProductVariant {
   CheckoutDeleteLineMutation,
   CheckoutDeleteLineMutationVariables
 >;
+export type CheckoutLineUpdateInput = {
+  /**
+   * ID of the line.
+   *
+   * Added in Saleor 3.6.
+   */
+  lineId?: InputMaybe<Scalars["ID"]>;
+  /**
+   * Custom price of the item. Can be set only by apps with `HANDLE_CHECKOUTS` permission. When the line with the same variant will be provided multiple times, the last price will be used.
+   *
+   * Added in Saleor 3.1.
+   */
+  price?: InputMaybe<Scalars["PositiveDecimal"]>;
+  /** The number of items purchased. Optional for apps, required for any other users. */
+  quantity?: InputMaybe<Scalars["Int"]>;
+  variantId?: InputMaybe<Scalars["ID"]>;
+};
 export type CheckoutUpdateLineMutationVariables = Exact<{
   checkoutId: Scalars["ID"];
   lines: Array<CheckoutLineUpdateInput> | CheckoutLineUpdateInput;

@@ -6,6 +6,11 @@ if (!MONGO_URL) {
 }
 import mongoose from "mongoose";
 
-const connectMongo = async () => mongoose.connect(MONGO_URL as string);
-
+const connectMongo = async () =>
+  mongoose.connect(MONGO_URL as string, {
+    dbName: "SADIDA",
+  });
+mongoose.set("debug", (collectionName, method, query, doc) => {
+  console.log(`${collectionName}.${method}`, JSON.stringify(query), doc);
+});
 export default connectMongo;

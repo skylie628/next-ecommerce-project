@@ -10,11 +10,11 @@ export const typeDefs = gql`
   type Product {
     id: ID!
     title: String!
-    size: String
     quantity: String
     sku: String!
-    image: String
+    images: String
     category: String
+    group: String
     price: Float
     score: Float
     n_o_reviews: Int
@@ -27,7 +27,7 @@ export const typeDefs = gql`
   }
   type Cart {
     id: ID!
-    cartItems: [cartItem]
+    cartItems: [CartItem]
   }
   type CartItem {
     id: ID!
@@ -115,14 +115,7 @@ export const typeDefs = gql`
 
   type Query {
     product(sku: String!): Product
-    products(
-      category: String!
-      brand: String
-      price: Float
-      sortBy: String
-      pageIndex: Int!
-      keyword: String
-    ): ReturnedProduct
+    products(group: String, sortBy: String, pageIndex: Int!): ReturnedProduct
     cartItems(email: String!): [CartItem]
     order(orderId: String!): Order
     orders(email: String!): [Order]
@@ -145,7 +138,7 @@ export const typeDefs = gql`
       productImage: String
       productQuantity: String
       quantity: Int!
-    ): CartId
+    ): CartItem
     addReview(
       productId: String!
       userEmail: String!

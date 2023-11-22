@@ -15,7 +15,8 @@
 
 # production
 /build
-
+#migrate folder
+/migrations
 # misc
 .DS_Store
 *.pem

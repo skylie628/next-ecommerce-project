@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
-
+var Schema = mongoose.Schema;
 interface ProductDocument extends mongoose.Document {
   title: string;
-  size: string;
   quantity: string;
   sku: string;
-  image: string;
-  category: string;
+  images: string[];
+  group: mongoose.Schema.Types.ObjectId;
   price: number;
   score: number;
   n_o_reviews: number;
@@ -17,11 +16,10 @@ interface ProductDocument extends mongoose.Document {
 const ProductSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    size: { type: String },
     quantity: { type: String },
     sku: { type: String, required: true },
-    image: { type: String },
-    category: { type: String },
+    images: { type: Array<String> },
+    group: { type: Schema.Types.ObjectId, ref: "Group" },
     price: { type: Number },
     score: { type: Number },
     n_o_reviews: { type: Number },
@@ -32,8 +30,8 @@ const ProductSchema = new mongoose.Schema(
 );
 
 const ProductModel =
-  mongoose.models.Product ||
-  mongoose.model<ProductDocument>("Product", ProductSchema);
+  mongoose.models.products ||
+  mongoose.model<ProductDocument>("products", ProductSchema);
 
 export { ProductModel };
 export type { ProductDocument };

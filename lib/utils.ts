@@ -15,11 +15,13 @@ export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
     : `${startsWith}${stringToCheck}`;
 
 export async function getOrSetCache(key: string, cb: () => Promise<any>) {
-  await redis.connect();
+  console.log("request: state open: ", redis.isOpen);
+  !redis.isOpen && (await redis.connect().catch((err) => console.log(err)));
   const cache = await redis.get(key).catch((error: any) => console.log(error));
   if (cache != null) {
     console.log("Cache hit");
     await redis.disconnect();
+    console.log("return: state open: ", redis.isOpen);
     return JSON.parse(cache);
   } else {
     console.log("Cache miss");

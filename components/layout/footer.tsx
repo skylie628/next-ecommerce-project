@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import FooterMenu from "./footer-menu";
+import FooterCatalogues from "./footer-catalogue";
 import LogoSquare from "../logo-square";
-import { getMenu } from "@/lib/sadida";
+import { Catalogues } from "@/lib/sadida/types";
 import { Suspense } from "react";
 
 const { COMPANY_NAME, SITE_NAME } = process.env;
@@ -12,7 +12,13 @@ export default async function Footer() {
   const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : "");
   const skeleton =
     "w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700";
-  const menu = await getMenu("next-js-frontend-footer-menu");
+  const footerCatalogues: Catalogues[] = [
+    "About",
+    "Contact",
+    "Tos",
+    "Marketing",
+    "Analytics",
+  ].map((name, id) => ({ name, id: id + "", path: "" }));
   const copyrightName = COMPANY_NAME || SITE_NAME || "";
 
   return (
@@ -39,7 +45,7 @@ export default async function Footer() {
             </div>
           }
         >
-          <FooterMenu menu={menu} />
+          <FooterCatalogues catalogues={footerCatalogues} />
         </Suspense>
       </div>
       <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">

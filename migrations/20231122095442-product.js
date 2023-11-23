@@ -4,7 +4,7 @@ const productsList = [
     title: "The Buffalo x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "green"],
     images: [
       "medium-12-zodiacs-0001-str-img",
@@ -18,7 +18,7 @@ const productsList = [
     title: "The Cat x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "blue"],
     images: [
       "medium-12-zodiacs-0002-str-img",
@@ -32,7 +32,7 @@ const productsList = [
     title: "The Rooster x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "yellow"],
     images: [
       "medium-12-zodiacs-0003-str-img",
@@ -47,7 +47,7 @@ const productsList = [
     title: "The Dog x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "green"],
     images: [
       "medium-12-zodiacs-0004-str-img",
@@ -62,7 +62,7 @@ const productsList = [
     title: "The Dragon x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "blue"],
     images: [
       "medium-12-zodiacs-0005-str-img",
@@ -77,7 +77,7 @@ const productsList = [
     title: "The Goat x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "green"],
     images: [
       "medium-12-zodiacs-0006-str-img",
@@ -92,7 +92,7 @@ const productsList = [
     title: "The Horse x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "blue", "red"],
     images: [
       "medium-12-zodiacs-0007-str-img",
@@ -107,7 +107,7 @@ const productsList = [
     title: "The Monkey x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "green"],
     images: [
       "medium-12-zodiacs-0008-str-img",
@@ -122,7 +122,7 @@ const productsList = [
     title: "The Pig x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "green"],
     images: [
       "medium-12-zodiacs-0009-str-img",
@@ -137,7 +137,7 @@ const productsList = [
     title: "The Rat x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "green", "blue"],
     images: [
       "medium-12-zodiacs-0010-str-img",
@@ -152,7 +152,7 @@ const productsList = [
     title: "The Snake x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "pink"],
     images: [
       "medium-12-zodiacs-0011-str-img",
@@ -167,7 +167,7 @@ const productsList = [
     title: "The Tiger x 12 Zodiacs Mecha",
     sku: id++,
     price: 95000,
-    group: 6,
+    group: "6",
     color: ["black", "blue", "orange"],
     images: [
       "medium-12-zodiacs-0012-str-img",
@@ -181,7 +181,7 @@ const productsList = [
     title: "Hoo ho x Minimalism Little Ghost",
     sku: id++,
     price: 95000,
-    group: 5,
+    group: "5",
     color: ["white", "blue"],
     images: [
       "medium-minimalism-0001-str-img",
@@ -195,7 +195,7 @@ const productsList = [
     title: "Boo x Minimalism Little Ghost",
     sku: id++,
     price: 95000,
-    group: 5,
+    group: "5",
     color: ["blue", "white"],
     images: [
       "medium-minimalism-0002-str-img",
@@ -210,7 +210,7 @@ const productsList = [
     title: "Aww x Minimalism Little Ghost",
     sku: id++,
     price: 95000,
-    group: 5,
+    group: "5",
     color: ["white", "blue"],
     images: [
       "medium-minimalism-0003-str-img",
@@ -224,7 +224,7 @@ const productsList = [
     title: "U oa x Minimalism Cute Gosh",
     sku: id++,
     price: 95000,
-    group: 5,
+    group: "5",
     color: ["white", "blue"],
     images: [
       "medium-minimalism-0004-str-img",
@@ -239,7 +239,7 @@ const productsList = [
     title: "Neymar Lines Art x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue", "yellow"],
     images: [
       "medium-neymar-0001-str-img",
@@ -254,7 +254,7 @@ const productsList = [
     title: "Neymar Home Jersey x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["green", "yellow"],
     images: [
       "medium-neymar-0002-str-img",
@@ -269,7 +269,7 @@ const productsList = [
     title: "Neymar Unique Design 01 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue", "yellow"],
     images: [
       "medium-neymar-0003-str-img",
@@ -284,7 +284,7 @@ const productsList = [
     title: "Neymar Unique  02 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue", "yellow"],
     images: [
       "medium-neymar-0004-str-img",
@@ -299,7 +299,7 @@ const productsList = [
     title: "Neymar Unique Design 03 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue", "white"],
     images: [
       "medium-neymar-0005-str-img",
@@ -314,7 +314,7 @@ const productsList = [
     title: "Neymar Unique Design 04 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue", "purple"],
     images: [
       "medium-neymar-0006-str-img",
@@ -329,7 +329,7 @@ const productsList = [
     title: "Neymar Unique Design 05 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["yellow"],
     images: [
       "medium-neymar-0007-str-img",
@@ -344,7 +344,7 @@ const productsList = [
     title: "Neymar Unique Design 6 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue", "red"],
     images: [
       "medium-neymar-0008-str-img",
@@ -359,7 +359,7 @@ const productsList = [
     title: "Neymar Unique Design 07 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["black", "pink"],
     images: [
       "medium-neymar-0009-str-img",
@@ -374,7 +374,7 @@ const productsList = [
     title: "Neymar Unique Design 08 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["blue"],
     images: [
       "medium-neymar-0010-str-img",
@@ -389,7 +389,7 @@ const productsList = [
     title: "Neymar Unique Design 09 x Neymar",
     sku: id++,
     price: 95000,
-    group: 4,
+    group: "4",
     color: ["black", "yellow"],
     images: [
       "medium-neymar-0011-str-img",
@@ -404,7 +404,7 @@ const productsList = [
     title: "Mbappe France Team x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["green"],
     images: [
       "medium-mpappe-0001-str-img",
@@ -419,7 +419,7 @@ const productsList = [
     title: "Mbappe PSG Running Pose x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["white"],
     images: [
       "medium-mpappe-0002-str-img",
@@ -434,7 +434,7 @@ const productsList = [
     title: "Mbappe Win Pose x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["silver"],
     images: [
       "medium-mpappe-0003-str-img",
@@ -449,7 +449,7 @@ const productsList = [
     title: "Mbappe Unique Design 01 x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["black"],
     images: [
       "medium-mpappe-0004-str-img",
@@ -464,7 +464,7 @@ const productsList = [
     title: "Mbappe Unique Design 02 x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["black", "blue"],
     images: [
       "medium-mpappe-0005-str-img",
@@ -479,7 +479,7 @@ const productsList = [
     title: "Mbappe Unique Design 03 x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["blue", "red"],
     images: [
       "medium-mpappe-0006-str-img",
@@ -494,7 +494,7 @@ const productsList = [
     title: "Mbappe Unique Design 04 x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["blue"],
     images: [
       "medium-mpappe-0007-str-img",
@@ -509,7 +509,7 @@ const productsList = [
     title: "Mbappe Unique Design 05 x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["black", "orange"],
     images: [
       "medium-mpappe-0008-str-img",
@@ -524,7 +524,7 @@ const productsList = [
     title: "Mbappe Home Jersey France x Mbappe",
     sku: id++,
     price: 95000,
-    group: 3,
+    group: "3",
     color: ["blue", "yellow"],
     images: [
       "medium-mpappe-0009-str-img",
@@ -540,7 +540,7 @@ const productsList = [
     title: "CR7 MU Jumping Pose x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red"],
     images: [
       "medium-cr7-0001-str-img",
@@ -555,7 +555,7 @@ const productsList = [
     title: "CR7 From Behind With Signature x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["black", "white"],
     images: [
       "medium-cr7-0002-str-img",
@@ -570,7 +570,7 @@ const productsList = [
     title: "CR7 Home Jersey x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red", "green"],
     images: [
       "medium-cr7-0003-str-img",
@@ -585,7 +585,7 @@ const productsList = [
     title: "CR7 AL NASSR 01 x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["blue", "white"],
     images: [
       "medium-cr7-0004-str-img",
@@ -600,7 +600,7 @@ const productsList = [
     title: "CR7 Unique Design 01 x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red", "white"],
     images: [
       "medium-cr7-0005-str-img",
@@ -615,7 +615,7 @@ const productsList = [
     title: "CR7  Unique Design 02 x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["blue"],
     images: [
       "medium-cr7-0006-str-img",
@@ -630,7 +630,7 @@ const productsList = [
     title: "CR7 Unique Design 03 x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red"],
     images: [
       "medium-cr7-0007-str-img",
@@ -645,7 +645,7 @@ const productsList = [
     title: "CR7 The Batipibe x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red", "black"],
     images: [
       "medium-cr7-0008-str-img",
@@ -660,7 +660,7 @@ const productsList = [
     title: "CR7 Unique Design 04 x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red"],
     images: [
       "medium-cr7-0009-str-img",
@@ -675,7 +675,7 @@ const productsList = [
     title: "CR7 Walking From Behind x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red"],
     images: [
       "medium-cr7-0010-str-img",
@@ -690,7 +690,7 @@ const productsList = [
     title: "CR7 Winning Pose With Signature x Ronaldo",
     sku: id++,
     price: 95000,
-    group: 2,
+    group: "2",
     color: ["red", "yellow"],
     images: [
       "medium-cr7-0011-str-img",
@@ -705,7 +705,7 @@ const productsList = [
     title: "M10 World Cup Trophy 2022 With Signature x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["black", "white", "yellow"],
     images: [
       "medium-messi-0001-str-img",
@@ -720,7 +720,7 @@ const productsList = [
     title: "M10 With Trophy Design x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue", "white"],
     images: [
       "medium-messi-0002-str-img",
@@ -735,7 +735,7 @@ const productsList = [
     title: "M10 Holding World Cup 2022 Trophy x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["black", "yellow"],
     images: [
       "medium-messi-0003-str-img",
@@ -750,7 +750,7 @@ const productsList = [
     title: "M10 Unique Design 01 x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue"],
     images: [
       "medium-messi-0004-str-img",
@@ -765,7 +765,7 @@ const productsList = [
     title: "M10 Unique Design 02 x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue", "red"],
     images: [
       "medium-messi-0005-str-img",
@@ -780,7 +780,7 @@ const productsList = [
     title: "M10 Holding Trophy With Teammate x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["multi"],
     images: [
       "medium-messi-0006-str-img",
@@ -795,7 +795,7 @@ const productsList = [
     title: "M10 Home Jersey x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue", "white"],
     images: [
       "medium-messi-0007-str-img",
@@ -810,7 +810,7 @@ const productsList = [
     title: "M10 Unique Design 03 x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue", "yellow"],
     images: [
       "medium-messi-0008-str-img",
@@ -825,7 +825,7 @@ const productsList = [
     title: "M10 The True King Art x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue"],
     images: [
       "medium-messi-0009-str-img",
@@ -840,7 +840,7 @@ const productsList = [
     title: "M10 Statue Of Liberty x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue"],
     images: [
       "medium-messi-0010-str-img",
@@ -855,7 +855,7 @@ const productsList = [
     title: "M10 Unique Design 04 x Messi",
     sku: id++,
     price: 95000,
-    group: 1,
+    group: "1",
     color: ["blue", "white"],
     images: [
       "medium-messi-0011-str-img",
@@ -870,7 +870,7 @@ const productsList = [
     title: "Lucy 01 x Cyberpunk",
     sku: id++,
     price: 95000,
-    group: 0,
+    group: "0",
     color: ["black"],
     images: [
       "medium-cyperpunk-0001-str-img",
@@ -886,7 +886,7 @@ const productsList = [
     title: "Lucy 02 x Cyberpunk",
     sku: id++,
     price: 95000,
-    group: 0,
+    group: "0",
     color: ["multi"],
     images: [
       "medium-cyperpunk-0002-str-img",
@@ -902,7 +902,7 @@ const productsList = [
     title: "Lucy 03 x Cyberpunk",
     sku: id++,
     price: 95000,
-    group: 0,
+    group: "0",
     color: ["black", "white"],
     images: [
       "medium-cyperpunk-0003-str-img",
@@ -918,7 +918,7 @@ const productsList = [
     title: "Lucy 04 x Cyberpunk",
     sku: id++,
     price: 95000,
-    group: 0,
+    group: "0",
     color: ["yellow", "blue"],
     images: [
       "medium-cyperpunk-0004-str-img",
@@ -934,7 +934,7 @@ const productsList = [
     title: "Lucy 05 x Cyberpunk",
     sku: id++,
     price: 95000,
-    group: 0,
+    group: "0",
     color: ["blue", "yellow"],
     images: [
       "medium-cyperpunk-0005-str-img",
@@ -950,7 +950,7 @@ const productsList = [
     title: "Lucy 06 x Cyberpunk",
     sku: id++,
     price: 95000,
-    group: 0,
+    group: "0",
     color: ["blue", "yellow"],
     images: [
       "medium-cyperpunk-0006-str-img",
@@ -966,7 +966,7 @@ const productsList = [
     title: "Outer Space Bubha x Astronault",
     sku: id++,
     price: 95000,
-    group: 8,
+    group: "8",
     color: ["orange", "red", "blue"],
     images: [
       "medium-astronault-0001-str-img",
@@ -981,7 +981,7 @@ const productsList = [
     title: "Outer Space Skateboard x Astronault",
     sku: id++,
     price: 95000,
-    group: 8,
+    group: "8",
     color: ["orange", "red", "blue"],
     images: [
       "medium-astronault-0002-str-img",
@@ -996,7 +996,7 @@ const productsList = [
     title: "Outer Space Yoga x Astronault",
     sku: id++,
     price: 95000,
-    group: 8,
+    group: "8",
     color: ["orange", "red", "blue"],
     images: [
       "medium-astronault-0003-str-img",
@@ -1011,7 +1011,7 @@ const productsList = [
     title: "Nike Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["black", "white"],
     images: [
       "medium-unique-0001-str-img",
@@ -1026,7 +1026,7 @@ const productsList = [
     title: "Killer Panda x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["black", "white"],
     images: [
       "medium-unique-0002-str-img",
@@ -1041,7 +1041,7 @@ const productsList = [
     title: "Numeric x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["black", "white"],
     images: [
       "medium-unique-0003-str-img",
@@ -1056,7 +1056,7 @@ const productsList = [
     title: "Random Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["multi"],
     images: [
       "medium-unique-0004-str-img",
@@ -1071,7 +1071,7 @@ const productsList = [
     title: "Random Doodle 1 x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["multi"],
     images: [
       "medium-unique-0005-str-img",
@@ -1086,7 +1086,7 @@ const productsList = [
     title: "Killer Gun Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["black", "white", "red"],
     images: [
       "medium-unique-0006-str-img",
@@ -1101,7 +1101,7 @@ const productsList = [
     title: "Cool Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["black", "white", "red"],
     images: [
       "medium-unique-0007-str-img",
@@ -1116,7 +1116,7 @@ const productsList = [
     title: "Dangerous Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["multi"],
     images: [
       "medium-unique-0008-str-img",
@@ -1131,7 +1131,7 @@ const productsList = [
     title: "Abstract Art Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["black", "white", "red"],
     images: [
       "medium-unique-0009-str-img",
@@ -1146,7 +1146,7 @@ const productsList = [
     title: "Funny Animal Doodle x Unique",
     sku: id++,
     price: 110000,
-    group: 9,
+    group: "9",
     color: ["multi"],
     images: [
       "medium-unique-0010-str-img",
@@ -1160,6 +1160,7 @@ const productsList = [
 const ProductSeed = productsList.map((product) => ({
   ...product,
   quantity: 100,
+  catalogue: "0",
   score: 5,
   n_o_reviews: 0,
   instock_reserved: 100,

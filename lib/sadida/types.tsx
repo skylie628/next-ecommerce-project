@@ -1,5 +1,6 @@
-export type Menu = {
-  title: string;
+export type Catalogues = {
+  name: string;
+  id: string;
   path: string;
 };
 export type Image = {
@@ -106,4 +107,12 @@ export type SadidaCommerceCollection = {
 };
 export type Collection = SadidaCommerceCollection & {
   path: string;
+};
+
+//Catalogues
+export type sadidaCatalogueOperation = {
+  data: {
+    catalogues?: Catalogues[];
+  };
+  variables: {};
 };

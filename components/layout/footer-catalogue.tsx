@@ -1,11 +1,11 @@
 "use client";
 import clsx from "clsx";
-import { Menu } from "@/lib/sadida/types";
+import { Catalogues } from "@/lib/sadida/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const FooterMenuItem = ({ item }: { item: Menu }) => {
+const FooterCataloguesItem = ({ item }: { item: Catalogues }) => {
   const pathname = usePathname();
   const [active, setActive] = useState(pathname === item.path);
 
@@ -24,20 +24,24 @@ const FooterMenuItem = ({ item }: { item: Menu }) => {
           }
         )}
       >
-        {item.title}
+        {item.name}
       </Link>
     </li>
   );
 };
 
-export default function FooterMenu({ menu }: { menu: Menu[] }) {
-  if (!menu.length) return null;
+export default function FooterCatalogues({
+  catalogues,
+}: {
+  catalogues: Catalogues[];
+}) {
+  if (!catalogues.length) return null;
 
   return (
     <nav>
       <ul>
-        {menu.map((item: Menu) => {
-          return <FooterMenuItem key={item.title} item={item} />;
+        {catalogues.map((item: Catalogues) => {
+          return <FooterCataloguesItem key={item.name} item={item} />;
         })}
       </ul>
     </nav>

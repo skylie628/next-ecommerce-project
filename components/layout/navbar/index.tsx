@@ -2,21 +2,21 @@ import React from "react";
 import Cart from "@/components/cart";
 import MobileMenu from "./mobile-menu";
 import OpenCart from "@/components/cart/open-cart";
-import { getMenu } from "@/lib/sadida";
 import { Suspense } from "react";
 import Link from "next/link";
 import Search from "./search";
 import LogoSquare from "@/components/icons/logo-square";
+import { getCatalogue } from "@/lib/sadida";
 //type
-import { Menu } from "@/lib/sadida/types";
+import { Catalogues } from "@/lib/sadida/types";
 const { SITE_NAME } = process.env;
 export default async function Navbar() {
   //run on server
-  const menu = await getMenu("next-js-frontend-header-menu");
+  const catalogues = (await getCatalogue()) || [];
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
-        <MobileMenu menu={menu} />
+        <MobileMenu menu={catalogues} />
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full md:w-5/12">
@@ -30,15 +30,15 @@ export default async function Navbar() {
               {SITE_NAME}
             </div>
           </Link>
-          {menu.length ? (
+          {catalogues.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menu.map((item: Menu) => (
-                <li key={item.title}>
+              {catalogues.map((item: Catalogues) => (
+                <li key={item.id}>
                   <Link
-                    href={item.path}
+                    href={`localhost:3000/catalogue/${item.name}`}
                     className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
                   >
-                    {item.title}
+                    {item.name}
                   </Link>
                 </li>
               ))}

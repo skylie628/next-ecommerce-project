@@ -1,12 +1,17 @@
 import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
+import { CatalogueModel } from "../mongoose/models/catalogue.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
 export const resolvers = {
   Query: {
+    catalogues: async () => {
+      await connectMongo();
+      const catalogues = await CatalogueModel.find().lean();
+      return catalogues;
+    },
     product: async (_: any, args: any) => {
       await connectMongo();
-      console.log(args.sku);
       const product = await ProductModel.findOne({ sku: args.sku }).lean();
       return product;
     },

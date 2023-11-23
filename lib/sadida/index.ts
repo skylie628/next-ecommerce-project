@@ -1,6 +1,6 @@
 import { SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from "../constants";
 import { ensureStartsWith } from "../utils";
-import { getMenuQuery } from "./queries/menu";
+import { getCatalogueQuery } from "./queries/catalogue";
 import {
   TypedDocumentString,
   GetMenuBySlugDocument,
@@ -19,14 +19,17 @@ import {
   CheckoutDeleteLineDocument,
   CheckoutUpdateLineDocument,
 } from "./generated/graphql";
+import { sadidaCatalogueOperation } from "./types";
 import {
   saleorProductToSadidaProduct,
   saleorCheckoutToSadidaCart,
 } from "./mapper";
+import { GRAPHQL_API_URL } from "@/constants/url";
 import { invariant } from "./utils";
 //types
 import { Menu, Product, Cart, Collection } from "./types";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
+const sadidaEndpoint = GRAPHQL_API_URL;
 invariant(endpoint, `Missing SALEOR_INSTANCE_URL!`);
 type GraphQlError = {
   message: string;
@@ -71,84 +74,67 @@ export async function saleorFetch<Result, Variables>({
 
   return body.data;
 }
+type ExtractVariables<T> = T extends { variables: object }
+  ? T["variables"]
+  : never;
+export async function sadidaFetch<T>({
+  cache = "force-cache",
+  headers,
+  query,
+  tags,
+  variables,
+}: {
+  cache?: RequestCache;
+  headers?: HeadersInit;
+  query: string;
+  tags?: string[];
+  variables?: ExtractVariables<T>;
+}): Promise<{ status: number; body: T } | never> {
+  try {
+    const result = await fetch(sadidaEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers,
+      },
+      body: JSON.stringify({
+        ...(query && { query }),
+        ...(variables && { variables }),
+      }),
+      cache,
+      ...(tags && { next: { tags } }),
+    });
 
-type MenuItemWithChildren = MenuItemFragment & {
-  children?: null | undefined | MenuItemWithChildren[];
-};
-function flattenMenuItems(
-  menuItems: null | undefined | MenuItemWithChildren[]
-): Menu[] {
-  return (
-    menuItems?.flatMap((item) => {
-      // Remove empty categories and collections from menu
-      if (item.category && !item.category.products?.totalCount) {
-        return [];
-      }
-      if (item.collection && !item.collection.products?.totalCount) {
-        return [];
-      }
+    const body = await result.json();
 
-      const path =
-        item.url ||
-        (item.collection
-          ? `/search/${item.collection.slug}`
-          : item.category
-          ? `/search/${item.category.slug}`
-          : "");
+    if (body.errors) {
+      throw body.errors[0];
+    }
 
-      return [
-        ...(path
-          ? [
-              {
-                path: path,
-                title: item.name,
-              },
-            ]
-          : []),
-        ...flattenMenuItems(item.children),
-      ];
-    }) || []
-  );
+    return {
+      status: result.status,
+      body,
+    };
+  } catch (e) {
+    throw {
+      error: e,
+      query,
+    };
+  }
 }
-export async function getMenu(handle: string): Promise<Menu[]> {
-  const handleToSlug: Record<string, string> = {
-    "next-js-frontend-footer-menu": "footer",
-    "next-js-frontend-header-menu": "navbar",
-  };
-  const saleorMenu = await saleorFetch({
-    query: GetMenuBySlugDocument,
-    variables: {
-      slug: handleToSlug[handle] || handle,
-    },
+
+//CATALOGUE
+export async function getCatalogue() {
+  const catalogues = await sadidaFetch<sadidaCatalogueOperation>({
+    query: getCatalogueQuery,
   });
-
-  if (!saleorMenu.menu) {
-    throw new Error(`Menu not found: ${handle}`);
-  }
-
-  const saleorUrl = new URL(endpoint!);
-  saleorUrl.pathname = "";
-
-  const result = flattenMenuItems(saleorMenu.menu.items)
-    .filter(
-      // unique by path
-      (item1, idx, arr) =>
-        arr.findIndex((item2) => item2.path === item1.path) === idx
-    )
-    .map((item) => ({
-      ...item,
-      path: item.path.replace(
-        "http://localhost:8000",
-        saleorUrl.toString().slice(0, -1)
-      ),
-    }));
-
-  if (handle === "next-js-frontend-header-menu") {
-    // limit number of items in header to 3
-    return result.slice(0, 3);
-  }
-  return result;
+  return catalogues.body?.data?.catalogues?.map((cataloguesItem) => ({
+    id: cataloguesItem.id,
+    name: cataloguesItem.name,
+    path: `localhost:3000/catalogues/${cataloguesItem.name}`,
+  }));
 }
+
 const _getCollectionProducts = async ({
   collection,
   reverse,

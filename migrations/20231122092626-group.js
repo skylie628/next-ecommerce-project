@@ -12,7 +12,7 @@ const nameList = [
   "Japan Vibe",
 ];
 const seedGroup = nameList.map((x, id) => {
-  return { id, name: x };
+  return { id: id + "", name: x };
 });
 module.exports = {
   async up(db, client) {

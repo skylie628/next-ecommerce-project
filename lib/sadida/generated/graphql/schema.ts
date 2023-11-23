@@ -21,6 +21,10 @@ export const typeDefs = gql`
     instock_reserved: Int
     instock_available: Int
   }
+  type Catalogue {
+    id: ID!
+    name: String!
+  }
   type Variant {
     id: ID!
     name: String!
@@ -114,6 +118,7 @@ export const typeDefs = gql`
   }
 
   type Query {
+    catalogues: [Catalogue]
     product(sku: String!): Product
     products(group: String, sortBy: String, pageIndex: Int!): ReturnedProduct
     cartItems(email: String!): [CartItem]

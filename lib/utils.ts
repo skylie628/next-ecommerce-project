@@ -13,7 +13,9 @@ export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
   stringToCheck.startsWith(startsWith)
     ? stringToCheck
     : `${startsWith}${stringToCheck}`;
-
+export const getImageUrl = (name: string) => {
+  return name;
+};
 export async function getOrSetCache(key: string, cb: () => Promise<any>) {
   console.log("request: state open: ", redis.isOpen);
   !redis.isOpen && (await redis.connect().catch((err) => console.log(err)));

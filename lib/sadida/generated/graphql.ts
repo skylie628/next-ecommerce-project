@@ -1357,7 +1357,7 @@ export enum ProductOrderField {
   /** Sort products by type. */
   Type = "TYPE",
 }
-
+//CATALOGUE
 //CATEGORY
 export type GetCategoryProductsBySlugQueryVariables = Exact<{
   slug: Scalars["String"];

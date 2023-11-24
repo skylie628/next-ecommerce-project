@@ -1,6 +1,7 @@
 import { SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from "../constants";
 import { ensureStartsWith } from "../utils";
 import { getCatalogueQuery } from "./queries/catalogue";
+import { getProductsQuery } from "./queries/product";
 import {
   TypedDocumentString,
   GetMenuBySlugDocument,
@@ -19,7 +20,6 @@ import {
   CheckoutDeleteLineDocument,
   CheckoutUpdateLineDocument,
 } from "./generated/graphql";
-import { sadidaCatalogueOperation } from "./types";
 import {
   saleorProductToSadidaProduct,
   saleorCheckoutToSadidaCart,
@@ -27,7 +27,13 @@ import {
 import { GRAPHQL_API_URL } from "@/constants/url";
 import { invariant } from "./utils";
 //types
-import { Menu, Product, Cart, Collection } from "./types";
+import {
+  sadidaCatalogueOperation,
+  sadidaProductsOperation,
+  Product,
+  Cart,
+  Collection,
+} from "./types";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
 const sadidaEndpoint = GRAPHQL_API_URL;
 invariant(endpoint, `Missing SALEOR_INSTANCE_URL!`);
@@ -116,6 +122,7 @@ export async function sadidaFetch<T>({
       body,
     };
   } catch (e) {
+    console.log(e);
     throw {
       error: e,
       query,
@@ -129,7 +136,7 @@ export async function getCatalogue() {
     query: getCatalogueQuery,
   });
   return catalogues.body?.data?.catalogues?.map((cataloguesItem) => ({
-    id: cataloguesItem.id,
+    _id: cataloguesItem._id,
     name: cataloguesItem.name,
     path: `localhost:3000/catalogues/${cataloguesItem.name}`,
   }));
@@ -306,7 +313,44 @@ export async function getProductRecommendations(
   // tags: [TAGS.products],
   return [];
 }
-
+export async function getSadidaProducts({
+  pageIndex,
+  catalogues,
+  group,
+  sortBy,
+}: {
+  pageIndex: number;
+  group?: string;
+  catalogues?: string;
+  sortBy?: string;
+}) {
+  const products = await sadidaFetch<sadidaProductsOperation>({
+    query: getProductsQuery,
+    variables: {
+      pageIndex,
+      group,
+      sortBy,
+      catalogues,
+    },
+  });
+  console.log(products);
+  return products.body?.data?.products?.products?.map((product) => ({
+    sku: product.sku,
+    title: product.title,
+    slug: product.slug,
+    price: product.price,
+    score: product.score,
+    n_o_reviews: product.n_o_reviews,
+    instock_available: product.instock_available,
+    thumbnailPath: product.images[4]
+      ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fshowing%20image%20thumnail%2F${product.images[4]}.png?alt=media`
+      : "",
+    showingImagePath: product.images[0]
+      ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fstr%20image%2F${product.images[0]}.png?alt=media&token=dd117ea5-2906-48b3-919c-a28b05f31881`
+      : "",
+    path: `localhost:3000/product/${product.slug}`,
+  }));
+}
 export async function getProducts({
   query,
   reverse,

@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 interface GroupDocument extends mongoose.Document {
-  id: string;
+  _id: string;
   name: string;
 }
 
 const GroupSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true },
+    _id: { type: String, required: true },
     name: { type: String, required: true },
   },
   { timestamps: true }

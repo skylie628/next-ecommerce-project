@@ -1,6 +1,7 @@
 import { GridTileImage } from "./tile";
 import { getCollectionProducts } from "@/lib/sadida";
-import { Product } from "@/lib/sadida/types";
+import { getSadidaProducts } from "@/lib/sadida";
+import { SadidaBackdropEcommerceProduct } from "@/lib/sadida/types";
 import Link from "next/link";
 
 function ThreeItemGridItem({
@@ -8,7 +9,7 @@ function ThreeItemGridItem({
   size,
   priority,
 }: {
-  item: Product;
+  item: SadidaBackdropEcommerceProduct;
   size: "full" | "half";
   priority?: boolean;
 }) {
@@ -22,10 +23,10 @@ function ThreeItemGridItem({
     >
       <Link
         className="relative block aspect-square h-full w-full"
-        href={`/product/${item.handle}`}
+        href={`${item.path}`}
       >
         <GridTileImage
-          src={item.featuredImage.url}
+          src={item.showingImagePath}
           fill
           sizes={
             size === "full"
@@ -37,8 +38,8 @@ function ThreeItemGridItem({
           label={{
             position: size === "full" ? "center" : "bottom",
             title: item.title as string,
-            amount: item.priceRange.minVariantPrice.amount,
-            currencyCode: item.priceRange.minVariantPrice.currencyCode,
+            amount: item.price.toString(),
+            currencyCode: "VND",
           }}
         />
       </Link>
@@ -48,10 +49,15 @@ function ThreeItemGridItem({
 
 export async function ThreeItemGrid() {
   // Collections that start with `hidden-*` are hidden from the search page.
-  const homepageItems = await getCollectionProducts({
+  /* const homepageItems = await getCollectionProducts({
     collection: "accessories",
-  });
-
+  });*/
+  const homepageItems =
+    (await getSadidaProducts({
+      pageIndex: 1,
+      group: "1",
+      sortBy: "best_rating",
+    })) || [];
   if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;
 
   const [firstProduct, secondProduct, thirdProduct] = homepageItems;

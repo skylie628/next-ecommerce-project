@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 var Schema = mongoose.Schema;
 interface ProductDocument extends mongoose.Document {
+  _id: string;
   title: string;
+  slug: string;
   quantity: string;
   sku: string;
   images: string[];
-  group: mongoose.Schema.Types.ObjectId;
+  group: string;
+  catalogues: string;
   price: number;
   score: number;
   n_o_reviews: number;
@@ -15,11 +18,14 @@ interface ProductDocument extends mongoose.Document {
 
 const ProductSchema = new mongoose.Schema(
   {
+    _id: { type: String },
     title: { type: String, required: true },
     quantity: { type: String },
+    slug: { type: String },
     sku: { type: String, required: true },
     images: { type: Array<String> },
-    group: { type: Schema.Types.ObjectId, ref: "Group" },
+    group: { type: String, ref: "groups" },
+    catalogues: { type: String, ref: "catalogues" },
     price: { type: Number },
     score: { type: Number },
     n_o_reviews: { type: Number },

@@ -1,6 +1,6 @@
 export type Catalogues = {
   name: string;
-  id: string;
+  _id: string;
   path: string;
 };
 export type Image = {
@@ -65,6 +65,29 @@ export type Product = Omit<SadiddaCommerceProduct, "variants" | "images"> & {
   variants: ProductVariant[];
   images: Image[];
 };
+export type SadidaProduct = {
+  title: string;
+  slug: string;
+  quantity: string;
+  sku: string;
+  images: string[];
+  group: string;
+  catalogues: string;
+  price: number;
+  score: number;
+  n_o_reviews: number;
+  instock_reserved: number;
+  instock_available: number;
+};
+export type SadidaEcommerceProduct = Omit<SadidaProduct, "images">;
+export type SadidaBackdropEcommerceProduct = Omit<
+  SadidaProduct,
+  "images" | "instock_reserved" | "quantity" | "group"
+> & {
+  thumbnailPath: "string";
+  showingImagePath: "string";
+  path: "string";
+};
 // CART
 export type CartItem = {
   id: string;
@@ -115,4 +138,22 @@ export type sadidaCatalogueOperation = {
     catalogues?: Catalogues[];
   };
   variables: {};
+};
+//products
+export type sadidaProductsOperation = {
+  data: {
+    products?: {
+      products?: Omit<
+        SadidaEcommerceProduct,
+        "quantity" | "instock_reserved" | "group"
+      >;
+      count: number;
+    };
+  };
+  variables: {
+    pageIndex: number;
+    group?: string;
+    sortBy?: string;
+    catalogues?: string;
+  };
 };

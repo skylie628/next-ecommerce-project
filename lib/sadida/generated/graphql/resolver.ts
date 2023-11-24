@@ -1,13 +1,15 @@
 import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
-import { CatalogueModel } from "../mongoose/models/catalogue.model";
+import { CataloguesModel } from "../mongoose/models/catalogues.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
+const _ = require("lodash");
+import mongoose from "mongoose";
 export const resolvers = {
   Query: {
     catalogues: async () => {
       await connectMongo();
-      const catalogues = await CatalogueModel.find().lean();
+      const catalogues = await CataloguesModel.find().lean();
       return catalogues;
     },
     product: async (_: any, args: any) => {
@@ -25,6 +27,15 @@ export const resolvers = {
             string,
             string | number | Record<string, string>
           > = {};
+          if (args.group) {
+            filterCriteria.group = args.group;
+          }
+          if (args.catalogues) {
+            const catalogues = await CataloguesModel.findOne({
+              name: string[0].toUpperCase() + string.slice(1),
+            });
+            filterCriteria.catalogues = catalogues ? catalogues._id : "none";
+          }
           let sortOptions:
             | string
             | { [key: string]: SortOrder | { $meta: "textScore" } }
@@ -39,12 +50,13 @@ export const resolvers = {
           }
           const itemsPerPage = 10;
           const skipCount = (args.pageIndex - 1) * itemsPerPage;
-          // const count = await ProductModel.countDocuments(filterCriteria);
-          const products = await ProductModel.find(filterCriteria)
+          const count = await ProductModel.countDocuments(filterCriteria);
+          let products = await ProductModel.find(filterCriteria)
             .skip(skipCount)
             .limit(itemsPerPage)
             .sort(sortOptions)
             .lean();
+
           return { products, count: products.length };
         }
       );

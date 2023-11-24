@@ -33,9 +33,9 @@ export default async function Navbar() {
           {catalogues.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
               {catalogues.map((item: Catalogues) => (
-                <li key={item.id}>
+                <li key={item._id}>
                   <Link
-                    href={`localhost:3000/catalogue/${item.name}`}
+                    href={`localhost:3000/catalogues/${item.name.toLowerCase()}`}
                     className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
                   >
                     {item.name}

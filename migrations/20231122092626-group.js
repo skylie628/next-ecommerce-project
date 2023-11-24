@@ -1,3 +1,4 @@
+var mongoose = require("mongoose");
 const nameList = [
   "Cyberpunk",
   "Messi",
@@ -12,7 +13,7 @@ const nameList = [
   "Japan Vibe",
 ];
 const seedGroup = nameList.map((x, id) => {
-  return { id: id + "", name: x };
+  return { _id: id + "", name: x };
 });
 module.exports = {
   async up(db, client) {
@@ -25,7 +26,7 @@ module.exports = {
   },
 
   async down(db, client) {
-    await db.groups.drop();
+    await db.collection("groups").drop();
     // TODO write the statements to rollback your migration (if possible)
     // Example:
     // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});

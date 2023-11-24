@@ -1,3 +1,4 @@
+var mongoose = require("mongoose");
 let id = 0;
 const productsList = [
   {
@@ -1157,11 +1158,18 @@ const productsList = [
     ],
   },
 ];
-const ProductSeed = productsList.map((product) => ({
+function convertToSlug(Text) {
+  return Text.toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+}
+const ProductSeed = productsList.map((product, index) => ({
   ...product,
+  _id: product.sku,
+  catalogues: "0",
+  slug: convertToSlug(product.title),
   quantity: 100,
-  catalogue: "0",
-  score: 5,
+  score: 4 + (index % 4 == 0 ? 1 : 0),
   n_o_reviews: 0,
   instock_reserved: 100,
   instock_available: 100,

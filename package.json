@@ -20,6 +20,7 @@
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
     "heroicons": "^2.0.18",
+    "lodash": "^4.17.21",
     "mongo-seeding": "^3.7.2",
     "mongoose": "^8.0.1",
     "net": "^1.0.2",

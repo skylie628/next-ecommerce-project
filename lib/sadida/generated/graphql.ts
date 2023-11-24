@@ -1319,7 +1319,7 @@ export type MenuItemFragment = {
   page?: { slug: string } | null;
 };
 export enum ProductOrderField {
-  Collection = "COLLECTION",
+  Group = "GROUP",
   CreatedAt = "CREATED_AT",
   Date = "DATE",
   LastModified = "LAST_MODIFIED",
@@ -1332,26 +1332,6 @@ export enum ProductOrderField {
    * This option requires a channel filter to work as the values can vary between channels.
    */
   Price = "PRICE",
-  /**
-   * Sort products by publication date.
-   *
-   * This option requires a channel filter to work as the values can vary between channels.
-   */
-  PublicationDate = "PUBLICATION_DATE",
-  /**
-   * Sort products by publication status.
-   *
-   * This option requires a channel filter to work as the values can vary between channels.
-   */
-  Published = "PUBLISHED",
-  /**
-   * Sort products by publication date.
-   *
-   * This option requires a channel filter to work as the values can vary between channels.
-   */
-  PublishedAt = "PUBLISHED_AT",
-  /** Sort products by rank. Note: This option is available only with the `search` filter. */
-  Rank = "RANK",
   /** Sort products by rating. */
   Rating = "RATING",
   /** Sort products by type. */

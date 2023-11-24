@@ -1,7 +1,7 @@
 export const getCatalogueQuery = /* GraphQL */ `
   query getCatalogues {
     catalogues {
-      id
+      _id
       name
     }
   }

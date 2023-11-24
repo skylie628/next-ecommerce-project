@@ -1,11 +1,13 @@
 import { getCollectionProducts } from "@/lib/sadida";
+import { getSadidaProducts } from "@/lib/sadida";
 import Link from "next/link";
 import { GridTileImage } from "./grid/tile";
 
 export async function Carousel() {
   // Collections that start with `hidden-*` are hidden from the search page.
-  const products = await getCollectionProducts({
-    collection: "apparel",
+  const products = await getSadidaProducts({
+    pageIndex: 1,
+    sortBy: "best_rating",
   });
 
   if (!products?.length) return null;
@@ -18,21 +20,18 @@ export async function Carousel() {
       <ul className="flex animate-carousel gap-4">
         {carouselProducts.map((product, i) => (
           <li
-            key={`${product.handle}${i}`}
+            key={`${product.slug}${i}`}
             className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
           >
-            <Link
-              href={`/product/${product.handle}`}
-              className="relative h-full w-full"
-            >
+            <Link href={product.path} className="relative h-full w-full">
               <GridTileImage
                 alt={product.title}
                 label={{
                   title: product.title,
-                  amount: product.priceRange.minVariantPrice.amount,
-                  currencyCode: product.priceRange.minVariantPrice.currencyCode,
+                  amount: product.price.toString(),
+                  currencyCode: "VND",
                 }}
-                src={product.featuredImage?.url}
+                src={product.thumbnailPath}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               />

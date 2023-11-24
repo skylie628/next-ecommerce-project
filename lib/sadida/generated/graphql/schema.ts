@@ -11,9 +11,10 @@ export const typeDefs = gql`
     id: ID!
     title: String!
     quantity: String
+    slug: String
     sku: String!
-    images: String
-    category: String
+    images: [String]
+    catalogues: String
     group: String
     price: Float
     score: Float
@@ -21,8 +22,8 @@ export const typeDefs = gql`
     instock_reserved: Int
     instock_available: Int
   }
-  type Catalogue {
-    id: ID!
+  type Catalogues {
+    _id: ID!
     name: String!
   }
   type Variant {
@@ -118,9 +119,14 @@ export const typeDefs = gql`
   }
 
   type Query {
-    catalogues: [Catalogue]
+    catalogues: [Catalogues]
     product(sku: String!): Product
-    products(group: String, sortBy: String, pageIndex: Int!): ReturnedProduct
+    products(
+      group: String
+      catalogues: String
+      sortBy: String
+      pageIndex: Int!
+    ): ReturnedProduct
     cartItems(email: String!): [CartItem]
     order(orderId: String!): Order
     orders(email: String!): [Order]

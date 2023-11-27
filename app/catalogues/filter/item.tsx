@@ -27,7 +27,7 @@ function PathFilterItem({ item }: { item: PathFilterItem }) {
           }
         )}
       >
-        {item.title}
+        {item.name}
       </DynamicTag>
     </li>
   );
@@ -59,7 +59,7 @@ function SortFilterItem({ item }: { item: SortFilterItem }) {
           "underline underline-offset-4": active,
         })}
       >
-        {item.title}
+        {item.name}
       </DynamicTag>
     </li>
   );

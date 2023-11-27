@@ -56,6 +56,7 @@ export async function ThreeItemGrid() {
     (await getSadidaProducts({
       pageIndex: 1,
       group: "1",
+      catalogues:"Smartphone",
       sortBy: "best_rating",
     })) || [];
   if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;

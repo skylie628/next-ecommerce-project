@@ -121,6 +121,14 @@ export type Cart = Omit<SadidaCommerceCart, "lines"> & {
   lines: CartItem[];
 };
 //Collection
+export type SadidaCollection = {
+  _id: string;
+  name: string;
+};
+export type SadidaCollectionOperation = {
+  data: SadidaCollection[];
+  variables: { catalogues: string };
+};
 export type SadidaCommerceCollection = {
   handle: string;
   title: string;

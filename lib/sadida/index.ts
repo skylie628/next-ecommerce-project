@@ -2,18 +2,16 @@ import { SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from "../constants";
 import { ensureStartsWith } from "../utils";
 import { getCatalogueQuery } from "./queries/catalogue";
 import { getProductsQuery } from "./queries/product";
+import { getCollectionsQuery } from "./queries/collection";
 import {
   TypedDocumentString,
-  GetMenuBySlugDocument,
   GetCollectionProductsBySlugDocument,
   GetCategoryProductsBySlugDocument,
-  MenuItemFragment,
   ProductOrderField,
   OrderDirection,
   ProductMediaType,
   GetProductBySlugDocument,
   SearchProductsDocument,
-  GetCollectionsDocument,
   GetCheckoutByIdDocument,
   CreateCheckoutDocument,
   CheckoutAddLineDocument,
@@ -30,6 +28,7 @@ import { invariant } from "./utils";
 import {
   sadidaCatalogueOperation,
   sadidaProductsOperation,
+  SadidaCollectionOperation,
   Product,
   Cart,
   Collection,
@@ -142,32 +141,6 @@ export async function getCatalogue() {
   }));
 }
 
-const _getCollectionProducts = async ({
-  collection,
-  reverse,
-  sortKey,
-}: {
-  collection: string;
-  reverse?: boolean;
-  sortKey?: ProductOrderField;
-}) => {
-  const fetched = await saleorFetch({
-    query: GetCollectionProductsBySlugDocument,
-    variables: {
-      slug: collection,
-      sortBy:
-        sortKey === ProductOrderField.Rank
-          ? ProductOrderField.Rating
-          : sortKey || ProductOrderField.Rating,
-      sortDirection: reverse ? OrderDirection.Desc : OrderDirection.Asc,
-    },
-    tags: [TAGS.collections, TAGS.products],
-  });
-  if (fetched.collection) {
-    return fetched.collection;
-  }
-};
-
 const _getCategoryProducts = async ({
   category,
   reverse,
@@ -191,66 +164,15 @@ const _getCategoryProducts = async ({
       tags: [TAGS.collections, TAGS.products],
     })
   ).category;
-export async function getCollectionProducts({
-  collection,
-  reverse,
-  sortKey,
-}: {
-  collection: string;
-  reverse?: boolean;
-  sortKey?: ProductOrderField;
-}): Promise<Product[]> {
-  if (typeof reverse === "undefined" && typeof sortKey === "undefined") {
-    reverse = true;
-    sortKey = ProductOrderField.Name;
-  }
 
-  const saleorCollectionProducts =
-    (await _getCollectionProducts({
-      collection,
-      reverse,
-      sortKey,
-    })) ||
-    (await _getCategoryProducts({
-      category: collection,
-      reverse,
-      sortKey,
-    }));
-  if (!saleorCollectionProducts) {
-    throw new Error(`Collection not found: ${collection}`);
-  }
-
-  return (
-    saleorCollectionProducts.products?.edges.map((product) =>
-      saleorProductToSadidaProduct(product.node)
-    ) || []
-  );
-}
 //COLLECTION
-export async function getCollections(): Promise<Collection[]> {
-  const saleorCollections = await saleorFetch({
-    query: GetCollectionsDocument,
-    variables: {},
-    tags: [TAGS.collections],
+export async function getCollections(catalogues: string) {
+  const collections = await sadidaFetch<SadidaCollectionOperation>({
+    query: getCollectionsQuery,
+    variables: { catalogues },
   });
-
-  return (
-    saleorCollections.collections?.edges
-      .map((edge) => {
-        return {
-          handle: edge.node.slug,
-          title: edge.node.name,
-          description: edge.node.description as string,
-          seo: {
-            title: edge.node.seoTitle || edge.node.name,
-            description: edge.node.seoDescription || "",
-          },
-          updatedAt: edge.node.products?.edges?.[0]?.node.updatedAt || "",
-          path: `/search/${edge.node.slug}`,
-        };
-      })
-      .filter((el) => !el.handle.startsWith(`hidden-`)) ?? []
-  );
+  console.log("collections la", collections);
+  return collections.body?.data?.collections || [];
 }
 
 // PRODUCTS

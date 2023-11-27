@@ -6,7 +6,10 @@ export const typeDefs = gql`
     GUESS
     ADMIN
   }
-
+  type Collection {
+    _id: ID!
+    name: String
+  }
   type Product {
     id: ID!
     title: String!
@@ -22,6 +25,7 @@ export const typeDefs = gql`
     instock_reserved: Int
     instock_available: Int
   }
+
   type Catalogues {
     _id: ID!
     name: String!
@@ -120,6 +124,7 @@ export const typeDefs = gql`
 
   type Query {
     catalogues: [Catalogues]
+    collections(catalogues: String!): [Collection]
     product(sku: String!): Product
     products(
       group: String

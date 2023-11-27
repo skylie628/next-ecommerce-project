@@ -1,5 +1,6 @@
 import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
+import { GroupModel } from "../mongoose/models/group.model";
 import { CataloguesModel } from "../mongoose/models/catalogues.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
@@ -11,6 +12,18 @@ export const resolvers = {
       await connectMongo();
       const catalogues = await CataloguesModel.find().lean();
       return catalogues;
+    },
+    collections: async (_: any, args: any) => {
+      await connectMongo();
+      const { _id: cataloguesId } =
+        (await CataloguesModel.findOne({
+          name: args.catalogues[0].toUpperCase() + args.catalogues.slice(1),
+        })) || {};
+      if (!cataloguesId) return [];
+      const collections = await GroupModel.find({
+        catalogues: cataloguesId,
+      }).lean();
+      return collections;
     },
     product: async (_: any, args: any) => {
       await connectMongo();
@@ -31,8 +44,9 @@ export const resolvers = {
             filterCriteria.group = args.group;
           }
           if (args.catalogues) {
+            console.log("catalogues", args.catalogues);
             const catalogues = await CataloguesModel.findOne({
-              name: string[0].toUpperCase() + string.slice(1),
+              name: args.catalogues[0].toUpperCase() + args.catalogues.slice(1),
             });
             filterCriteria.catalogues = catalogues ? catalogues._id : "none";
           }
@@ -59,7 +73,7 @@ export const resolvers = {
 
           return { products, count: products.length };
         }
-      );
+      ).catch((err) => console.log("err la" + err.locations));
       if (!data) throw new Error("Unable to get resources");
       return data;
     },

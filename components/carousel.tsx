@@ -1,4 +1,3 @@
-import { getCollectionProducts } from "@/lib/sadida";
 import { getSadidaProducts } from "@/lib/sadida";
 import Link from "next/link";
 import { GridTileImage } from "./grid/tile";
@@ -7,6 +6,7 @@ export async function Carousel() {
   // Collections that start with `hidden-*` are hidden from the search page.
   const products = await getSadidaProducts({
     pageIndex: 1,
+    catalogues: "Smartphone",
     sortBy: "best_rating",
   });
 

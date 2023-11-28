@@ -32,6 +32,8 @@ import {
   Product,
   Cart,
   Collection,
+  SadidaBackdropEcommerceProduct,
+  SadidaProduct,
 } from "./types";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
 const sadidaEndpoint = GRAPHQL_API_URL;
@@ -96,6 +98,7 @@ export async function sadidaFetch<T>({
   variables?: ExtractVariables<T>;
 }): Promise<{ status: number; body: T } | never> {
   try {
+    console.log("variable la", variables);
     const result = await fetch(sadidaEndpoint, {
       method: "POST",
       headers: {
@@ -109,23 +112,20 @@ export async function sadidaFetch<T>({
       cache,
       ...(tags && { next: { tags } }),
     });
-
     const body = await result.json();
-
     if (body.errors) {
-      throw body.errors[0];
+      // throw body.errors[0];
     }
-
     return {
       status: result.status,
       body,
     };
   } catch (e) {
     console.log(e);
-    throw {
+    /* throw {
       error: e,
       query,
-    };
+    };*/
   }
 }
 
@@ -255,23 +255,24 @@ export async function getSadidaProducts({
       catalogues,
     },
   });
-  console.log(products);
-  return products.body?.data?.products?.products?.map((product) => ({
-    sku: product.sku,
-    title: product.title,
-    slug: product.slug,
-    price: product.price,
-    score: product.score,
-    n_o_reviews: product.n_o_reviews,
-    instock_available: product.instock_available,
-    thumbnailPath: product.images[4]
-      ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fshowing%20image%20thumnail%2F${product.images[4]}.png?alt=media`
-      : "",
-    showingImagePath: product.images[0]
-      ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fstr%20image%2F${product.images[0]}.png?alt=media&token=dd117ea5-2906-48b3-919c-a28b05f31881`
-      : "",
-    path: `localhost:3000/product/${product.slug}`,
-  }));
+  const returnedProducts =
+    products?.body?.data?.products?.products?.map((product) => ({
+      sku: product.sku,
+      title: product.title,
+      slug: product.slug,
+      price: product.price,
+      score: product.score,
+      n_o_reviews: product.n_o_reviews,
+      instock_available: product.instock_available,
+      thumbnailPath: product.images[4]
+        ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fshowing%20image%20thumnail%2F${product.images[4]}.png?alt=media`
+        : "",
+      showingImagePath: product.images[0]
+        ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fstr%20image%2F${product.images[0]}.png?alt=media&token=dd117ea5-2906-48b3-919c-a28b05f31881`
+        : "",
+      path: `localhost:3000/product/${product.slug}`,
+    })) || [];
+  return returnedProducts;
 }
 export async function getProducts({
   query,

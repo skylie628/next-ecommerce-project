@@ -1,5 +1,9 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { redis } from "../lib/sadida/generated/redis/redis";
+//import { redis } from "../lib/sadida/generated/redis/redis";
+import { createClient } from "redis";
+const redis = createClient({
+  url: process.env.REDIS_URL,
+});
 export const createUrl = (
   pathname: string,
   params: URLSearchParams | ReadonlyURLSearchParams
@@ -17,9 +21,9 @@ export const getImageUrl = (name: string) => {
   return name;
 };
 export async function getOrSetCache(key: string, cb: () => Promise<any>) {
-  console.log("request: state open: ", redis.isOpen);
-  !redis.isOpen && (await redis.connect().catch((err) => console.log(err)));
+  //await redis.connect();
   const cache = await redis.get(key).catch((error: any) => console.log(error));
+  console.log("cache ", cache, key);
   if (/*cache != null*/ false) {
     console.log("Cache hit");
     await redis.disconnect();
@@ -32,7 +36,7 @@ export async function getOrSetCache(key: string, cb: () => Promise<any>) {
       EX: 3600,
       NX: true,
     });
-    await redis.disconnect();
+    //  await redis.disconnect();
     return data;
   }
 }

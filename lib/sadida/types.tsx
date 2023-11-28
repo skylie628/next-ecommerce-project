@@ -82,11 +82,11 @@ export type SadidaProduct = {
 export type SadidaEcommerceProduct = Omit<SadidaProduct, "images">;
 export type SadidaBackdropEcommerceProduct = Omit<
   SadidaProduct,
-  "images" | "instock_reserved" | "quantity" | "group"
+  "images" | "instock_reserved" | "quantity" | "group" | "catalogues"
 > & {
-  thumbnailPath: "string";
-  showingImagePath: "string";
-  path: "string";
+  thumbnailPath: string;
+  showingImagePath: string;
+  path: string;
 };
 // CART
 export type CartItem = {
@@ -151,10 +151,9 @@ export type sadidaCatalogueOperation = {
 export type sadidaProductsOperation = {
   data: {
     products?: {
-      products?: Omit<
-        SadidaEcommerceProduct,
-        "quantity" | "instock_reserved" | "group"
-      >;
+      products?: [
+        Omit<SadidaProduct, "quantity" | "instock_reserved" | "group">
+      ];
       count: number;
     };
   };

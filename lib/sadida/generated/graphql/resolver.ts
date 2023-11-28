@@ -34,13 +34,14 @@ export const resolvers = {
       const data = await getOrSetCache(
         `${args.pageIndex ?? "1"}${args.group ?? "none"}${args.sortBy}`,
         async () => {
-          console.log("miss");
+          console.log("miss", args.group);
           await connectMongo();
           const filterCriteria: Record<
             string,
             string | number | Record<string, string>
           > = {};
           if (args.group) {
+            console.log(args.group);
             filterCriteria.group = args.group;
           }
           if (args.catalogues) {
@@ -73,7 +74,8 @@ export const resolvers = {
 
           return { products, count: products.length };
         }
-      ).catch((err) => console.log("err la" + err.locations));
+      );
+      console.log("group la ", args.group, " data la ", data);
       if (!data) throw new Error("Unable to get resources");
       return data;
     },

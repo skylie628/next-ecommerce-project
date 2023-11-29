@@ -21,7 +21,7 @@ export const getImageUrl = (name: string) => {
   return name;
 };
 export async function getOrSetCache(key: string, cb: () => Promise<any>) {
-  //await redis.connect();
+  await redis.connect();
   const cache = await redis.get(key).catch((error: any) => console.log(error));
   console.log("cache ", cache, key);
   if (/*cache != null*/ false) {
@@ -36,7 +36,7 @@ export async function getOrSetCache(key: string, cb: () => Promise<any>) {
       EX: 3600,
       NX: true,
     });
-    //  await redis.disconnect();
+    await redis.disconnect();
     return data;
   }
 }

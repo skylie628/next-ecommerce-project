@@ -5,9 +5,7 @@ import { getProductsQuery } from "./queries/product";
 import { getCollectionsQuery } from "./queries/collection";
 import {
   TypedDocumentString,
-  GetCollectionProductsBySlugDocument,
   GetCategoryProductsBySlugDocument,
-  ProductOrderField,
   OrderDirection,
   ProductMediaType,
   GetProductBySlugDocument,
@@ -22,6 +20,7 @@ import {
   saleorProductToSadidaProduct,
   saleorCheckoutToSadidaCart,
 } from "./mapper";
+import { ProductOrderField } from "../constants";
 import { GRAPHQL_API_URL } from "@/constants/url";
 import { invariant } from "./utils";
 //types
@@ -34,6 +33,8 @@ import {
   Collection,
   SadidaBackdropEcommerceProduct,
   SadidaProduct,
+  ProductQueryCriteria,
+  SortFilterItem,
 } from "./types";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
 const sadidaEndpoint = GRAPHQL_API_URL;
@@ -98,7 +99,7 @@ export async function sadidaFetch<T>({
   variables?: ExtractVariables<T>;
 }): Promise<{ status: number; body: T } | never> {
   try {
-    console.log("variable la", variables);
+    console.log("fetch", JSON.stringify(query));
     const result = await fetch(sadidaEndpoint, {
       method: "POST",
       headers: {
@@ -109,9 +110,8 @@ export async function sadidaFetch<T>({
         ...(query && { query }),
         ...(variables && { variables }),
       }),
-      cache,
       ...(tags && { next: { tags } }),
-    });
+    }).catch((err) => console.log("error", err));
     const body = await result.json();
     if (body.errors) {
       // throw body.errors[0];
@@ -130,40 +130,16 @@ export async function sadidaFetch<T>({
 }
 
 //CATALOGUE
-export async function getCatalogue() {
+export async function getCatalogues() {
   const catalogues = await sadidaFetch<sadidaCatalogueOperation>({
     query: getCatalogueQuery,
   });
-  return catalogues.body?.data?.catalogues?.map((cataloguesItem) => ({
+  return catalogues?.body?.data?.catalogues?.map((cataloguesItem) => ({
     _id: cataloguesItem._id,
     name: cataloguesItem.name,
-    path: `localhost:3000/catalogues/${cataloguesItem.name}`,
+    path: `localhost:3000/catalogues/${cataloguesItem.slug}/all`,
   }));
 }
-
-const _getCategoryProducts = async ({
-  category,
-  reverse,
-  sortKey,
-}: {
-  category: string;
-  reverse?: boolean;
-  sortKey?: ProductOrderField;
-}) =>
-  (
-    await saleorFetch({
-      query: GetCategoryProductsBySlugDocument,
-      variables: {
-        slug: category,
-        sortBy:
-          sortKey === ProductOrderField.Rank
-            ? ProductOrderField.Rating
-            : sortKey || ProductOrderField.Rating,
-        sortDirection: reverse ? OrderDirection.Desc : OrderDirection.Asc,
-      },
-      tags: [TAGS.collections, TAGS.products],
-    })
-  ).category;
 
 //COLLECTION
 export async function getCollections(catalogues: string) {
@@ -171,8 +147,12 @@ export async function getCollections(catalogues: string) {
     query: getCollectionsQuery,
     variables: { catalogues },
   });
-  console.log("collections la", collections);
-  return collections.body?.data?.collections || [];
+  return (
+    collections.body?.data?.collections?.map((collection) => ({
+      ...collection,
+      path: collection.slug,
+    })) || []
+  );
 }
 
 // PRODUCTS
@@ -236,25 +216,22 @@ export async function getProductRecommendations(
   return [];
 }
 export async function getSadidaProducts({
-  pageIndex,
-  catalogues,
-  group,
-  sortBy,
+  query,
+  sortKey,
+  reverse,
 }: {
-  pageIndex: number;
-  group?: string;
-  catalogues?: string;
-  sortBy?: string;
+  query: ProductQueryCriteria;
+  sortKey: string;
+  reverse: boolean;
 }) {
   const products = await sadidaFetch<sadidaProductsOperation>({
     query: getProductsQuery,
     variables: {
-      pageIndex,
-      group,
-      sortBy,
-      catalogues,
+      query,
+      sortKey,
+      reverse,
     },
-  });
+  }).catch((err) => console.log(err));
   const returnedProducts =
     products?.body?.data?.products?.products?.map((product) => ({
       sku: product.sku,

@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
-
 interface CataloguesDocument extends mongoose.Document {
   _id: string;
   name: string;
+  slug: string;
 }
 
 const CataloguesSchema = new mongoose.Schema(
   {
     _id: { type: String, required: true },
     name: { type: String, required: true },
+    slug: { type: String, required: true },
   },
   { timestamps: true }
 );

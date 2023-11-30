@@ -12,8 +12,13 @@ const nameList = [
   "Unique",
   "Japan Vibe",
 ];
+function convertToSlug(Text) {
+  return Text.toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+}
 const seedGroup = nameList.map((x, id) => {
-  return { _id: id + "", catalogues: "0", name: x };
+  return { _id: id + "", catalogues: "0", slug: convertToSlug(x), name: x };
 });
 module.exports = {
   async up(db, client) {

@@ -10,15 +10,19 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 //types
-import { Menu } from "@/lib/sadida/types";
-export default function MobileMenu({ menu }: { menu: Menu[] }) {
+import { EcommerceCatalogues } from "@/lib/sadida/types";
+export default function MobileCatalogues({
+  catalogues,
+}: {
+  catalogues: EcommerceCatalogues[];
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  const openMobileMenu = () => setIsOpen(true);
-  const closeMobileMenu = () => setIsOpen(false);
+  const openMobileCatalogues = () => setIsOpen(true);
+  const closeMobileCatalogues = () => setIsOpen(false);
   useEffect(() => {
-    //!requirement: when user resize windows from medium screen to wide screen, MobileMenu auto close
+    //!requirement: when user resize windows from medium screen to wide screen, MobileCatalogues auto close
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setIsOpen(false);
@@ -28,7 +32,7 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
     return () => window.removeEventListener("resize", handleResize);
   }, [isOpen]);
   useEffect(() => {
-    //requirement: when user navigate through page, MobileMenu auto close
+    //requirement: when user navigate through page, MobileCatalogues auto close
     setIsOpen(false);
   }, [pathname, searchParams]);
 
@@ -36,14 +40,14 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
     <>
       {" "}
       <button
-        onClick={openMobileMenu}
-        aria-label="Open mobile menu"
+        onClick={openMobileCatalogues}
+        aria-label="Open mobile Catalogues"
         className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white md:hidden"
       >
         <Bars3Icon className="h-4" />
       </button>
       <Transition show={isOpen}>
-        <Dialog onClose={closeMobileMenu} className="relative z-50">
+        <Dialog onClose={closeMobileCatalogues} className="relative z-50">
           <Transition.Child
             as={Fragment}
             enter="transition-all ease-in-out duration-300"
@@ -68,8 +72,8 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
               <div className="p-4">
                 <button
                   className="mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
-                  onClick={closeMobileMenu}
-                  aria-label="Close mobile menu"
+                  onClick={closeMobileCatalogues}
+                  aria-label="Close mobile Catalogues"
                 >
                   <XMarkIcon className="h-6" />
                 </button>
@@ -77,15 +81,15 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
                 <div className="mb-4 w-full">
                   <Search />
                 </div>
-                {menu.length ? (
+                {catalogues.length ? (
                   <ul className="flex w-full flex-col">
-                    {menu.map((item: Menu) => (
+                    {catalogues.map((item: EcommerceCatalogues) => (
                       <li
                         className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
-                        key={item.title}
+                        key={item.name}
                       >
-                        <Link href={item.path} onClick={closeMobileMenu}>
-                          {item.title}
+                        <Link href={item.path} onClick={closeMobileCatalogues}>
+                          {item.name}
                         </Link>
                       </li>
                     ))}

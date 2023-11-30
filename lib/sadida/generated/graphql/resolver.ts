@@ -1,11 +1,14 @@
 import connectMongo from "../mongoose/mongodb";
+import { sorting } from "@/lib/constants";
 import { ProductModel } from "../mongoose/models/product.model";
 import { GroupModel } from "../mongoose/models/group.model";
 import { CataloguesModel } from "../mongoose/models/catalogues.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
+import { ProductOrderField } from "@/lib/constants";
 const _ = require("lodash");
 import mongoose from "mongoose";
+import { reverse } from "dns";
 export const resolvers = {
   Query: {
     catalogues: async () => {
@@ -17,7 +20,7 @@ export const resolvers = {
       await connectMongo();
       const { _id: cataloguesId } =
         (await CataloguesModel.findOne({
-          name: args.catalogues[0].toUpperCase() + args.catalogues.slice(1),
+          slug: args.catalogues,
         })) || {};
       if (!cataloguesId) return [];
       const collections = await GroupModel.find({
@@ -31,47 +34,61 @@ export const resolvers = {
       return product;
     },
     products: async (_: any, args: any) => {
+      console.log(args);
       const data = await getOrSetCache(
-        `${args.pageIndex ?? "1"}${args.group ?? "none"}${args.sortBy}`,
+        `${args.query.pageIndex ?? "1"}${args.query.catalogues}${
+          args.collection ?? "none"
+        }${args.sortKey}${args.reverse}`,
         async () => {
-          console.log("miss", args.group);
           await connectMongo();
           const filterCriteria: Record<
             string,
             string | number | Record<string, string>
           > = {};
-          if (args.group) {
-            console.log(args.group);
-            filterCriteria.group = args.group;
-          }
-          if (args.catalogues) {
-            console.log("catalogues", args.catalogues);
+          console.log(args);
+          if (args.query.catalogues) {
+            console.log(args.query.catalogues);
             const catalogues = await CataloguesModel.findOne({
-              name: args.catalogues[0].toUpperCase() + args.catalogues.slice(1),
+              slug: args.query.catalogues,
             });
+
             filterCriteria.catalogues = catalogues ? catalogues._id : "none";
           }
+          if (args.query.group) {
+            const group = await GroupModel.findOne({
+              slug: args.query.group,
+              catalogues: filterCriteria.catalogues,
+            });
+            filterCriteria.group = group ? group._id : "none";
+          }
+
           let sortOptions:
             | string
             | { [key: string]: SortOrder | { $meta: "textScore" } }
             | [string, SortOrder][]
             | null
             | undefined = {};
-          if (args.sortBy && args.sortBy === "best_rating") {
-            sortOptions.score = 1;
+          const sortNumber = args.reverse ? -1 : 1;
+          switch (args.sortKey) {
+            case ProductOrderField.Rating:
+              sortOptions.score = sortNumber;
+              break;
+            case ProductOrderField.MinimalPrice:
+              sortOptions.price = sortNumber;
+              break;
+            case ProductOrderField.CreatedAt:
+              sortOptions.createAt = sortNumber;
+              break;
           }
-          if (args.sortBy && args.sortBy === "most_reviewed") {
-            sortOptions.n_o_reviews = 1;
-          }
+          console.log("sort Options", sortOptions);
           const itemsPerPage = 10;
-          const skipCount = (args.pageIndex - 1) * itemsPerPage;
+          const skipCount = (args.query.pageIndex - 1) * itemsPerPage;
           const count = await ProductModel.countDocuments(filterCriteria);
           let products = await ProductModel.find(filterCriteria)
+            .sort(sortOptions)
             .skip(skipCount)
             .limit(itemsPerPage)
-            .sort(sortOptions)
             .lean();
-
           return { products, count: products.length };
         }
       );

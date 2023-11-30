@@ -1,5 +1,7 @@
-export const getProductsQuery = `query getProducts($group: String, $catalogues:String, $sortBy: String, $pageIndex: Int!){
-    products(group: $group,catalogues:$catalogues,sortBy: $sortBy,pageIndex: $pageIndex) {
+export const getProductsQuery = `
+
+query getProducts($query:ProductQueryCriteria,$sortKey: String,$reverse: Boolean){
+    products(query:$query,  sortKey: $sortKey,reverse:$reverse) {
       products {
         sku,
         title,

@@ -1,13 +1,26 @@
+import { ProductOrderField } from "./generated/graphql";
 export type Catalogues = {
   name: string;
   _id: string;
-  path: string;
+  slug: string;
 };
+export type EcommerceCatalogues = Omit<Catalogues, "slug"> & { path: string };
 export type Image = {
   url: string;
   altText: string;
   width: number;
   height: number;
+};
+export type ProductQueryCriteria = {
+  catalogues: string;
+  group: string | null;
+  pageIndex: number;
+};
+export type SortFilterItem = {
+  name: string;
+  slug: string | null;
+  sortKey: ProductOrderField;
+  reverse: boolean;
 };
 export type SEO = {
   title: string;
@@ -124,9 +137,11 @@ export type Cart = Omit<SadidaCommerceCart, "lines"> & {
 export type SadidaCollection = {
   _id: string;
   name: string;
+  slug: string;
+  path: string;
 };
 export type SadidaCollectionOperation = {
-  data: SadidaCollection[];
+  data: { collections: SadidaCollection[] };
   variables: { catalogues: string };
 };
 export type SadidaCommerceCollection = {
@@ -158,9 +173,8 @@ export type sadidaProductsOperation = {
     };
   };
   variables: {
-    pageIndex: number;
-    group?: string;
-    sortBy?: string;
-    catalogues?: string;
+    query: ProductQueryCriteria;
+    sortKey: string;
+    reverse: boolean;
   };
 };

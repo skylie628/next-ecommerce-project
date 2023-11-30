@@ -1,17 +1,16 @@
-import { ProductOrderField } from "./sadida/generated/graphql";
+import { SortFilterItem } from "./sadida/types";
 export const TAGS = {
   collections: "collections",
   products: "products",
   cart: "cart",
 };
-export type SortFilterItem = {
-  title: string;
-  slug: string | null;
-  sortKey: ProductOrderField;
-  reverse: boolean;
-};
+export enum ProductOrderField {
+  CreatedAt = "CREATED_AT",
+  MinimalPrice = "MINIMAL_PRICE",
+  Rating = "RATING",
+}
 export const defaultSort: SortFilterItem = {
-  title: "Trending",
+  name: "Trending",
   slug: "trending-desc",
   sortKey: ProductOrderField.Rating,
   reverse: false,
@@ -20,19 +19,19 @@ export const defaultSort: SortFilterItem = {
 export const sorting: SortFilterItem[] = [
   defaultSort,
   {
-    title: "Latest arrivals",
+    name: "Latest arrivals",
     slug: "latest-desc",
-    sortKey: ProductOrderField.PublishedAt,
+    sortKey: ProductOrderField.CreatedAt,
     reverse: true,
   },
   {
-    title: "Price: Low to high",
+    name: "Price: Low to high",
     slug: "price-asc",
     sortKey: ProductOrderField.MinimalPrice,
     reverse: false,
   }, // asc
   {
-    title: "Price: High to low",
+    name: "Price: High to low",
     slug: "price-desc",
     sortKey: ProductOrderField.MinimalPrice,
     reverse: true,

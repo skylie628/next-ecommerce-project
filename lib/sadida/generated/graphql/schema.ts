@@ -9,6 +9,7 @@ export const typeDefs = gql`
   type Collection {
     _id: ID!
     name: String
+    slug: String
   }
   type Product {
     id: ID!
@@ -29,6 +30,7 @@ export const typeDefs = gql`
   type Catalogues {
     _id: ID!
     name: String!
+    slug: String!
   }
   type Variant {
     id: ID!
@@ -121,16 +123,19 @@ export const typeDefs = gql`
     products: [Product]
     count: Int
   }
-
+  input ProductQueryCriteria {
+    catalogues: String
+    group: String
+    pageIndex: Int
+  }
   type Query {
     catalogues: [Catalogues]
     collections(catalogues: String!): [Collection]
     product(sku: String!): Product
     products(
-      group: String
-      catalogues: String
-      sortBy: String
-      pageIndex: Int!
+      query: ProductQueryCriteria
+      sortKey: String
+      reverse: Boolean
     ): ReturnedProduct
     cartItems(email: String!): [CartItem]
     order(orderId: String!): Order

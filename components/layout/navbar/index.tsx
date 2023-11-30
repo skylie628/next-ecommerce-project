@@ -1,22 +1,22 @@
 import React from "react";
 import Cart from "@/components/cart";
-import MobileMenu from "./mobile-menu";
+import MobileCatalogues from "./mobile-catalogues";
 import OpenCart from "@/components/cart/open-cart";
 import { Suspense } from "react";
 import Link from "next/link";
 import Search from "./search";
 import LogoSquare from "@/components/icons/logo-square";
-import { getCatalogue } from "@/lib/sadida";
+import { getCatalogues } from "@/lib/sadida";
 //type
-import { Catalogues } from "@/lib/sadida/types";
+import { EcommerceCatalogues } from "@/lib/sadida/types";
 const { SITE_NAME } = process.env;
 export default async function Navbar() {
   //run on server
-  const catalogues = (await getCatalogue()) || [];
+  const catalogues = (await getCatalogues()) || [];
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
-        <MobileMenu menu={catalogues} />
+        <MobileCatalogues catalogues={catalogues} />
       </div>
       <div className="flex w-full items-center">
         <div className="flex w-full md:w-5/12">
@@ -32,7 +32,7 @@ export default async function Navbar() {
           </Link>
           {catalogues.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {catalogues.map((item: Catalogues) => (
+              {catalogues.map((item: EcommerceCatalogues) => (
                 <li key={item._id}>
                   <Link
                     href={`localhost:3000/catalogues/${item.name.toLowerCase()}`}

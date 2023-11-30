@@ -3,6 +3,7 @@ export const getCatalogueQuery = /* GraphQL */ `
     catalogues {
       _id
       name
+      slug
     }
   }
 `;

@@ -10,6 +10,9 @@ export const createUrl = (
 
   return `${pathname}${queryString}`;
 };
+export const createProductImgUrl = (name: string, type: string): string => {
+  return `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2F${type}%2F${name}.png?alt=media`;
+};
 export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
   stringToCheck.startsWith(startsWith)
     ? stringToCheck

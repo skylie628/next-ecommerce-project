@@ -1,12 +1,13 @@
 "use client";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { createUrl } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export default function Search() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
+  const pathName = usePathname();
+  console.log("search param la", searchParams);
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const val = e.target as HTMLFormElement;
@@ -14,12 +15,14 @@ export default function Search() {
     const newParams = new URLSearchParams(searchParams.toString());
 
     if (search.value) {
-      newParams.set("q", search.value);
+      newParams.set("keyword", search.value);
     } else {
-      newParams.delete("q");
+      newParams.delete("keyword");
     }
 
-    router.push(createUrl("/search", newParams));
+    router.replace(
+      createUrl(pathName.split("/").slice(0, 3).join("/"), newParams)
+    );
   }
 
   return (

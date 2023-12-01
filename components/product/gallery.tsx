@@ -5,14 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { GridTileImage } from "../grid/tile";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
-//hook + other
+//types
+import { ProductImage } from "@/lib/sadida/types";
+//hooks + others
 import { usePathname, useSearchParams } from "next/navigation";
 import { createUrl } from "@/lib/utils";
-export default function Gallery({
-  images,
-}: {
-  images: { src: string; altText: string }[];
-}) {
+export default function Gallery({ images }: { images: ProductImage[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const imageSearchParam = searchParams.get("image");
@@ -40,8 +38,8 @@ export default function Gallery({
             className="h-full w-full object-contain"
             fill
             sizes="(min-width: 1024px) 66vw, 100vw"
-            alt={images[imageIndex]?.altText as string}
-            src={images[imageIndex]?.src as string}
+            alt={images[imageIndex]?.alt as string}
+            src={images[imageIndex]?.large as string}
             priority={true}
           />
         )}
@@ -82,7 +80,7 @@ export default function Gallery({
             imageSearchParams.set("image", index.toString());
 
             return (
-              <li key={image.src} className="h-auto w-20">
+              <li key={image.thumbnail} className="h-auto w-20">
                 <Link
                   aria-label="Enlarge product image"
                   href={createUrl(pathname, imageSearchParams)}
@@ -90,8 +88,8 @@ export default function Gallery({
                   className="h-full w-full"
                 >
                   <GridTileImage
-                    alt={image.altText}
-                    src={image.src}
+                    alt={image.alt}
+                    src={image.thumbnail}
                     width={80}
                     height={80}
                     active={isActive}

@@ -11,9 +11,15 @@ export type Image = {
   width: number;
   height: number;
 };
+export type ProductImage = {
+  large: string;
+  thumbnail: string;
+  alt: string;
+};
 export type ProductQueryCriteria = {
   catalogues: string;
-  group: string | null;
+  group?: string | null;
+  keyword?: string;
   pageIndex: number;
 };
 export type SortFilterItem = {
@@ -54,30 +60,14 @@ export type ProductVariant = {
   price: Money;
 };
 
-export type SadiddaCommerceProduct = {
-  id: string;
-  handle: string;
-  availableForSale: boolean;
-  title: string;
-  description: string;
-  descriptionHtml: string;
-  options: ProductOption[];
-  priceRange: {
-    maxVariantPrice: Money;
-    minVariantPrice: Money;
-  };
-  // array of variant with node and edge
-  variants: Connection<ProductVariant>;
-  featuredImage: Image;
-  images: Connection<Image>;
-  seo: SEO;
-  tags: string[];
-  updatedAt: string;
-};
-export type Product = Omit<SadiddaCommerceProduct, "variants" | "images"> & {
+export type Product = Omit<
+  SadidaBackdropEcommerceProduct,
+  "variants" | "images"
+> & {
   variants: ProductVariant[];
   images: Image[];
 };
+
 export type SadidaProduct = {
   title: string;
   slug: string;
@@ -92,7 +82,9 @@ export type SadidaProduct = {
   instock_reserved: number;
   instock_available: number;
 };
-export type SadidaEcommerceProduct = Omit<SadidaProduct, "images">;
+export type SadidaEcommerceProduct = Omit<SadidaProduct, "images"> & {
+  images: ProductImage[];
+};
 export type SadidaBackdropEcommerceProduct = Omit<
   SadidaProduct,
   "images" | "instock_reserved" | "quantity" | "group" | "catalogues"
@@ -144,6 +136,7 @@ export type SadidaCollectionOperation = {
   data: { collections: SadidaCollection[] };
   variables: { catalogues: string };
 };
+
 export type SadidaCommerceCollection = {
   handle: string;
   title: string;
@@ -177,4 +170,9 @@ export type sadidaProductsOperation = {
     sortKey: string;
     reverse: boolean;
   };
+};
+
+export type SadidaProductOperation = {
+  data: { product: SadidaProduct };
+  variables: { slug: string };
 };

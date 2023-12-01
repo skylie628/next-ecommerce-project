@@ -1,5 +1,4 @@
 import connectMongo from "../mongoose/mongodb";
-import { sorting } from "@/lib/constants";
 import { ProductModel } from "../mongoose/models/product.model";
 import { GroupModel } from "../mongoose/models/group.model";
 import { CataloguesModel } from "../mongoose/models/catalogues.model";
@@ -7,8 +6,6 @@ import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
 import { ProductOrderField } from "@/lib/constants";
 const _ = require("lodash");
-import mongoose from "mongoose";
-import { reverse } from "dns";
 export const resolvers = {
   Query: {
     catalogues: async () => {
@@ -30,7 +27,7 @@ export const resolvers = {
     },
     product: async (_: any, args: any) => {
       await connectMongo();
-      const product = await ProductModel.findOne({ sku: args.sku }).lean();
+      const product = await ProductModel.findOne({ slug: args.slug }).lean();
       return product;
     },
     products: async (_: any, args: any) => {
@@ -45,7 +42,7 @@ export const resolvers = {
             string,
             string | number | Record<string, string>
           > = {};
-          console.log(args);
+
           if (args.query.catalogues) {
             console.log(args.query.catalogues);
             const catalogues = await CataloguesModel.findOne({
@@ -54,14 +51,19 @@ export const resolvers = {
 
             filterCriteria.catalogues = catalogues ? catalogues._id : "none";
           }
-          if (args.query.group) {
+          if (args.query.keyword) {
+            filterCriteria.title = {
+              $regex: args.query.keyword,
+              $options: "i",
+            };
+          }
+          if (!args.query.keyword && args.query.group) {
             const group = await GroupModel.findOne({
               slug: args.query.group,
               catalogues: filterCriteria.catalogues,
             });
             filterCriteria.group = group ? group._id : "none";
           }
-
           let sortOptions:
             | string
             | { [key: string]: SortOrder | { $meta: "textScore" } }
@@ -80,7 +82,6 @@ export const resolvers = {
               sortOptions.createAt = sortNumber;
               break;
           }
-          console.log("sort Options", sortOptions);
           const itemsPerPage = 10;
           const skipCount = (args.query.pageIndex - 1) * itemsPerPage;
           const count = await ProductModel.countDocuments(filterCriteria);

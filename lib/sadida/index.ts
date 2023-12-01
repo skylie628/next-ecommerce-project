@@ -1,15 +1,11 @@
 import { SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from "../constants";
-import { ensureStartsWith } from "../utils";
+import { createProductImgUrl, ensureStartsWith } from "../utils";
 import { getCatalogueQuery } from "./queries/catalogue";
-import { getProductsQuery } from "./queries/product";
+import { getProductQuery, getProductsQuery } from "./queries/product";
 import { getCollectionsQuery } from "./queries/collection";
 import {
   TypedDocumentString,
-  GetCategoryProductsBySlugDocument,
-  OrderDirection,
-  ProductMediaType,
   GetProductBySlugDocument,
-  SearchProductsDocument,
   GetCheckoutByIdDocument,
   CreateCheckoutDocument,
   CheckoutAddLineDocument,
@@ -28,13 +24,11 @@ import {
   sadidaCatalogueOperation,
   sadidaProductsOperation,
   SadidaCollectionOperation,
+  SadidaProductOperation,
   Product,
   Cart,
-  Collection,
-  SadidaBackdropEcommerceProduct,
-  SadidaProduct,
   ProductQueryCriteria,
-  SortFilterItem,
+  SadidaEcommerceProduct,
 } from "./types";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
 const sadidaEndpoint = GRAPHQL_API_URL;
@@ -99,7 +93,6 @@ export async function sadidaFetch<T>({
   variables?: ExtractVariables<T>;
 }): Promise<{ status: number; body: T } | never> {
   try {
-    console.log("fetch", JSON.stringify(query));
     const result = await fetch(sadidaEndpoint, {
       method: "POST",
       headers: {
@@ -114,10 +107,11 @@ export async function sadidaFetch<T>({
     }).catch((err) => console.log("error", err));
     const body = await result.json();
     if (body.errors) {
-      // throw body.errors[0];
+      throw body.errors[0];
     }
+    console.log("fetch", body);
     return {
-      status: result.status,
+      status: result.result,
       body,
     };
   } catch (e) {
@@ -137,7 +131,7 @@ export async function getCatalogues() {
   return catalogues?.body?.data?.catalogues?.map((cataloguesItem) => ({
     _id: cataloguesItem._id,
     name: cataloguesItem.name,
-    path: `localhost:3000/catalogues/${cataloguesItem.slug}/all`,
+    path: `/catalogues/${cataloguesItem.slug}`,
   }));
 }
 
@@ -147,74 +141,62 @@ export async function getCollections(catalogues: string) {
     query: getCollectionsQuery,
     variables: { catalogues },
   });
-  return (
-    collections.body?.data?.collections?.map((collection) => ({
+  const default1Collection = {
+    _id: -1,
+    name: "All",
+    slug: "all",
+    path: `/catalogues/${catalogues}`,
+  };
+  return [
+    default1Collection,
+    ...(collections?.body?.data?.collections?.map((collection) => ({
       ...collection,
-      path: collection.slug,
-    })) || []
-  );
+      path: `/catalogues/${catalogues}/${collection.slug}`,
+    })) || []),
+  ];
 }
 
 // PRODUCTS
 
-export async function getProduct(slug: string): Promise<Product | undefined> {
-  const saleorProduct = await saleorFetch({
-    query: GetProductBySlugDocument,
-    variables: {
-      slug,
-    },
-    tags: [TAGS.products],
+export async function getProduct(
+  slug: string
+): Promise<SadidaEcommerceProduct | undefined> {
+  let sadidaProduct = await sadidaFetch<SadidaProductOperation>({
+    query: getProductQuery,
+    variables: { slug },
   });
 
-  if (!saleorProduct.product) {
+  if (!sadidaProduct?.body?.data?.product) {
     throw new Error(`Product not found: ${slug}`);
   }
-
-  return saleorProductToSadidaProduct(saleorProduct.product);
+  const { images, ...returnProduct } = sadidaProduct.body.data.product;
+  return {
+    images: [
+      {
+        large: createProductImgUrl(images[0], "str image"),
+        thumbnail: createProductImgUrl(images[2], "straight image thumbnail"),
+        alt: `straight image of product ${returnProduct.title}`,
+      },
+      {
+        large: createProductImgUrl(images[1], "side image"),
+        thumbnail: createProductImgUrl(images[3], "side image thumbnail"),
+        alt: `side image of product ${returnProduct.title}`,
+      },
+      {
+        large: createProductImgUrl("default1", "side image"),
+        thumbnail: createProductImgUrl("default1", "side image thumbnail"),
+        alt: `side image of product ${returnProduct.title}`,
+      },
+      {
+        large: createProductImgUrl("default2", "side image"),
+        thumbnail: createProductImgUrl("default2", "side image thumbnail"),
+        alt: `side image of product ${returnProduct.title}`,
+      },
+    ],
+    ...returnProduct,
+  };
 }
-export type GetProductBySlugQuery = {
-  product?: {
-    id: string;
-    slug: string;
-    name: string;
-    isAvailableForPurchase?: boolean | null;
-    description?: string | null;
-    seoTitle?: string | null;
-    seoDescription?: string | null;
-    updatedAt: string;
-    pricing?: {
-      priceRange?: {
-        start?: { gross: { currency: string; amount: number } } | null;
-        stop?: { gross: { currency: string; amount: number } } | null;
-      } | null;
-    } | null;
-    media?: Array<{ url: string; type: ProductMediaType; alt: string }> | null;
-    collections?: Array<{ name: string }> | null;
-    variants?: Array<{
-      id: string;
-      name: string;
-      attributes: Array<{
-        attribute: {
-          slug?: string | null;
-          name?: string | null;
-          choices?: { edges: Array<{ node: { name?: string | null } }> } | null;
-        };
-        values: Array<{ name?: string | null }>;
-      }>;
-      pricing?: {
-        price?: { gross: { currency: string; amount: number } } | null;
-      } | null;
-    }> | null;
-  } | null;
-};
 
-export async function getProductRecommendations(
-  productId: string
-): Promise<Product[]> {
-  // @todo
-  // tags: [TAGS.products],
-  return [];
-}
 export async function getSadidaProducts({
   query,
   sortKey,
@@ -247,39 +229,12 @@ export async function getSadidaProducts({
       showingImagePath: product.images[0]
         ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fstr%20image%2F${product.images[0]}.png?alt=media&token=dd117ea5-2906-48b3-919c-a28b05f31881`
         : "",
-      path: `localhost:3000/product/${product.slug}`,
+      path: `/product/${product.slug}`,
     })) || [];
+  console.log(query, sortKey, returnedProducts);
   return returnedProducts;
 }
-export async function getProducts({
-  query,
-  reverse,
-  sortKey,
-}: {
-  query?: string;
-  reverse?: boolean;
-  sortKey?: ProductOrderField;
-}): Promise<Product[]> {
-  const saleorProducts = await saleorFetch({
-    query: SearchProductsDocument,
-    variables: {
-      search: query || "",
-      sortBy: query
-        ? sortKey || ProductOrderField.Rank
-        : sortKey === ProductOrderField.Rank
-        ? ProductOrderField.Rating
-        : sortKey || ProductOrderField.Rating,
-      sortDirection: reverse ? OrderDirection.Desc : OrderDirection.Asc,
-    },
-    tags: [TAGS.products],
-  });
 
-  return (
-    saleorProducts.products?.edges.map((product) =>
-      saleorProductToSadidaProduct(product.node)
-    ) || []
-  );
-}
 //Cart
 export async function getCart(cartId: string): Promise<Cart | null> {
   const saleorCheckout = await saleorFetch({
@@ -302,7 +257,7 @@ export async function createCart(): Promise<Cart> {
     query: CreateCheckoutDocument,
     variables: {
       input: {
-        channel: "default-channel",
+        channel: "default1-channel",
         lines: [],
       },
     },

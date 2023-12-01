@@ -126,12 +126,13 @@ export const typeDefs = gql`
   input ProductQueryCriteria {
     catalogues: String
     group: String
+    keyword: String
     pageIndex: Int
   }
   type Query {
     catalogues: [Catalogues]
     collections(catalogues: String!): [Collection]
-    product(sku: String!): Product
+    product(slug: String!): Product
     products(
       query: ProductQueryCriteria
       sortKey: String

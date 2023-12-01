@@ -26,7 +26,6 @@ export default async function CataloguesPage({
     group: collection && collection != "all" ? collection : null,
     pageIndex: 1,
   };
-  //const products = await getProducts({ sortKey, reverse, query: searchValue });
   const products =
     (await getSadidaProducts({
       query: queryCriteria,

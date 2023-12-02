@@ -25,7 +25,6 @@ export default async function SearchPage({
     keyword,
     pageIndex: 1,
   };
-  console.log("run pageeee");
   const products = await getSadidaProducts({
     sortKey,
     reverse,

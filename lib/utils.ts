@@ -1,4 +1,6 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 //import { redis } from "../lib/sadida/generated/redis/redis";
 import { createClient } from "redis";
 export const createUrl = (
@@ -42,4 +44,8 @@ export async function getOrSetCache(key: string, cb: () => Promise<any>) {
     await redis.disconnect();
     return data;
   }
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

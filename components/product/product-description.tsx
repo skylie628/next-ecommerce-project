@@ -1,6 +1,6 @@
 import { AddToCart } from "../cart/add-to-cart";
-import Price from "../price";
-import Prose from "../prose";
+import Price from "../ui/price";
+import Prose from "../ui/prose";
 import { SadidaEcommerceProduct } from "@/lib/sadida/types";
 import { VariantSelector } from "./variant-selector";
 

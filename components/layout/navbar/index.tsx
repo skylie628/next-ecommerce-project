@@ -16,8 +16,8 @@ export default async function Navbar() {
   const topNabarItems = [
     { name: "Find a store", path: "#" },
     { name: "Help", path: "#" },
-    { name: "Join us", path: "#" },
-    { name: "Sign in", path: "/auth" },
+    { name: "Join us", path: "/auth/signup" },
+    { name: "Sign in", path: "/auth/signin" },
   ];
   return (
     <div className="">

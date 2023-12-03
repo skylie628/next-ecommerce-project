@@ -9,7 +9,7 @@ export default function CataloguesLayout({
   params,
 }: {
   children: React.ReactNode;
-  params?: { [key: string]: string | string[] | undefined };
+  params?: { [key: string]: string | undefined };
 }) {
   const catalogues = params?.device || "smartphone";
   console.log("catalogues la", params);

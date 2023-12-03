@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import Price from "../price";
+import Price from "../ui/price";
 import { DEFAULT_OPTION } from "@/lib/constants";
 import { Cart } from "@/lib/sadida/types";
 import { createUrl } from "@/lib/utils";

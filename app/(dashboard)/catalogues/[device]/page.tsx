@@ -1,6 +1,5 @@
 import Grid from "@/components/grid";
 import ProductGridItems from "@/components/layout/product-grid-items";
-import Collections from "../collections";
 import { defaultSort, sorting } from "@/lib/constants";
 import { getSadidaProducts } from "@/lib/sadida";
 import { ProductQueryCriteria } from "@/lib/sadida/types";

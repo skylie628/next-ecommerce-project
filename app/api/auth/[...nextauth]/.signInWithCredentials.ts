@@ -1,5 +1,6 @@
 import * as bcrypt from "bcrypt";
 import { UserModel } from "@/lib/sadida/generated/mongoose/models/user.model";
+import connectMongo from "@/lib/sadida/generated/mongoose/mongodb";
 type CredentialsType = {
   email: string;
   password: string;
@@ -7,6 +8,7 @@ type CredentialsType = {
 };
 
 export async function signInWithCredentials(credentials: CredentialsType) {
+  await connectMongo();
   const user = await UserModel.findOne({ email: credentials.email });
   if (user) {
     const isValidPassword = await bcrypt.compare(

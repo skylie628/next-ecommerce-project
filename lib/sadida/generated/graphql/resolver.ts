@@ -102,6 +102,7 @@ export const resolvers = {
   },
   Mutation: {
     addUser: async (_: any, args: any) => {
+      await connectMongo();
       const existingUser = await UserModel.findOne({ email: args.email }).catch(
         (err) => console.log(err)
       );

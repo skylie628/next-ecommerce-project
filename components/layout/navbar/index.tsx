@@ -3,6 +3,7 @@ import Cart from "@/components/cart";
 import MobileCatalogues from "./mobile-catalogues";
 import OpenCart from "@/components/cart/open-cart";
 import { getServerSession } from "next-auth";
+import AuthButtons from "./auth-buttons";
 import { Suspense } from "react";
 import Link from "next/link";
 import Search from "./search";
@@ -16,7 +17,16 @@ export default async function Navbar() {
   //run on server
   const catalogues = (await getCatalogues()) || [];
   const session = await getServerSession(authOptions);
-
+  const handleSignOut = async () => {
+    await fetch("/api/auth/signout?callbackUrl=/api/auth/session", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: await fetch("/api/auth/csrf").then((rs) => rs.text()),
+    });
+  };
   return (
     <div className="">
       <div className="flex justify-between p-2 lg:px-6 bg-white">
@@ -32,26 +42,7 @@ export default async function Navbar() {
               Help
             </Link>
           </li>
-          {!session ? (
-            <>
-              <li>
-                <Link href="/auth/signup" className=" hover:text-slate-500">
-                  Join us
-                </Link>
-              </li>
-              <li>
-                <Link href="/auth/signin" className=" hover:text-slate-500">
-                  Join us
-                </Link>
-              </li>
-            </>
-          ) : (
-            <li>
-              <Link href="/auth/signin" className=" hover:text-slate-500">
-                Logout
-              </Link>
-            </li>
-          )}
+          <AuthButtons />
         </ul>
       </div>
 

@@ -2,38 +2,56 @@ import React from "react";
 import Cart from "@/components/cart";
 import MobileCatalogues from "./mobile-catalogues";
 import OpenCart from "@/components/cart/open-cart";
+import { getServerSession } from "next-auth";
 import { Suspense } from "react";
 import Link from "next/link";
 import Search from "./search";
 import LogoSquare from "@/components/icons/logo-square";
 import { getCatalogues } from "@/lib/sadida";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 //type
 import { EcommerceCatalogues } from "@/lib/sadida/types";
 const { SITE_NAME } = process.env;
 export default async function Navbar() {
   //run on server
   const catalogues = (await getCatalogues()) || [];
-  const topNabarItems = [
-    { name: "Find a store", path: "#" },
-    { name: "Help", path: "#" },
-    { name: "Join us", path: "/auth/signup" },
-    { name: "Sign in", path: "/auth/signin" },
-  ];
+  const session = await getServerSession(authOptions);
+
   return (
     <div className="">
       <div className="flex justify-between p-2 lg:px-6 bg-white">
         <span>New Promotion up to 50% sale off this Christmas</span>
         <ul className="flex gap-2 font-bold text-sm ">
-          {topNabarItems.map((item, index) => (
+          <li>
+            <Link href="#" className=" hover:text-slate-500">
+              Find a store
+            </Link>
+          </li>
+          <li>
+            <Link href="#" className=" hover:text-slate-500">
+              Help
+            </Link>
+          </li>
+          {!session ? (
             <>
-              {index != 0 && <span>|</span>}
               <li>
-                <Link href={item.path} className=" hover:text-slate-500">
-                  {item.name}
+                <Link href="/auth/signup" className=" hover:text-slate-500">
+                  Join us
+                </Link>
+              </li>
+              <li>
+                <Link href="/auth/signin" className=" hover:text-slate-500">
+                  Join us
                 </Link>
               </li>
             </>
-          ))}
+          ) : (
+            <li>
+              <Link href="/auth/signin" className=" hover:text-slate-500">
+                Logout
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
 

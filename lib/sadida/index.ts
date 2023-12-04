@@ -29,10 +29,11 @@ import {
   Cart,
   ProductQueryCriteria,
   SadidaEcommerceProduct,
+  SadidaUserSignupOperation,
 } from "./types";
+import { createUserMutation } from "./mutations/user";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
 const sadidaEndpoint = GRAPHQL_API_URL;
-invariant(endpoint, `Missing SALEOR_INSTANCE_URL!`);
 type GraphQlError = {
   message: string;
 };
@@ -50,7 +51,7 @@ export async function saleorFetch<Result, Variables>({
   cache?: RequestCache;
   tags?: NextFetchRequestConfig["tags"];
 }): Promise<Result> {
-  invariant(endpoint, `Missing SALEOR_INSTANCE_URL!`);
+  // invariant(endpoint, `Missing SALEOR_INSTANCE_URL!`);
 
   const options = cache
     ? { cache, next: { tags } }
@@ -114,12 +115,11 @@ export async function sadidaFetch<T>({
       status: result.result,
       body,
     };
-  } catch (e) {
-    console.log(e);
-    /* throw {
-      error: e,
+  } catch (err) {
+    throw {
+      error: err,
       query,
-    };*/
+    };
   }
 }
 
@@ -340,4 +340,21 @@ export async function updateCart(
   return saleorCheckoutToSadidaCart(
     saleorCheckout.checkoutLinesUpdate.checkout
   );
+}
+//User
+export async function createUser({
+  name,
+  email,
+  password,
+}: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  const userInfo = await sadidaFetch<SadidaUserSignupOperation>({
+    query: createUserMutation,
+    variables: { name, email, password },
+  });
+  console.log("info backend ", userInfo);
+  return userInfo;
 }

@@ -2,6 +2,8 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import z from "zod";
+import { createUser } from "@/lib/sadida";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -23,8 +25,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/router";
+
 import LoadingDots from "../LoadingDot";
+import { error } from "console";
 
 const SignUpFormSchema = z
   .object({
@@ -53,6 +56,7 @@ const SignUpFormSchema = z
   });
 
 const SignUp = () => {
+  const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     resolver: zodResolver(SignUpFormSchema),
@@ -60,7 +64,19 @@ const SignUp = () => {
 
   function onSubmit(data: z.infer<typeof SignUpFormSchema>) {
     startTransition(async () => {
-      //handle submit signup
+      const userInfo = await createUser({
+        name: data.name,
+        password: data.password,
+        email: data.email,
+      })
+        .then(() => {
+          router.back();
+        })
+        .catch((err) => {
+          //showing popup
+          console.log("error la", err);
+        });
+      console.log("info la", userInfo);
     });
   }
   return (

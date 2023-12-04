@@ -1,4 +1,17 @@
 import { ProductOrderField } from "./generated/graphql";
+enum Role {
+  Member = "MEMBER",
+  Admin = "ADMIN",
+  Guess = "GUESS",
+}
+export type User = {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  emailVerified: boolean;
+  role: string;
+};
 export type Catalogues = {
   name: string;
   _id: string;
@@ -175,4 +188,10 @@ export type sadidaProductsOperation = {
 export type SadidaProductOperation = {
   data: { product: SadidaProduct };
   variables: { slug: string };
+};
+//User
+type ReturnUser = Omit<User, "password">;
+export type SadidaUserSignupOperation = {
+  data: ReturnUser;
+  variables: { name: string; email: string; password: string };
 };

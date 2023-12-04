@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,8 +35,8 @@ const SignInFormSchema = z.object({
 });
 
 const SignIn = () => {
+  const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
-
   const form = useForm<z.infer<typeof SignInFormSchema>>({
     resolver: zodResolver(SignInFormSchema),
   });
@@ -43,6 +44,23 @@ const SignIn = () => {
   function onSubmit(data: z.infer<typeof SignInFormSchema>) {
     startTransition(async () => {
       //handle signin
+      auth
+        .signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        })
+        .then(() => {
+          console.log("credential oke");
+          router.back();
+        })
+        .catch((err) => {
+          console.log("credential not oke", err);
+        });
+      try {
+      } catch (err) {
+        console.log(err);
+      }
     });
   }
 

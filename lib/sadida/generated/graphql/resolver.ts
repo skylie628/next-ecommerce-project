@@ -1,11 +1,13 @@
 import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
+import { UserModel } from "../mongoose/models/user.model";
+import * as bcrypt from "bcrypt";
 import { GroupModel } from "../mongoose/models/group.model";
 import { CataloguesModel } from "../mongoose/models/catalogues.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
+const mongoose = require("mongoose");
 import { ProductOrderField } from "@/lib/constants";
-const _ = require("lodash");
 export const resolvers = {
   Query: {
     catalogues: async () => {
@@ -96,6 +98,29 @@ export const resolvers = {
       console.log("group la ", args.group, " data la ", data);
       if (!data) throw new Error("Unable to get resources");
       return data;
+    },
+  },
+  Mutation: {
+    addUser: async (_: any, args: any) => {
+      const existingUser = await UserModel.findOne({ email: args.email }).catch(
+        (err) => console.log(err)
+      );
+      if (existingUser) throw new Error("User with that email already exists");
+
+      //hash password before adding to database
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(args.password, salt);
+      //create new User
+      const newUser = await UserModel.create({
+        _id: new mongoose.Types.ObjectId().toHexString(),
+        name: args.name,
+        email: args.email,
+        emailVerified: false,
+        password: hashPassword,
+        role: "MEMBER",
+      }).then((rs) => rs.toObject());
+      const { password, ...newUserWithoutPassword } = newUser;
+      return newUserWithoutPassword;
     },
   },
 };

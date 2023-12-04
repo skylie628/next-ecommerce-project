@@ -2,7 +2,7 @@ import { gql } from "graphql-tag";
 
 export const typeDefs = gql`
   enum Role {
-    USER
+    MEMBER
     GUESS
     ADMIN
   }
@@ -87,26 +87,18 @@ export const typeDefs = gql`
   }
 
   type User {
-    id: ID!
+    _id: ID!
     name: String
     email: String!
-    emailVerified: Boolean
-    image: String
     password: String
-    cartItems: [CartItem]
-    orders: [Order]
-    paymentDetails: [PaymentDetails]
+    emailVerified: Boolean
     role: Role
   }
   type ReturnedUser {
-    id: ID!
+    _id: ID!
     name: String
     email: String!
     emailVerified: Boolean
-    image: String
-    cartItems: [CartItem]
-    orders: [Order]
-    paymentDetails: [PaymentDetails]
     role: Role
   }
 

@@ -1,3 +1,4 @@
+import * as jwt from "jsonwebtoken";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -49,3 +50,31 @@ export async function getOrSetCache(key: string, cb: () => Promise<any>) {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+const secret = process.env.NEXTAUTH_SECRET!;
+
+export const signJWT = (
+  object: Record<any, any>,
+  options?: jwt.SignOptions | undefined
+) => {
+  return jwt.sign(object, secret, {
+    ...(options && options),
+    // algorithm: 'HS256'
+  });
+};
+
+export const verifyJWT = (token: string) => {
+  try {
+    const decoded = jwt.verify(token, secret);
+    return {
+      valid: true,
+      expired: false,
+      decoded,
+    };
+  } catch (e: any) {
+    return {
+      valid: false,
+      expired: e.message === "jwt expired",
+      decoded: null,
+    };
+  }
+};

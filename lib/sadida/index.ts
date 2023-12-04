@@ -105,12 +105,11 @@ export async function sadidaFetch<T>({
         ...(variables && { variables }),
       }),
       ...(tags && { next: { tags } }),
-    }).catch((err) => console.log("error", err));
+    });
     const body = await result.json();
     if (body.errors) {
       throw body.errors[0];
     }
-    console.log("fetch", body);
     return {
       status: result.result,
       body,
@@ -231,7 +230,6 @@ export async function getSadidaProducts({
         : "",
       path: `/product/${product.slug}`,
     })) || [];
-  console.log(query, sortKey, returnedProducts);
   return returnedProducts;
 }
 
@@ -355,6 +353,5 @@ export async function createUser({
     query: createUserMutation,
     variables: { name, email, password },
   });
-  console.log("info backend ", userInfo);
   return userInfo;
 }

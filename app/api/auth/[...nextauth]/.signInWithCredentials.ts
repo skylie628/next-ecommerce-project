@@ -1,4 +1,4 @@
-import * as bcrypt from "bcrypt";
+const bcrypt = require("bcryptjs");
 import { UserModel } from "@/lib/sadida/generated/mongoose/models/user.model";
 import connectMongo from "@/lib/sadida/generated/mongoose/mongodb";
 type CredentialsType = {

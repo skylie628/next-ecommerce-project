@@ -3,6 +3,7 @@ import { UserModel } from "@/lib/sadida/generated/mongoose/models/user.model";
 import { signInWithCredentials } from "./.signInWithCredentials";
 import { signJWT, verifyJWT } from "@/lib/utils";
 import CredentialsProvider from "next-auth/providers/credentials";
+import connectMongo from "@/lib/sadida/generated/mongoose/mongodb";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -83,57 +84,53 @@ export const authOptions: NextAuthOptions = {
         return token;
       } else {
         // If the access token has expired, try to refresh it
-        try {
-          if (token.provider === "credentials") {
-            const { decoded } = verifyJWT(token.refresh_token as string);
-            if (!decoded) throw new Error();
-            const user = await UserModel.findOne({
-              email: (decoded as any).email,
-            });
-            if (!user) throw new Error();
-            const accessToken = signJWT({ ...user }, { expiresIn: "15m" });
-            return {
-              ...token, // Keep the previous token properties
-              access_token: accessToken,
-              //@ts-ignore
-              expires_at: Math.floor(Date.now() / 1000 + 15 * 60),
-            };
-          } else {
-            const response = await fetch(
-              "https://oauth2.googleapis.com/token",
-              {
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                //@ts-ignore
-                body: new URLSearchParams({
-                  client_id: process.env.GOOGLE_ID,
-                  client_secret: process.env.GOOGLE_SECRET,
-                  grant_type: "refresh_token",
-                  refresh_token: token.refresh_token,
-                }),
-                method: "POST",
-              }
-            );
 
-            const tokens: TokenSet = await response.json();
+        if (token.provider === "credentials") {
+          console.log("verify");
+          const { decoded } = verifyJWT(token.refresh_token as string);
+          console.log("verify", decoded);
+          if (!decoded) throw new Error();
+          await connectMongo();
+          console.log("user decode la", decoded);
+          const user = await UserModel.findOne({
+            email: (decoded as any).email,
+          });
+          if (!user) throw new Error();
+          const accessToken = signJWT({ ...user }, { expiresIn: "15m" });
+          return {
+            ...token, // Keep the previous token properties
+            access_token: accessToken,
+            //@ts-ignore
+            expires_at: Math.floor(Date.now() / 1000 + 15 * 60),
+          };
+        } else {
+          const response = await fetch("https://oauth2.googleapis.com/token", {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            //@ts-ignore
+            body: new URLSearchParams({
+              client_id: process.env.GOOGLE_ID,
+              client_secret: process.env.GOOGLE_SECRET,
+              grant_type: "refresh_token",
+              refresh_token: token.refresh_token,
+            }),
+            method: "POST",
+          });
 
-            if (!response.ok) throw tokens;
+          const tokens: TokenSet = await response.json();
 
-            return {
-              ...token, // Keep the previous token properties
-              access_token: tokens.access_token,
-              //@ts-ignore
-              expires_at: Math.floor(Date.now() / 1000 + tokens.expires_in),
-              // Fall back to old refresh token, but note that
-              // many providers may only allow using a refresh token once.
-              refresh_token: tokens.refresh_token ?? token.refresh_token,
-            };
-          }
-        } catch (error) {
-          console.error("Error refreshing access token", error);
-          // The error property will be used client-side to handle the refresh token error
-          return { ...token, error: "RefreshAccessTokenError" as const };
+          if (!response.ok) throw tokens;
+
+          return {
+            ...token, // Keep the previous token properties
+            access_token: tokens.access_token,
+            //@ts-ignore
+            expires_at: Math.floor(Date.now() / 1000 + tokens.expires_in),
+            // Fall back to old refresh token, but note that
+            // many providers may only allow using a refresh token once.
+            refresh_token: tokens.refresh_token ?? token.refresh_token,
+          };
         }
       }
     },

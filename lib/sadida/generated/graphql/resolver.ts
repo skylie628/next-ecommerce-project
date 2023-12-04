@@ -33,7 +33,6 @@ export const resolvers = {
       return product;
     },
     products: async (_: any, args: any) => {
-      console.log(args);
       const data = await getOrSetCache(
         `${args.query.pageIndex ?? "1"}${args.query.catalogues}${
           args.collection ?? "none"
@@ -46,7 +45,6 @@ export const resolvers = {
           > = {};
 
           if (args.query.catalogues) {
-            console.log(args.query.catalogues);
             const catalogues = await CataloguesModel.findOne({
               slug: args.query.catalogues,
             });
@@ -95,7 +93,6 @@ export const resolvers = {
           return { products, count: products.length };
         }
       );
-      console.log("group la ", args.group, " data la ", data);
       if (!data) throw new Error("Unable to get resources");
       return data;
     },
@@ -103,9 +100,7 @@ export const resolvers = {
   Mutation: {
     addUser: async (_: any, args: any) => {
       await connectMongo();
-      const existingUser = await UserModel.findOne({ email: args.email }).catch(
-        (err) => console.log(err)
-      );
+      const existingUser = await UserModel.findOne({ email: args.email });
       if (existingUser) throw new Error("User with that email already exists");
 
       //hash password before adding to database

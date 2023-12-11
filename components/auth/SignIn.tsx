@@ -50,17 +50,21 @@ const SignIn = () => {
           password: data.password,
           redirect: false,
         })
-        .then(() => {
-          console.log("credential oke");
-          router.back();
-        })
-        .catch((err) => {
-          console.log("credential not oke", err);
+        .then((res) => {
+          if (res?.ok) {
+            toast({
+              title: "Sign in success",
+              description: "Shopping now!",
+            });
+            router.back();
+          } else {
+            toast({
+              title: "Sign in failed",
+              description: "No matching credentials",
+              variant: "destructive",
+            });
+          }
         });
-      try {
-      } catch (err) {
-        console.log(err);
-      }
     });
   }
 

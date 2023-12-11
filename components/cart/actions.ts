@@ -27,7 +27,7 @@ export const addItem = async (
     return "Missing product variant ID";
   }
   try {
-    await addToCart(cartId, [{ merchandiseId: variantId, quantity: 1 }]);
+    await addToCart(cartId, [{  variantId, quantity: 1 }]);
   } catch (e) {
     return "Error adding item to cart";
   }

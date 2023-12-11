@@ -7,8 +7,8 @@ import connectMongo from "@/lib/sadida/generated/mongoose/mongodb";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
-    updateAge: 24 * 60 * 60, // 24 hours in seconds
+    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds unit
+    updateAge: 24 * 60 * 60, // 24 hours in seconds unit
   },
 
   providers: [
@@ -20,16 +20,19 @@ export const authOptions: NextAuthOptions = {
         const user = signInWithOAuth(profile);
         return user as any;
       },
-    })*/ CredentialsProvider({
+    })*/
+    //sign in with  username and password
+    CredentialsProvider({
       name: "Credentials",
       credentials: {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "jsmith@mail.com",
+          placeholder: "skylie@mail.com",
         },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials, req) {
         console.log("auth");
         const user = signInWithCredentials(
@@ -49,6 +52,8 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
+      //user: returned value of authorize callback
+      //profile: body of POST submission
       if (account?.provider === "credentials") {
         const accessToken = signJWT({ ...user }, { expiresIn: "15m" }); // 15mins
         const refreshToken = signJWT({ ...user }, { expiresIn: "1y" }); //1 year
@@ -58,7 +63,7 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    //token for jwt strategy, user for database strategy
+    //custom session return, token for jwt strategy, user for database strategy
     async session({ session, token }) {
       session.user = token as any;
       return session;
@@ -84,7 +89,6 @@ export const authOptions: NextAuthOptions = {
         return token;
       } else {
         // If the access token has expired, try to refresh it
-
         if (token.provider === "credentials") {
           console.log("verify");
           const { decoded } = verifyJWT(token.refresh_token as string);
@@ -102,34 +106,6 @@ export const authOptions: NextAuthOptions = {
             access_token: accessToken,
             //@ts-ignore
             expires_at: Math.floor(Date.now() / 1000 + 15 * 60),
-          };
-        } else {
-          const response = await fetch("https://oauth2.googleapis.com/token", {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            //@ts-ignore
-            body: new URLSearchParams({
-              client_id: process.env.GOOGLE_ID,
-              client_secret: process.env.GOOGLE_SECRET,
-              grant_type: "refresh_token",
-              refresh_token: token.refresh_token,
-            }),
-            method: "POST",
-          });
-
-          const tokens: TokenSet = await response.json();
-
-          if (!response.ok) throw tokens;
-
-          return {
-            ...token, // Keep the previous token properties
-            access_token: tokens.access_token,
-            //@ts-ignore
-            expires_at: Math.floor(Date.now() / 1000 + tokens.expires_in),
-            // Fall back to old refresh token, but note that
-            // many providers may only allow using a refresh token once.
-            refresh_token: tokens.refresh_token ?? token.refresh_token,
           };
         }
       }

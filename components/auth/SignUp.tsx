@@ -9,13 +9,11 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,10 +23,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import { toast } from "../ui/use-toast";
 import LoadingDots from "../LoadingDot";
-import { error } from "console";
-
 const SignUpFormSchema = z
   .object({
     name: z
@@ -70,13 +66,21 @@ const SignUp = () => {
         email: data.email,
       })
         .then(() => {
-          router.back();
+          toast({
+            title: "Sign up success",
+            description: "Welcome to Sadida house!",
+          });
+          router.push("/auth/signin");
         })
         .catch((err) => {
           //showing popup
+          toast({
+            title: "Sign up failed",
+            description: "No matching credentials",
+            variant: "destructive",
+          });
           console.log("error la", err);
         });
-      console.log("info la", userInfo);
     });
   }
   return (

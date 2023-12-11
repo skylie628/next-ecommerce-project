@@ -1,11 +1,12 @@
 import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
 import { UserModel } from "../mongoose/models/user.model";
-import * as bcrypt from "bcrypt";
+import { CartModel } from "../mongoose/models/cart.model";
 import { GroupModel } from "../mongoose/models/group.model";
 import { CataloguesModel } from "../mongoose/models/catalogues.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
+import * as bcrypt from "bcrypt";
 const mongoose = require("mongoose");
 import { ProductOrderField } from "@/lib/constants";
 export const resolvers = {
@@ -96,6 +97,16 @@ export const resolvers = {
       if (!data) throw new Error("Unable to get resources");
       return data;
     },
+    cart: async (_: any, args: any) => {
+      const { cartId } = args;
+      if (!cartId) {
+        throw new Error("Missing cart id");
+      }
+      const cart = await CartModel.findOne({ cartId, status: "active" })
+        .populate("products.productId")
+        .lean();
+      return cart;
+    },
   },
   Mutation: {
     addUser: async (_: any, args: any) => {
@@ -117,6 +128,36 @@ export const resolvers = {
       }).then((rs) => rs.toObject());
       const { password, ...newUserWithoutPassword } = newUser;
       return newUserWithoutPassword;
+    },
+    createCart: async (_: any, args: any) => {
+      const { userId, products = [] } = args;
+      if (userId) {
+        //check if user is existed
+        const user = UserModel.find({ _id: userId });
+        if (user) {
+          const filter = {
+            userId,
+            state = "active",
+          };
+          const upsert = {
+            products,
+          };
+          const option = {
+            new: true,
+            upsert: true,
+          };
+          UserModel.findOneAndUpdate(filter, upsert, {
+            new: true,
+            upsert: true, // Make this update into an upsert
+          });
+        }
+      }
+    },
+    addCartItemToCart: async (_: any, args: any) => {
+      const { cartId, items } = args;
+      const cart = await CartModel.findOne({ cartId, status: "active" });
+      if (cart) {
+      }
     },
   },
 };

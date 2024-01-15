@@ -24,7 +24,7 @@ export function ProductDescription({
         html="Brand new design with funny emoji"
       />
 
-      <AddToCart variants={[]} availableForSale={true} />
+      <AddToCart variants={product} availableForSale={true} />
     </>
   );
 }

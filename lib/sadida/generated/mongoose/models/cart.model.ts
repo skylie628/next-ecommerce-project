@@ -6,7 +6,6 @@ interface CartDocument extends mongoose.Document {
   products: Array<{ productId: String; quantity: Number }>;
   products_count: Number;
 }
-
 const CartSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
@@ -23,9 +22,6 @@ const CartSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-const CartModel =
-  mongoose.models.cartId || mongoose.model<CartDocument>("carts", CartSchema);
-
-export { CartModel };
+export const CartModel =
+  mongoose.models.carts || mongoose.model<CartDocument>("carts", CartSchema);
 export type { CartDocument };

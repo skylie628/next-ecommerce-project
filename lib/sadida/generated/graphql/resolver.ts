@@ -131,33 +131,45 @@ export const resolvers = {
     },
     createCart: async (_: any, args: any) => {
       const { userId, products = [] } = args;
-      if (userId) {
-        //check if user is existed
-        const user = UserModel.find({ _id: userId });
-        if (user) {
-          const filter = {
-            userId,
-            state = "active",
-          };
-          const upsert = {
-            products,
-          };
-          const option = {
-            new: true,
-            upsert: true,
-          };
-          UserModel.findOneAndUpdate(filter, upsert, {
-            new: true,
-            upsert: true, // Make this update into an upsert
-          });
-        }
+      if (!userId) {
+        const cart = await CartModel.create({ status: "active", products: [] });
+        return cart;
       }
+      //check if user is existed
+      const filter = {
+        userId,
+        status: "active",
+      };
+      const upsert = {
+        products,
+      };
+      const option = {
+        new: true,
+        upsert: true,
+      };
+      const cart = CartModel.findOneAndUpdate(filter, upsert, option);
+      return cart;
     },
+
     addCartItemToCart: async (_: any, args: any) => {
       const { cartId, items } = args;
-      const cart = await CartModel.findOne({ cartId, status: "active" });
-      if (cart) {
-      }
+      // cart not exist ? create new cart
+
+      const filter = {
+        _id: cartId,
+        status: "active",
+      };
+      const upsert = {
+        products: {
+          
+        },
+      };
+      const option = {
+        new: true,
+        upsert: true,
+      };
+      const cart = CartModel.findOneAndUpdate(filter, upsert, option);
+      return cart;
     },
   },
 };

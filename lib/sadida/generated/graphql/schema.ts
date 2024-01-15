@@ -53,7 +53,19 @@ export const typeDefs = gql`
     productQuantity: String
     quantity: Int!
   }
-
+  input CartItemInput {
+    id: ID!
+    productId: String!
+    variantId: String!
+    variantName: String
+    productTitle: String
+    productPrice: Float
+    productCategory: String
+    productSize: String
+    productImage: String
+    productQuantity: String
+    quantity: Int!
+  }
   type Order {
     id: ID!
     userId: Int
@@ -131,6 +143,7 @@ export const typeDefs = gql`
       reverse: Boolean
     ): ReturnedProduct
     cartItems(email: String!): [CartItem]
+    cart(email: String!): Cart
     order(orderId: String!): Order
     orders(email: String!): [Order]
     paymentDetails(email: String!): [PaymentDetails]
@@ -161,5 +174,7 @@ export const typeDefs = gql`
     ): Review
     updateProduct(productId: String!, score: Float!, n_o_reviews: Int!): Product
     deleteCartItem(id: String!): CartItem
+    createCart(email: String!): Cart
+    addCartItemToCart(cartId: String!, items: [CartItemInput]!): Cart
   }
 `;

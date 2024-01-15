@@ -12,7 +12,7 @@ export function AddToCart({
   variants,
   availableForSale,
 }: {
-  variants: ProductVariant[];
+  variant: ProductVariant[];
   availableForSale: boolean;
 }) {
   const router = useRouter();
@@ -41,8 +41,8 @@ export function AddToCart({
         if (!availableForSale || !selectedVariantId) return;
 
         startTransition(async () => {
-          const error = await addItem(selectedVariantId);
-
+          //add new product to carts
+          console.log("variant la", variant);
           if (error) {
             // Trigger the error boundary in the root error.js
             throw new Error(error.toString());

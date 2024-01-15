@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 var Schema = mongoose.Schema;
+interface Option {
+  name: string;
+  value: string;
+  position: number;
+}
 interface ProductDocument extends mongoose.Document {
   _id: string;
   title: string;
@@ -12,8 +17,8 @@ interface ProductDocument extends mongoose.Document {
   price: number;
   score: number;
   n_o_reviews: number;
-  instock_reserved: number;
-  instock_available: number;
+  options: Option[];
+  variants: string[];
 }
 
 const ProductSchema = new mongoose.Schema(
@@ -29,8 +34,8 @@ const ProductSchema = new mongoose.Schema(
     price: { type: Number },
     score: { type: Number },
     n_o_reviews: { type: Number },
-    instock_reserved: { type: Number },
-    instock_available: { type: Number },
+    options: { type: Array<Option> },
+    variant: { type: Array<String> },
   },
   { timestamps: true }
 );

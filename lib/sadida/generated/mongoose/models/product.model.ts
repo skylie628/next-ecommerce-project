@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 var Schema = mongoose.Schema;
 interface Option {
   name: string;
-  value: string;
+  value: string[];
   position: number;
 }
 interface ProductDocument extends mongoose.Document {

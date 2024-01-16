@@ -1,5 +1,33 @@
 var mongoose = require("mongoose");
 let id = 0;
+const material = ["glass", "nano", "mirror", "sillicon"];
+const model = [
+  { name: "iPhone 6" },
+  { name: "iPhone 6 Plus" },
+  { name: "iPhone 6s" },
+  { name: "iPhone 6s Plus" },
+  { name: "iPhone SE (1st generation)" },
+  { name: "iPhone 7" },
+  { name: "iPhone 7 Plus" },
+  { name: "iPhone 8" },
+  { name: "iPhone 8 Plus" },
+  { name: "iPhone X" },
+  { name: "iPhone XR" },
+  { name: "iPhone XS" },
+  { name: "iPhone XS Max" },
+  { name: "iPhone 11" },
+  { name: "iPhone 11 Pro" },
+  { name: "iPhone 11 Pro Max" },
+  { name: "iPhone SE (2nd generation)" },
+  { name: "iPhone 12 Mini" },
+  { name: "iPhone 12" },
+  { name: "iPhone 12 Pro" },
+  { name: "iPhone 12 Pro Max" },
+  { name: "iPhone 13 Mini" },
+  { name: "iPhone 13" },
+  { name: "iPhone 13 Pro" },
+  { name: "iPhone 13 Pro Max" },
+];
 const productsList = [
   {
     title: "The Buffalo x 12 Zodiacs Mecha",
@@ -1167,15 +1195,27 @@ const ProductSeed = productsList.map((product, index) => ({
   ...product,
   _id: product.sku,
   catalogues: "0",
+  options: [
+    {
+      name: "material",
+      value: material,
+      position: 1,
+    },
+    {
+      name: "model",
+      value: model.map((model) => model.name),
+      position: 2,
+    },
+  ],
   slug: convertToSlug(product.title),
   quantity: 100,
   score: 4 + (index % 4 == 0 ? 1 : 0),
   n_o_reviews: 0,
+
   instock_reserved: 100,
   instock_available: 100,
   sku: product.sku + "",
 }));
-
 module.exports = {
   async up(db, client) {
     // TODO write your migration here.
@@ -1192,4 +1232,5 @@ module.exports = {
     // await db.collection('albums').updateOne({artist: 'The Beatles'}, {$set: {blacklisted: false}});
     await db.collection("products").drop();
   },
+  productsList,
 };

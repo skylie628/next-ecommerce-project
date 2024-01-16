@@ -3,7 +3,7 @@ interface CartDocument extends mongoose.Document {
   userId: String;
   cartId: String;
   status: String;
-  products: Array<{ productId: String; quantity: Number }>;
+  lines: String[];
   products_count: Number;
 }
 const CartSchema = new mongoose.Schema(
@@ -11,13 +11,7 @@ const CartSchema = new mongoose.Schema(
     userId: { type: String, required: true },
     cartId: { type: String, required: true },
     status: { type: String, required: true, default: "active" },
-    products: {
-      type: Array<{
-        productId: { type: String; required: true; ref: "products" };
-        quantity: Number;
-      }>,
-      required: true,
-    },
+    lines: { type: Array<String> },
     products_count: { type: Number, require: true },
   },
   { timestamps: true }

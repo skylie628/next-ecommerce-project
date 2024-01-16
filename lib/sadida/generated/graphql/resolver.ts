@@ -1,5 +1,6 @@
 import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
+import { VariantModel } from "../mongoose/models/variant.model";
 import { UserModel } from "../mongoose/models/user.model";
 import { CartModel } from "../mongoose/models/cart.model";
 import { GroupModel } from "../mongoose/models/group.model";
@@ -31,7 +32,16 @@ export const resolvers = {
     product: async (_: any, args: any) => {
       await connectMongo();
       const product = await ProductModel.findOne({ slug: args.slug }).lean();
-      return product;
+      console.log(product._id);
+      // Fetch the variants
+
+      const variants = product._id
+        ? await VariantModel.find({
+            productId: 18,
+          }).lean()
+        : [];
+      console.log(variants);
+      return { ...product, variants };
     },
     products: async (_: any, args: any) => {
       const data = await getOrSetCache(
@@ -160,9 +170,7 @@ export const resolvers = {
         status: "active",
       };
       const upsert = {
-        products: {
-          
-        },
+        products: {},
       };
       const option = {
         new: true,

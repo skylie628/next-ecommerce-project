@@ -5,7 +5,8 @@ export const getProductsQuery = `query getProducts($query: ProductQueryCriteria,
         title,
         slug,
         images,
-        price,
+        minPrice,
+        maxPrice,
         score,
         n_o_reviews,
         instock_available
@@ -23,11 +24,19 @@ export const getProductQuery = `query getProduct($slug:String!){
         images
         catalogues
         group
-        price
         score
         n_o_reviews
-        instock_reserved
-        instock_available
+        variants {
+          sku
+          title
+          options {
+            name
+            value
+          }
+          instock_available
+          reserved_available
+          price
+        }
       }
     }
     `;

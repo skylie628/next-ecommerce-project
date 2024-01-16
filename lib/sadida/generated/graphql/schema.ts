@@ -11,6 +11,20 @@ export const typeDefs = gql`
     name: String
     slug: String
   }
+  type Option {
+    name: String
+    value: String
+  }
+  type Variant {
+    _id: ID!
+    productId: String
+    sku: String
+    title: String
+    options: [Option]
+    instock_available: Int
+    reserved_available: Int
+    price: Float
+  }
   type Product {
     id: ID!
     title: String!
@@ -20,11 +34,11 @@ export const typeDefs = gql`
     images: [String]
     catalogues: String
     group: String
-    price: Float
     score: Float
     n_o_reviews: Int
-    instock_reserved: Int
-    instock_available: Int
+    minPrice: Float
+    maxPrice: Float
+    variants: [Variant]
   }
 
   type Catalogues {
@@ -32,10 +46,7 @@ export const typeDefs = gql`
     name: String!
     slug: String!
   }
-  type Variant {
-    id: ID!
-    name: String!
-  }
+
   type Cart {
     id: ID!
     cartItems: [CartItem]

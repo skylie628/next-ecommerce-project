@@ -8,6 +8,7 @@ export default function ProductGridItems({
 }: {
   products: SadidaBackdropEcommerceProduct[];
 }) {
+  console.log(products);
   return (
     <>
       {products.map((product) => (
@@ -20,8 +21,9 @@ export default function ProductGridItems({
               alt={product.title}
               label={{
                 title: product.title,
-                amount: product.price.toString(),
-                currencyCode: "VND",
+                minPrice: product.minPrice,
+                maxPrice: product.maxPrice,
+                currencyCode: "USD",
               }}
               src={product.thumbnailPath}
               fill

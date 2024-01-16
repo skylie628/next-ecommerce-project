@@ -57,20 +57,23 @@ export type Money = {
   amount: string;
   currencyCode: string;
 };
-export type ProductOption = {
-  id: string;
+export type ProductOptions = {
   name: string;
-  values: string[];
+  value: string[];
+};
+export type Option = {
+  name: string;
+  value: string;
 };
 export type ProductVariant = {
-  id: string;
+  _id: string;
+  productId: string;
+  sku: string;
   title: string;
-  availableForSale: boolean;
-  selectedOptions: {
-    name: string;
-    value: string;
-  }[];
-  price: Money;
+  options: Option[];
+  instock_available: number;
+  reserved_available: number;
+  price: number;
 };
 
 export type Product = Omit<
@@ -89,18 +92,25 @@ export type SadidaProduct = {
   images: string[];
   group: string;
   catalogues: string;
-  price: number;
+  minPrice: number;
+  maxPrice: number;
   score: number;
   n_o_reviews: number;
-  instock_reserved: number;
-  instock_available: number;
+  options: ProductOptions[];
+  variants: ProductVariant[];
 };
 export type SadidaEcommerceProduct = Omit<SadidaProduct, "images"> & {
   images: ProductImage[];
 };
 export type SadidaBackdropEcommerceProduct = Omit<
   SadidaProduct,
-  "images" | "instock_reserved" | "quantity" | "group" | "catalogues"
+  | "images"
+  | "instock_reserved"
+  | "quantity"
+  | "group"
+  | "catalogues"
+  | "options"
+  | "variants"
 > & {
   thumbnailPath: string;
   showingImagePath: string;
@@ -173,7 +183,7 @@ export type sadidaProductsOperation = {
   data: {
     products?: {
       products?: [
-        Omit<SadidaProduct, "quantity" | "instock_reserved" | "group">
+        Omit<SadidaProduct, "quantity" | "group" | "options" | "variants">
       ];
       count: number;
     };

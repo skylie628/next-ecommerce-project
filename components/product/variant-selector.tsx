@@ -22,19 +22,18 @@ export function VariantSelector({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const hasNoOptionsOrJustOneOption =
-    !options.length ||
-    (options.length === 1 && options[0]?.values.length === 1);
+    !options.length || (options.length === 1 && options[0]?.value.length === 1);
 
   if (hasNoOptionsOrJustOneOption) {
     return null;
   }
 
   const combinations: Combination[] = variants.map((variant) => ({
-    id: variant.id,
-    availableForSale: variant.availableForSale,
+    id: variant.sku,
+    availableForSale: variant.reserved_available > 0,
     // Adds key / value pairs for each variant (ie. "color": "Black" and "size": 'M").
     //flatten the variant from array to object
-    ...variant.selectedOptions.reduce(
+    ...variant.options.reduce(
       (acc, option) => ({
         ...acc,
         [option.name.toLowerCase()]: option.value,
@@ -47,7 +46,7 @@ export function VariantSelector({
     <dl className="mb-8" key={option.id}>
       <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
       <dd className="flex flex-wrap gap-3">
-        {option.values.map((value) => {
+        {option.value.map((value) => {
           const optionNameLowerCase = option.name.toLowerCase();
 
           // Base option params on current params so we can preserve any other param state in the url.
@@ -62,7 +61,7 @@ export function VariantSelector({
               options.find(
                 (option) =>
                   option.name.toLowerCase() === key &&
-                  option.values.includes(value)
+                  option.value.includes(value)
               )
           );
           const isAvailableForSale = combinations.find((combination) =>

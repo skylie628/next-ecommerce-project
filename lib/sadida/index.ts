@@ -218,10 +218,10 @@ export async function getSadidaProducts({
       sku: product.sku,
       title: product.title,
       slug: product.slug,
-      price: product.price,
+      maxPrice: product.maxPrice,
+      minPrice: product.minPrice,
       score: product.score,
       n_o_reviews: product.n_o_reviews,
-      instock_available: product.instock_available,
       thumbnailPath: product.images[4]
         ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fshowing%20image%20thumnail%2F${product.images[4]}.png?alt=media`
         : "",

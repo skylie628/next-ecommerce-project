@@ -9,7 +9,6 @@ export const getProductsQuery = `query getProducts($query: ProductQueryCriteria,
         maxPrice,
         score,
         n_o_reviews,
-        instock_available
       },
       count
     }
@@ -18,7 +17,6 @@ export const getProductsQuery = `query getProducts($query: ProductQueryCriteria,
 export const getProductQuery = `query getProduct($slug:String!){
       product(slug: $slug) {
         title 
-        quantity
         slug
         sku
         images
@@ -26,6 +24,12 @@ export const getProductQuery = `query getProduct($slug:String!){
         group
         score
         n_o_reviews
+        minPrice,
+        maxPrice,
+        options {
+          name
+          value
+        }
         variants {
           sku
           title

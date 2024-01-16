@@ -12,7 +12,8 @@ export function GridTileImage({
   active?: boolean;
   label?: {
     title: string;
-    amount: string;
+    minPrice: string;
+    maxPrice: string;
     currencyCode: string;
     position?: "bottom" | "center";
   };
@@ -41,7 +42,8 @@ export function GridTileImage({
       {label ? (
         <Label
           title={label.title}
-          amount={label.amount}
+          minPrice={label.minPrice}
+          maxPrice={label.maxPrice}
           currencyCode={label.currencyCode}
           position={label.position}
         />

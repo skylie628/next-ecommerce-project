@@ -3,12 +3,14 @@ import Price from "./price";
 
 const Label = ({
   title,
-  amount,
+  minPrice,
+  maxPrice,
   currencyCode,
   position = "bottom",
 }: {
   title: string;
-  amount: string;
+  minPrice: string;
+  maxPrice: string;
   currencyCode: string;
   position?: "bottom" | "center";
 }) => {
@@ -27,7 +29,8 @@ const Label = ({
         </h3>
         <Price
           className="flex-none rounded-full bg-blue-600 p-2 text-white"
-          amount={amount}
+          maxPrice={maxPrice}
+          minPrice={minPrice}
           currencyCode={currencyCode}
           currencyCodeClassName="hidden @[275px]/label:inline"
         />

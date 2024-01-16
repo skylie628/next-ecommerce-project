@@ -14,7 +14,6 @@ export default async function ProductPage({
 }) {
   const product = await getProduct(params.slug);
   if (!product) return notFound();
-
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -25,8 +24,8 @@ export default async function ProductPage({
       "@type": "AggregateOffer",
 
       priceCurrency: "VND",
-      highPrice: product.price,
-      lowPrice: product.price,
+      highPrice: product.maxPrice,
+      lowPrice: product.minPrice,
     },
   };
 

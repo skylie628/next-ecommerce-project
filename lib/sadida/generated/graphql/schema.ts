@@ -15,6 +15,10 @@ export const typeDefs = gql`
     name: String
     value: String
   }
+  type Options {
+    name: String
+    value: [String]
+  }
   type Variant {
     _id: ID!
     productId: String
@@ -38,6 +42,7 @@ export const typeDefs = gql`
     n_o_reviews: Int
     minPrice: Float
     maxPrice: Float
+    options: [Options]
     variants: [Variant]
   }
 

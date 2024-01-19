@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 interface CartDocument extends mongoose.Document {
-  userId: String;
-  cartId: String;
-  status: String;
-  lines: String[];
-  products_count: Number;
+  userId: string;
+  cartId: string;
+  status: string;
+  lines: string[];
+  products_count: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 const CartSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: true },
+    userId: { type: String },
     cartId: { type: String, required: true },
     status: { type: String, required: true, default: "active" },
     lines: { type: Array<String> },

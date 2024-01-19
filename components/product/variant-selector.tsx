@@ -5,7 +5,7 @@ import { ProductOption, ProductVariant } from "@/lib/sadida/types";
 import { createUrl } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-
+import { useContext } from "react";
 type Combination = {
   id: string;
   availableForSale: boolean;

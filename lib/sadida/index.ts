@@ -1,35 +1,29 @@
-import { SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from "../constants";
 import { createProductImgUrl, ensureStartsWith } from "../utils";
 import { getCatalogueQuery } from "./queries/catalogue";
 import { getProductQuery, getProductsQuery } from "./queries/product";
 import { getCollectionsQuery } from "./queries/collection";
 import {
-  TypedDocumentString,
-  GetProductBySlugDocument,
-  GetCheckoutByIdDocument,
-  CreateCheckoutDocument,
-  CheckoutAddLineDocument,
-  CheckoutDeleteLineDocument,
-  CheckoutUpdateLineDocument,
-} from "./generated/graphql";
+  addToCartMutation,
+  decreaseLineQuantityFromCartMutation,
+  removeLineFromCartMutation,
+} from "./mutations/cart";
 import {
-  saleorProductToSadidaProduct,
-  saleorCheckoutToSadidaCart,
-} from "./mapper";
-import { ProductOrderField } from "../constants";
+  TypedDocumentString,
+  GetCheckoutByIdDocument,
+} from "./generated/graphql";
+import { saleorCheckoutToSadidaCart } from "./mapper";
 import { GRAPHQL_API_URL } from "@/constants/url";
-import { invariant } from "./utils";
 //types
 import {
   sadidaCatalogueOperation,
   sadidaProductsOperation,
   SadidaCollectionOperation,
   SadidaProductOperation,
-  Product,
   Cart,
   ProductQueryCriteria,
   SadidaEcommerceProduct,
   SadidaUserSignupOperation,
+  SadidaMutateCartLineOperation,
 } from "./types";
 import { createUserMutation } from "./mutations/user";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
@@ -250,95 +244,45 @@ export async function getCart(cartId: string): Promise<Cart | null> {
   return saleorCheckoutToSadidaCart(saleorCheckout.checkout);
 }
 
-export async function createCart(): Promise<Cart> {
-  const saleorCheckout = await saleorFetch({
-    query: CreateCheckoutDocument,
+export async function addToCart(cartId: string, sku: string) {
+  const sadidaAddToCart = await sadidaFetch<SadidaMutateCartLineOperation>({
+    query: addToCartMutation,
     variables: {
-      input: {
-        channel: "default1-channel",
-        lines: [],
-      },
+      cartId,
+      sku,
     },
     cache: "no-store",
   });
 
-  if (!saleorCheckout.checkoutCreate?.checkout) {
-    console.error(saleorCheckout.checkoutCreate?.errors);
-    throw new Error(`Couldn't create checkout.`);
-  }
-
-  return saleorCheckoutToSadidaCart(saleorCheckout.checkoutCreate.checkout);
+  return sadidaAddToCart;
 }
-
-export async function addToCart(
+export async function decreaseLineQuantityFromCart(
   cartId: string,
-  lines: { merchandiseId: string; quantity: number }[]
-): Promise<Cart> {
-  const saleorCheckout = await saleorFetch({
-    query: CheckoutAddLineDocument,
+  sku: string
+) {
+  const returnedData = await sadidaFetch<SadidaMutateCartLineOperation>({
+    query: decreaseLineQuantityFromCartMutation,
     variables: {
-      checkoutId: cartId,
-      lines: lines.map(({ merchandiseId, quantity }) => ({
-        variantId: merchandiseId,
-        quantity,
-      })),
+      cartId,
+      sku,
+    },
+    cache: "no-store",
+  });
+  return returnedData;
+}
+export async function removeLineFromCart(cartId: string, sku: string) {
+  const returnedData = await sadidaFetch<SadidaMutateCartLineOperation>({
+    query: removeLineFromCartMutation,
+    variables: {
+      cartId,
+      sku,
     },
     cache: "no-store",
   });
 
-  if (!saleorCheckout.checkoutLinesAdd?.checkout) {
-    console.error(saleorCheckout.checkoutLinesAdd?.errors);
-    throw new Error(`Couldn't add lines to checkout.`);
-  }
-
-  return saleorCheckoutToSadidaCart(saleorCheckout.checkoutLinesAdd.checkout);
+  return returnedData;
 }
 
-export async function removeFromCart(
-  cartId: string,
-  lineIds: string[]
-): Promise<Cart> {
-  const saleorCheckout = await saleorFetch({
-    query: CheckoutDeleteLineDocument,
-    variables: {
-      checkoutId: cartId,
-      lineIds,
-    },
-    cache: "no-store",
-  });
-
-  if (!saleorCheckout.checkoutLinesDelete?.checkout) {
-    console.error(saleorCheckout.checkoutLinesDelete?.errors);
-    throw new Error(`Couldn't remove lines from checkout.`);
-  }
-
-  return saleorCheckoutToSadidaCart(
-    saleorCheckout.checkoutLinesDelete.checkout
-  );
-}
-
-export async function updateCart(
-  cartId: string,
-  lines: { id: string; merchandiseId: string; quantity: number }[]
-): Promise<Cart> {
-  const saleorCheckout = await saleorFetch({
-    query: CheckoutUpdateLineDocument,
-    variables: {
-      checkoutId: cartId,
-      lines: lines.map(({ id, quantity }) => ({ lineId: id, quantity })),
-    },
-    cache: "no-store",
-  });
-
-  if (!saleorCheckout.checkoutLinesUpdate?.checkout) {
-    console.error(saleorCheckout.checkoutLinesUpdate?.errors);
-    throw new Error(`Couldn't update lines in checkout.`);
-  }
-
-  return saleorCheckoutToSadidaCart(
-    saleorCheckout.checkoutLinesUpdate.checkout
-  );
-}
 //User
 export async function createUser({
   name,

@@ -205,3 +205,8 @@ export type SadidaUserSignupOperation = {
   data: ReturnUser;
   variables: { name: string; email: string; password: string };
 };
+//Cart
+export type SadidaMutateCartLineOperation = {
+  data: { cartId: string };
+  variables: { cartId: string; sku: string };
+};

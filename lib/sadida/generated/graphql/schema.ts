@@ -166,22 +166,18 @@ export const typeDefs = gql`
     user(email: String!): User
     reviews(productId: String!): [Review]
   }
-
+  type ReturnedMutateLine {
+    cartId: String
+  }
   type Mutation {
     updateUser(email: String!, name: String, password: String): User
     addUser(name: String!, email: String!, password: String!): ReturnedUser
-
-    addToCart(
-      email: String!
-      productId: String!
-      productTitle: String
-      productPrice: Float
-      productCategory: String
-      productSize: String
-      productImage: String
-      productQuantity: String
-      quantity: Int!
-    ): CartItem
+    addLineToCart(cartId: String, sku: String!): ReturnedMutateLine
+    decreaseLineQuantityFromCart(
+      cartId: String
+      sku: String!
+    ): ReturnedMutateLine
+    removeLineFromCart(cartId: String, sku: String!): ReturnedMutateLine
     addReview(
       productId: String!
       userEmail: String!
@@ -191,6 +187,5 @@ export const typeDefs = gql`
     updateProduct(productId: String!, score: Float!, n_o_reviews: Int!): Product
     deleteCartItem(id: String!): CartItem
     createCart(email: String!): Cart
-    addCartItemToCart(cartId: String!, items: [CartItemInput]!): Cart
   }
 `;

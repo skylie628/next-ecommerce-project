@@ -1,4 +1,3 @@
-import connectMongo from "../mongoose/mongodb";
 import { ProductModel } from "../mongoose/models/product.model";
 import { VariantModel } from "../mongoose/models/variant.model";
 import { UserModel } from "../mongoose/models/user.model";
@@ -7,6 +6,10 @@ import { GroupModel } from "../mongoose/models/group.model";
 import { CataloguesModel } from "../mongoose/models/catalogues.model";
 import { getOrSetCache } from "@/lib/utils";
 import { SortOrder } from "mongoose";
+//db
+import connectMongo from "../mongoose/mongodb";
+import { redis } from "../redis";
+import { v4 as uuidv4 } from "uuid";
 import * as bcrypt from "bcrypt";
 const mongoose = require("mongoose");
 import { ProductOrderField } from "@/lib/constants";
@@ -161,23 +164,94 @@ export const resolvers = {
       return cart;
     },
 
-    addCartItemToCart: async (_: any, args: any) => {
-      const { cartId, items } = args;
+    addLineToCart: async (_: any, args: any, context: any) => {
+      await connectMongo();
+      let { cartId, sku } = args;
+      console.log("cartId", sku);
+      //check if variant is existed
+      const variant = await VariantModel.findOne({ sku });
+      if (!variant) throw new Error("Variant not found");
       // cart not exist ? create new cart
-
-      const filter = {
-        _id: cartId,
-        status: "active",
-      };
-      const upsert = {
-        products: {},
-      };
-      const option = {
-        new: true,
-        upsert: true,
-      };
-      const cart = CartModel.findOneAndUpdate(filter, upsert, option);
-      return cart;
+      if (!cartId) {
+        cartId = uuidv4();
+        /* const cart = await CartModel.create({
+          cartId,
+          status: "active",
+          line: [],
+          products_count: 0,
+        });*/
+        // Set an expiration time for the cart in Redis
+        const EXPIRE_TIME_IN_SECONDS = 60 * 60 * 24; // 24 hours
+        await redis.hset(`cart:${cartId}`, `line:${sku}`, "");
+        await redis.expire(`cart:${cartId}`, EXPIRE_TIME_IN_SECONDS);
+      }
+      //check if item is existed in redis cart
+      const cartLine = Number(
+        await redis.hget(`cart:${cartId}`, `line:${sku}`)
+      );
+      if (cartLine > 0) {
+        //update item quantity
+        await redis.hincrby(`cart:${cartId}`, `line:${sku}`, 1);
+      }
+      //if item not existed in redis cart
+      else {
+        //add new item to redis cart
+        await redis.hset(`cart:${cartId}`, `line:${sku}`, 1);
+      }
+      return { cartId };
+    },
+    decreaseLineQuantityFromCart: async (_: any, args: any, context: any) => {
+      await connectMongo();
+      let { cartId, sku } = args;
+      console.log("cartId", sku);
+      //check if variant is existed
+      const variant = await VariantModel.findOne({ sku });
+      if (!variant) throw new Error("Variant not found");
+      // cart not exist ? create new cart
+      if (!cartId) {
+        new Error("CartId expired");
+      }
+      //check if item is existed in redis cart
+      const cartLine = Number(
+        await redis.hget(`cart:${cartId}`, `line:${sku}`)
+      );
+      //if line not existed inside cart => throw error
+      if (!cartLine) {
+        throw new Error("Item not existed in cart");
+      }
+      //if line existed inside cart and amount = 1 => remove line  from cart
+      if (cartLine === 1) {
+        await redis.hdel(`cart:${cartId}`, `line:${sku}`);
+      }
+      //if line existed inside cart and amount > 1 => decrease cart Item by 1
+      if (cartLine > 1) {
+        await redis.hincrby(`cart:${cartId}`, `line:${sku}`, -1);
+      }
+      console.log(
+        "quantity la: ",
+        await redis.hget(`cart:${cartId}`, `line:${sku}`)
+      );
+      return { cartId };
+    },
+    removeLineFromCart: async (_: any, args: any, context: any) => {
+      await connectMongo();
+      let { cartId, sku } = args;
+      // cart not exist ? create new cart
+      if (!cartId) {
+        new Error("CartId expired");
+      }
+      redis.hdel(`cart:${cartId}`, `line:${sku}`, function (err, reply) {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(`Key 'line:${sku}' removed from 'cart:${cartId}'`);
+        }
+      });
+      console.log(
+        "quantity la: ",
+        await redis.hget(`cart:${cartId}`, `line:${sku}`)
+      );
+      return { cartId };
     },
   },
 };

@@ -51,24 +51,23 @@ export const typeDefs = gql`
     name: String!
     slug: String!
   }
-
-  type Cart {
-    id: ID!
-    cartItems: [CartItem]
-  }
-  type CartItem {
-    id: ID!
-    productId: String!
-    variantId: String!
-    variantName: String
-    productTitle: String
-    productPrice: Float
-    productCategory: String
-    productSize: String
-    productImage: String
-    productQuantity: String
+  type Line {
+    sku: String!
+    productTitle: String!
+    title: String!
+    price: Float!
+    options: [Option]
+    images: [String]
+    slug: String!
     quantity: Int!
   }
+  type Cart {
+    id: ID!
+    totalPrice: Float!
+    taxes: Float!
+    lines: [Line]
+  }
+
   input CartItemInput {
     id: ID!
     productId: String!
@@ -143,6 +142,9 @@ export const typeDefs = gql`
     products: [Product]
     count: Int
   }
+  type ReturnedCart {
+    cart: String
+  }
   input ProductQueryCriteria {
     catalogues: String
     group: String
@@ -158,8 +160,7 @@ export const typeDefs = gql`
       sortKey: String
       reverse: Boolean
     ): ReturnedProduct
-    cartItems(email: String!): [CartItem]
-    cart(email: String!): Cart
+    cart(cartId: String!): Cart
     order(orderId: String!): Order
     orders(email: String!): [Order]
     paymentDetails(email: String!): [PaymentDetails]
@@ -168,6 +169,9 @@ export const typeDefs = gql`
   }
   type ReturnedMutateLine {
     cartId: String
+  }
+  type ReturnedLine {
+    sku: String
   }
   type Mutation {
     updateUser(email: String!, name: String, password: String): User
@@ -178,14 +182,6 @@ export const typeDefs = gql`
       sku: String!
     ): ReturnedMutateLine
     removeLineFromCart(cartId: String, sku: String!): ReturnedMutateLine
-    addReview(
-      productId: String!
-      userEmail: String!
-      rating: Int!
-      description: String!
-    ): Review
-    updateProduct(productId: String!, score: Float!, n_o_reviews: Int!): Product
-    deleteCartItem(id: String!): CartItem
     createCart(email: String!): Cart
   }
 `;

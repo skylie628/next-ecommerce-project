@@ -115,10 +115,37 @@ export const resolvers = {
       if (!cartId) {
         throw new Error("Missing cart id");
       }
-      const cart = await CartModel.findOne({ cartId, status: "active" })
-        .populate("products.productId")
+      await connectMongo();
+      const cart = await redis.hgetall(`cart:${cartId}`);
+      if (!cart) return;
+      const cartMap = Object.entries(cart);
+      const variantIds = cartMap.map(([sku, quantity]) => sku);
+      const variants = await VariantModel.find({
+        sku: { $in: variantIds },
+      })
+        .populate("productId", "slug images title -_id")
+        .select("-_id")
         .lean();
-      return cart;
+      const formatVariants = variants.map((variant) => ({
+        sku: variant.sku,
+        title: variant.title,
+        price: variant.price,
+        options: variant.options,
+        images: variant.productId.images,
+        slug: variant.productId.slug,
+        productTitle: variant.productId.title,
+        quantity: parseInt(cart[variant.sku]),
+      }));
+      const totalPrice = formatVariants.reduce(
+        (total, variant) => total + variant.price * variant.quantity,
+        0
+      );
+      return {
+        id: cartId,
+        totalPrice: totalPrice,
+        taxes: 0,
+        lines: formatVariants,
+      };
     },
   },
   Mutation: {
@@ -182,21 +209,19 @@ export const resolvers = {
         });*/
         // Set an expiration time for the cart in Redis
         const EXPIRE_TIME_IN_SECONDS = 60 * 60 * 24; // 24 hours
-        await redis.hset(`cart:${cartId}`, `line:${sku}`, "");
+        await redis.hset(`cart:${cartId}`, sku, "");
         await redis.expire(`cart:${cartId}`, EXPIRE_TIME_IN_SECONDS);
       }
       //check if item is existed in redis cart
-      const cartLine = Number(
-        await redis.hget(`cart:${cartId}`, `line:${sku}`)
-      );
+      const cartLine = Number(await redis.hget(`cart:${cartId}`, sku));
       if (cartLine > 0) {
         //update item quantity
-        await redis.hincrby(`cart:${cartId}`, `line:${sku}`, 1);
+        await redis.hincrby(`cart:${cartId}`, sku, 1);
       }
       //if item not existed in redis cart
       else {
         //add new item to redis cart
-        await redis.hset(`cart:${cartId}`, `line:${sku}`, 1);
+        await redis.hset(`cart:${cartId}`, sku, 1);
       }
       return { cartId };
     },
@@ -212,25 +237,20 @@ export const resolvers = {
         new Error("CartId expired");
       }
       //check if item is existed in redis cart
-      const cartLine = Number(
-        await redis.hget(`cart:${cartId}`, `line:${sku}`)
-      );
+      const cartLine = Number(await redis.hget(`cart:${cartId}`, sku));
       //if line not existed inside cart => throw error
       if (!cartLine) {
         throw new Error("Item not existed in cart");
       }
       //if line existed inside cart and amount = 1 => remove line  from cart
       if (cartLine === 1) {
-        await redis.hdel(`cart:${cartId}`, `line:${sku}`);
+        await redis.hdel(`cart:${cartId}`, sku);
       }
       //if line existed inside cart and amount > 1 => decrease cart Item by 1
       if (cartLine > 1) {
-        await redis.hincrby(`cart:${cartId}`, `line:${sku}`, -1);
+        await redis.hincrby(`cart:${cartId}`, sku, -1);
       }
-      console.log(
-        "quantity la: ",
-        await redis.hget(`cart:${cartId}`, `line:${sku}`)
-      );
+      console.log("quantity la: ", await redis.hget(`cart:${cartId}`, sku));
       return { cartId };
     },
     removeLineFromCart: async (_: any, args: any, context: any) => {
@@ -240,17 +260,14 @@ export const resolvers = {
       if (!cartId) {
         new Error("CartId expired");
       }
-      redis.hdel(`cart:${cartId}`, `line:${sku}`, function (err, reply) {
+      redis.hdel(`cart:${cartId}`, sku, function (err, reply) {
         if (err) {
           console.error(err);
         } else {
           console.log(`Key 'line:${sku}' removed from 'cart:${cartId}'`);
         }
       });
-      console.log(
-        "quantity la: ",
-        await redis.hget(`cart:${cartId}`, `line:${sku}`)
-      );
+      console.log("quantity la: ", await redis.hget(`cart:${cartId}`, sku));
       return { cartId };
     },
   },

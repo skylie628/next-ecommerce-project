@@ -229,7 +229,7 @@ export async function getSadidaProducts({
 
 //Cart
 export async function getCart(cartId: string): Promise<Cart | null> {
-  const saleorCheckout = await saleorFetch({
+  const saleorCheckout = await sadidaFetch({
     query: GetCheckoutByIdDocument,
     variables: {
       id: cartId,

@@ -10,7 +10,7 @@ interface VariantDocument extends Document {
 }
 
 const VariantSchema = new Schema({
-  productId: { type: String, required: true },
+  productId: { type: String, required: true, ref: "products" },
   options: { type: Array<{ name: String; value: String }> },
   instock_available: { type: Number, required: true },
   reserved_available: { type: Number, required: true },

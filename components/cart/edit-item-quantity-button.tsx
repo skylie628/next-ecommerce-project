@@ -1,11 +1,14 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { updateItemQuantity, removeItem } from "./actions";
 import clsx from "clsx";
 import type { CartItem } from "@/lib/sadida/types";
 import LoadingDots from "../LoadingDot";
-
+import {
+  decreaseLineQuantityFromCartAction,
+  removeLineFromCartAction,
+  addLineToCartAction,
+} from "@/lib/sadida/actions/cart";
 export default function EditItemQuantityButton({
   item,
   type,
@@ -23,16 +26,12 @@ export default function EditItemQuantityButton({
       }
       onClick={() => {
         startTransition(async () => {
-          const error =
-            item.quantity === 1 && type === "minus"
-              ? await removeItem(item.id)
-              : await updateItemQuantity({
-                  lineId: item.id,
-                  variantId: item.merchandise.id,
-                  quantity:
-                    type === "plus" ? item.quantity + 1 : item.quantity - 1,
-                });
-          if (error) throw new Error(error.toString());
+          router.refresh();
+          if (type === "plus") {
+            await addLineToCartAction({ sku: item.sku });
+          } else {
+            await decreaseLineQuantityFromCartAction({ sku: item.sku });
+          }
           router.refresh();
           ///router.refresh() : refresh page to get new value
         });

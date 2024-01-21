@@ -35,15 +35,13 @@ export const resolvers = {
     product: async (_: any, args: any) => {
       await connectMongo();
       const product = await ProductModel.findOne({ slug: args.slug }).lean();
-      console.log(product._id);
       // Fetch the variants
-
       const variants = product._id
         ? await VariantModel.find({
-            productId: 18,
+            productId: product._id,
           }).lean()
         : [];
-      console.log(variants);
+      console.log("product fetch", product._id, variants[0]);
       return { ...product, variants };
     },
     products: async (_: any, args: any) => {
@@ -169,32 +167,11 @@ export const resolvers = {
       const { password, ...newUserWithoutPassword } = newUser;
       return newUserWithoutPassword;
     },
-    createCart: async (_: any, args: any) => {
-      const { userId, products = [] } = args;
-      if (!userId) {
-        const cart = await CartModel.create({ status: "active", products: [] });
-        return cart;
-      }
-      //check if user is existed
-      const filter = {
-        userId,
-        status: "active",
-      };
-      const upsert = {
-        products,
-      };
-      const option = {
-        new: true,
-        upsert: true,
-      };
-      const cart = CartModel.findOneAndUpdate(filter, upsert, option);
-      return cart;
-    },
 
     addLineToCart: async (_: any, args: any, context: any) => {
       await connectMongo();
       let { cartId, sku } = args;
-      console.log("cartId", sku);
+      console.log("addLineToCart", cartId, sku);
       //check if variant is existed
       const variant = await VariantModel.findOne({ sku });
       if (!variant) throw new Error("Variant not found");
@@ -208,11 +185,11 @@ export const resolvers = {
           products_count: 0,
         });*/
         // Set an expiration time for the cart in Redis
-        const EXPIRE_TIME_IN_SECONDS = 60 * 60 * 24; // 24 hours
+        const EXPIRE_TIME_IN_SECONDS = 60 * 5; // 24 hours
         await redis.hset(`cart:${cartId}`, sku, "");
         await redis.expire(`cart:${cartId}`, EXPIRE_TIME_IN_SECONDS);
       }
-      //check if item is existed in redis cart
+      //check if item is existed in redis cart or cart Expired
       const cartLine = Number(await redis.hget(`cart:${cartId}`, sku));
       if (cartLine > 0) {
         //update item quantity
@@ -228,7 +205,6 @@ export const resolvers = {
     decreaseLineQuantityFromCart: async (_: any, args: any, context: any) => {
       await connectMongo();
       let { cartId, sku } = args;
-      console.log("cartId", sku);
       //check if variant is existed
       const variant = await VariantModel.findOne({ sku });
       if (!variant) throw new Error("Variant not found");
@@ -250,7 +226,6 @@ export const resolvers = {
       if (cartLine > 1) {
         await redis.hincrby(`cart:${cartId}`, sku, -1);
       }
-      console.log("quantity la: ", await redis.hget(`cart:${cartId}`, sku));
       return { cartId };
     },
     removeLineFromCart: async (_: any, args: any, context: any) => {
@@ -267,7 +242,6 @@ export const resolvers = {
           console.log(`Key 'line:${sku}' removed from 'cart:${cartId}'`);
         }
       });
-      console.log("quantity la: ", await redis.hget(`cart:${cartId}`, sku));
       return { cartId };
     },
   },

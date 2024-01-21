@@ -2,18 +2,17 @@
 
 import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { addToCart } from "@/lib/sadida";
+import { addLineToCartAction } from "@/lib/sadida/actions/cart";
 import LoadingDots from "../LoadingDot";
-import { ProductVariant } from "@/lib/sadida/types";
+import { ProductVariant, Product } from "@/lib/sadida/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
-export function AddToCart({ variants }: { variants: ProductVariant[] }) {
+export function AddToCart({ product }: { product: Product }) {
+  const { variants } = product || {};
   const router = useRouter();
   const searchParams = useSearchParams();
   const material = searchParams.get("material");
   const model = searchParams.get("model");
-  console.log("material", model);
-
   const [isPending, startTransition] = useTransition();
   /*const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
@@ -22,35 +21,29 @@ export function AddToCart({ variants }: { variants: ProductVariant[] }) {
   );*/
   //options =[{name:material, value:'red'},{name:model,value:nddd}]
   const selectedVariant =
-    (variants.length > 0 &&
-      variants.filter((variant) => {
-        const normalizeOptions =
-          variant.options.reduce(
-            (acc, option) => ({
-              ...acc,
-              [option.name.toLowerCase()]: option.value,
-            }),
-            {}
-          ) || {};
-        return (
-          normalizeOptions.material === material &&
-          normalizeOptions.model === model
-        );
-      })[0]) ||
-    {};
+    variants.length > 0 && material && model
+      ? variants.filter((variant) => {
+          const normalizeOptions =
+            variant.options.reduce(
+              (acc, option) => ({
+                ...acc,
+                [option.name.toLowerCase()]: option.value,
+              }),
+              {}
+            ) || {};
+          return (
+            normalizeOptions.material === material &&
+            normalizeOptions.model === model
+          );
+        })[0]
+      : {};
   const availableForSale = selectedVariant?.reserved_available;
-  console.log(
-    "selected variable la",
-    variants,
-    selectedVariant,
-    availableForSale
-  );
-  const title = !selectedVariant.sku
-    ? "Please select options"
-    : !availableForSale
-    ? "Out of stock"
-    : undefined;
-
+  const title =
+    selectedVariant && selectedVariant.sku
+      ? "Please select options"
+      : !availableForSale
+      ? "Out of stock"
+      : undefined;
   return (
     <button
       aria-label="Add item to cart"
@@ -62,12 +55,7 @@ export function AddToCart({ variants }: { variants: ProductVariant[] }) {
 
         startTransition(async () => {
           //add new product to carts
-          const res = addToCart({ cartId: null, sku: selectedVariant.sku });
-          console.log("response la: ", res);
-          if (error) {
-            // Trigger the error boundary in the root error.js
-            throw new Error(error.toString());
-          }
+          const res = await addLineToCartAction({ sku: selectedVariant.sku });
           router.refresh();
         });
       }}

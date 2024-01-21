@@ -13,6 +13,7 @@ export default async function ProductPage({
   params: { slug: string };
 }) {
   const product = await getProduct(params.slug);
+  console.log("selected Variant la", product.title, product.variants[0]);
   if (!product) return notFound();
   const productJsonLd = {
     "@context": "https://schema.org",

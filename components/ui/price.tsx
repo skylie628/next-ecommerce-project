@@ -35,7 +35,7 @@ const Price = ({
   return (
     <p suppressHydrationWarning={true} className={className}>
       <PriceFormat amount={minPrice} currencyCode={currencyCode} />
-      {minPrice !== maxPrice && (
+      {minPrice !== maxPrice && maxPrice && (
         <>
           - <PriceFormat amount={maxPrice} currencyCode={currencyCode} />
         </>

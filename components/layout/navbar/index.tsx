@@ -16,7 +16,7 @@ export default async function Navbar() {
   const catalogues = (await getCatalogues()) || [];
   return (
     <div className="">
-      <div className="flex justify-between p-2 lg:px-6 bg-white">
+      <div className="flex justify-between p-2 lg:px-6 bg-white dark:bg-black dark:text-white">
         <span>New Promotion up to 50% sale off this Christmas</span>
         <ul className="flex gap-2 font-bold text-sm ">
           <li>

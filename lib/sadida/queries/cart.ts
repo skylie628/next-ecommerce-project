@@ -1,10 +1,22 @@
-export const getCart = /* GraphQL */ `
+export const getCartQuery = /* GraphQL */ `
   query getCart($cartId: String!) {
     cart(cartId: $cartId) {
       id
       totalPrice
       taxes
-      lines
+      lines {
+        sku
+        productTitle
+        title
+        price
+        options {
+          name
+          value
+        }
+        images
+        slug
+        quantity
+      }
     }
   }
 `;

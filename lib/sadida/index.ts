@@ -2,6 +2,7 @@ import { createProductImgUrl, ensureStartsWith } from "../utils";
 import { getCatalogueQuery } from "./queries/catalogue";
 import { getProductQuery, getProductsQuery } from "./queries/product";
 import { getCollectionsQuery } from "./queries/collection";
+import { getCartQuery } from "./queries/cart";
 import {
   addToCartMutation,
   decreaseLineQuantityFromCartMutation,
@@ -24,6 +25,7 @@ import {
   SadidaEcommerceProduct,
   SadidaUserSignupOperation,
   SadidaMutateCartLineOperation,
+  SadidaQueryCartOperation,
 } from "./types";
 import { createUserMutation } from "./mutations/user";
 const endpoint = process.env.SALEOR_INSTANCE_URL;
@@ -229,22 +231,23 @@ export async function getSadidaProducts({
 
 //Cart
 export async function getCart(cartId: string): Promise<Cart | null> {
-  const saleorCheckout = await sadidaFetch({
-    query: GetCheckoutByIdDocument,
+  const sadidaCart = await sadidaFetch<SadidaQueryCartOperation>({
+    query: getCartQuery,
     variables: {
-      id: cartId,
+      cartId,
     },
     cache: "no-store",
-  });
-
-  if (!saleorCheckout.checkout) {
-    return null;
-  }
-
-  return saleorCheckoutToSadidaCart(saleorCheckout.checkout);
+  }).then((res) => res?.body?.data?.cart || {});
+  return sadidaCart;
 }
 
-export async function addToCart(cartId: string, sku: string) {
+export async function addToCart({
+  cartId,
+  sku,
+}: {
+  cartId: string;
+  sku: string;
+}) {
   const sadidaAddToCart = await sadidaFetch<SadidaMutateCartLineOperation>({
     query: addToCartMutation,
     variables: {

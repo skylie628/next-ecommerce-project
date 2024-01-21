@@ -116,38 +116,6 @@ export type SadidaBackdropEcommerceProduct = Omit<
   showingImagePath: string;
   path: string;
 };
-// CART
-export type CartItem = {
-  id: string;
-  quantity: number;
-  cost: {
-    totalAmount: Money;
-  };
-  merchandise: {
-    id: string;
-    title: string;
-    selectedOptions: {
-      name: string;
-      value: string;
-    }[];
-    product: Product;
-  };
-};
-
-export type SadidaCommerceCart = {
-  id: string;
-  checkoutUrl: string;
-  cost: {
-    subtotalAmount: Money;
-    totalAmount: Money;
-    totalTaxAmount: Money;
-  };
-  lines: Connection<CartItem>;
-  totalQuantity: number;
-};
-export type Cart = Omit<SadidaCommerceCart, "lines"> & {
-  lines: CartItem[];
-};
 //Collection
 export type SadidaCollection = {
   _id: string;
@@ -205,8 +173,29 @@ export type SadidaUserSignupOperation = {
   data: ReturnUser;
   variables: { name: string; email: string; password: string };
 };
-//Cart
+// CART
+export type Line = {
+  sku: string;
+  productTitle: string;
+  title: string;
+  price: string;
+  options: string;
+  images: string;
+  slug: string;
+  quantity: number;
+};
+
+export type Cart = {
+  id: string;
+  totalPrice: number;
+  taxes: number;
+  lines: [Line];
+};
 export type SadidaMutateCartLineOperation = {
   data: { cartId: string };
   variables: { cartId: string; sku: string };
+};
+export type SadidaQueryCartOperation = {
+  data: Cart;
+  variables: { cartId: string };
 };

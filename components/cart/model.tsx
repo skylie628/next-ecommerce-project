@@ -9,6 +9,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 import CloseCart from "./close-cart";
+//utils
+import { createProductImgUrl } from "@/lib/utils";
 import DeleteItemButton from "./delete-item-button";
 import EditItemQuantityButton from "./edit-item-quantity-button";
 import OpenCart from "./open-cart";
@@ -16,14 +18,59 @@ import OpenCart from "./open-cart";
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
-
+/*
+cartModel  {
+  id: '171713b5-904d-4ad3-b563-6cd799d211e0',
+  totalPrice: 159,
+  taxes: 0,
+  lines: [
+    {
+      sku: 'SKU83882',
+      productTitle: 'Neymar Unique Design 01 x Neymar',
+      title: 'Neymar Unique Design 01 x Neymar glass iPhone XR',
+      price: 15,
+      options: [Array],
+      images: [Array],
+      slug: 'neymar-unique-design-01-x-neymar',
+      quantity: 3
+    },
+    {
+      sku: 'SKU10881',
+      productTitle: 'Neymar Unique Design 01 x Neymar',
+      title: 'Neymar Unique Design 01 x Neymar glass iPhone 11 Pro Max',
+      price: 12,
+      options: [Array],
+      images: [Array],
+      slug: 'neymar-unique-design-01-x-neymar',
+      quantity: 2
+    },
+    {
+      sku: 'SKU87889',
+      productTitle: 'Neymar Unique Design 01 x Neymar',
+      title: 'Neymar Unique Design 01 x Neymar glass iPhone 11 Pro',
+      price: 15,
+      options: [Array],
+      images: [Array],
+      slug: 'neymar-unique-design-01-x-neymar',
+      quantity: 2
+    },
+    {
+      sku: 'SKU77048',
+      productTitle: 'Neymar Unique Design 01 x Neymar',
+      title: 'Neymar Unique Design 01 x Neymar mirror iPhone 11 Pro Max',
+      price: 15,
+      options: [Array],
+      images: [Array],
+      slug: 'neymar-unique-design-01-x-neymar',
+      quantity: 4
+    }
+  ]
+}*/
 export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
-  console.log("frontend", cart);
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cart?.totalQuantity);
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
-
   useEffect(() => {
     // Open cart modal when quantity changes.
     if (cart?.totalQuantity !== quantityRef.current) {
@@ -84,22 +131,19 @@ export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
                 <div className="flex h-full flex-col justify-between overflow-hidden p-1">
                   <ul className="flex-grow overflow-auto py-4">
                     {cart.lines.map((item, i) => {
-                      const merchandiseSearchParams =
-                        {} as MerchandiseSearchParams;
-
-                      item.merchandise.selectedOptions.forEach(
-                        ({ name, value }) => {
-                          if (value !== DEFAULT_OPTION) {
-                            merchandiseSearchParams[name.toLowerCase()] = value;
-                          }
-                        }
+                      const searchParamsList = item.options.map((option) => [
+                        option.name,
+                        option.value,
+                      ]);
+                      const variantUrl = createUrl(
+                        `/product/${item.slug}`,
+                        new URLSearchParams(searchParamsList)
                       );
-
-                      const merchandiseUrl = createUrl(
-                        `/product/${item.merchandise.product.handle}`,
-                        new URLSearchParams(merchandiseSearchParams)
+                      // [{name : material, value : glass}, {name : model, value : iphone 11 pro} => glass material iphone 11 pro model  }]
+                      const variantTitle = item.options.reduce(
+                        (title, option) => `${title} ${option.value}. `,
+                        ""
                       );
-
                       return (
                         <li
                           key={i}
@@ -110,7 +154,7 @@ export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
                               <DeleteItemButton item={item} />
                             </div>
                             <Link
-                              href={merchandiseUrl}
+                              href={"#"}
                               onClick={closeCart}
                               className="z-30 flex flex-row space-x-4"
                             >
@@ -119,34 +163,28 @@ export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
                                   className="h-full w-full object-cover"
                                   width={64}
                                   height={64}
-                                  alt={
-                                    item.merchandise.product.featuredImage
-                                      .altText || item.merchandise.product.title
-                                  }
-                                  src={
-                                    item.merchandise.product.featuredImage.url
-                                  }
+                                  alt={item.images[0]}
+                                  src={createProductImgUrl(
+                                    item.images[3],
+                                    "side image thumbnail"
+                                  )}
                                 />
                               </div>
 
                               <div className="flex flex-1 flex-col text-base">
                                 <span className="leading-tight">
-                                  {item.merchandise.product.title}
+                                  {item.productTitle}
                                 </span>
-                                {item.merchandise.title !== DEFAULT_OPTION ? (
-                                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                    {item.merchandise.title}
-                                  </p>
-                                ) : null}
+                                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                  {variantTitle}
+                                </p>
                               </div>
                             </Link>
                             <div className="flex h-16 flex-col justify-between">
                               <Price
                                 className="flex justify-end space-y-2 text-right text-sm"
-                                amount={item.cost.totalAmount.amount}
-                                currencyCode={
-                                  item.cost.totalAmount.currencyCode
-                                }
+                                minPrice={item.price}
+                                currencyCode={"USD"}
                               />
                               <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                 <EditItemQuantityButton
@@ -174,8 +212,8 @@ export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
                       <p>Taxes</p>
                       <Price
                         className="text-right text-base text-black dark:text-white"
-                        amount={cart.cost.totalTaxAmount.amount}
-                        currencyCode={cart.cost.totalTaxAmount.currencyCode}
+                        minPrice={cart.taxes}
+                        currencyCode={"USD"}
                       />
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
@@ -186,13 +224,13 @@ export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
                       <p>Total</p>
                       <Price
                         className="text-right text-base text-black dark:text-white"
-                        amount={cart.cost.totalAmount.amount}
-                        currencyCode={cart.cost.totalAmount.currencyCode}
+                        minPrice={cart.totalPrice}
+                        currencyCode={"USD"}
                       />
                     </div>
                   </div>
                   <a
-                    href={cart.checkoutUrl}
+                    href={"#"}
                     className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
                   >
                     Proceed to Checkout

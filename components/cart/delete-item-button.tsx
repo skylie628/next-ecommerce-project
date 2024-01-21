@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import LoadingDots from "../LoadingDot";
 import { useRouter } from "next/navigation";
-import { removeItem } from "./actions";
+import { removeLineFromCartAction } from "@/lib/sadida/actions/cart";
 import clsx from "clsx";
 import type { CartItem } from "@/lib/sadida/types";
 import { useTransition } from "react";
@@ -15,7 +15,7 @@ export default function DeleteItemButton({ item }: { item: CartItem }) {
       aria-label="Remove cart item"
       onClick={() => {
         startTransition(async () => {
-          const error = await removeItem(item.id);
+          const error = await removeLineFromCartAction({ sku: item.sku });
           if (error) {
             throw new Error(error.toString());
           }

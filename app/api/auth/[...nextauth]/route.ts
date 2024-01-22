@@ -1,9 +1,11 @@
 import NextAuth, { NextAuthOptions, TokenSet } from "next-auth";
 import { UserModel } from "@/lib/sadida/generated/mongoose/models/user.model";
 import { signInWithCredentials } from "./.signInWithCredentials";
+import mergeGuestToUserCart from "./.mergeGuestToUserCart";
 import { signJWT, verifyJWT } from "@/lib/utils";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectMongo from "@/lib/sadida/generated/mongoose/mongodb";
+import { cookies } from "next/headers";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -34,8 +36,8 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials, req) {
-        console.log("auth");
-        const user = signInWithCredentials(
+        console.log("authorize");
+        const user = await signInWithCredentials(
           credentials as {
             email: string;
             password: string;
@@ -61,6 +63,16 @@ export const authOptions: NextAuthOptions = {
         account.refresh_token = refreshToken;
         account.expires_at = Math.floor(Date.now() / 1000 + 15 * 60);
       }
+      ///merge cart
+      //get guest's cartId from cookie
+      console.log("cartId la", cookies().get("cartId"));
+      const guestCartId = cookies()?.get("cartId")?.value;
+      // replace guest id with cart id
+      cookies().set("cartId", user?.cartId);
+      await mergeGuestToUserCart({
+        guestCartId,
+        userCartId: user?.cartId,
+      });
       return true;
     },
     //custom session return, token for jwt strategy, user for database strategy
@@ -93,7 +105,11 @@ export const authOptions: NextAuthOptions = {
           console.log("verify");
           const { decoded } = verifyJWT(token.refresh_token as string);
           console.log("verify", decoded);
-          if (!decoded) throw new Error();
+          if (!decoded) {
+            //if refresh token expired, logout user and delete cartItem from cookies
+            cookies().delete("cartId");
+            throw new Error();
+          }
           await connectMongo();
           console.log("user decode la", decoded);
           const user = await UserModel.findOne({
@@ -109,6 +125,13 @@ export const authOptions: NextAuthOptions = {
           };
         }
       }
+    },
+  },
+  events: {
+    signOut: async (message) => {
+      // remove cartId from cookie when user signout
+      cookies().set("cartId", "");
+      console.log("User has signed out");
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

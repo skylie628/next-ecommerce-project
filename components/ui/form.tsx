@@ -95,7 +95,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={clsx(error && "text-red-500 dark:text-red-900", className)}
+      className={clsx(error && "text-slate-500 dark:text-slate-400", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -159,7 +159,7 @@ const FormMessage = React.forwardRef<
       ref={ref}
       id={formMessageId}
       className={clsx(
-        "text-sm font-medium text-red-500 dark:text-red-900",
+        "text-sm font-medium text-red-500 dark:text-red-400",
         className
       )}
       {...props}

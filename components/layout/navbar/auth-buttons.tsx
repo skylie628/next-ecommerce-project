@@ -1,9 +1,11 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 export default function AuthButtons() {
   const session = useSession();
+  const router = useRouter();
   console.log(session);
   return !session.data ? (
     <>
@@ -23,10 +25,14 @@ export default function AuthButtons() {
       <Link
         href="#"
         onClick={() => {
-          console.log("signOut");
+          console.log(
+            "signOut ",
+            `${process.env.NEXT_PUBLIC_SERVER}${window.location.pathname}`
+          );
           signOut({
             callbackUrl: `${process.env.NEXT_PUBLIC_SERVER}${window.location.pathname}`,
           });
+          router.refresh();
         }}
         className=" hover:text-slate-500"
       >

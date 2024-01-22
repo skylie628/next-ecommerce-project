@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { revalidatePath } from "next/cache";
+import { mutate } from "swr";
 import {
   Form,
   FormControl,
@@ -33,7 +35,7 @@ const SignInFormSchema = z.object({
     message: "Password must be at least 3 characters.",
   }),
 });
-
+//
 const SignIn = () => {
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
@@ -56,7 +58,8 @@ const SignIn = () => {
               title: "Sign in success",
               description: "Shopping now!",
             });
-            router.back();
+            router.push("/", { shallow: true });
+            router.refresh();
           } else {
             toast({
               title: "Sign in failed",
@@ -69,7 +72,7 @@ const SignIn = () => {
   }
 
   return (
-    <Card className="md:w-1/2">
+    <Card className="md:w-1/2 dark:bg-black">
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>Enter your credentials.</CardDescription>
@@ -106,7 +109,10 @@ const SignIn = () => {
           </CardContent>
           <CardFooter>
             <Button disabled={isPending} type="submit">
-              Sign in {isPending && <LoadingDots className="mb-3 bg-white" />}
+              Sign in{" "}
+              {isPending && (
+                <LoadingDots className="mb-3 bg-white dark:bg-black" />
+              )}
             </Button>
           </CardFooter>
         </form>

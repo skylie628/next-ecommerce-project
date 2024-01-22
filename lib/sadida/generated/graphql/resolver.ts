@@ -116,6 +116,7 @@ export const resolvers = {
       await connectMongo();
       const cart = await redis.hgetall(`cart:${cartId}`);
       if (!cart) return;
+      console.log("error ", cart);
       const cartMap = Object.entries(cart);
       const variantIds = cartMap.map(([sku, quantity]) => sku);
       const variants = await VariantModel.find({
@@ -124,6 +125,7 @@ export const resolvers = {
         .populate("productId", "slug images title -_id")
         .select("-_id")
         .lean();
+
       const formatVariants = variants.map((variant) => ({
         sku: variant.sku,
         title: variant.title,
@@ -132,7 +134,9 @@ export const resolvers = {
         images: variant.productId.images,
         slug: variant.productId.slug,
         productTitle: variant.productId.title,
-        quantity: parseInt(cart[variant.sku]),
+        quantity: isNaN(Number(cart[variant.sku]))
+          ? 0
+          : parseInt(cart[variant.sku]),
       }));
       const totalPrice = formatVariants.reduce(
         (total, variant) => total + variant.price * variant.quantity,
@@ -162,6 +166,7 @@ export const resolvers = {
         email: args.email,
         emailVerified: false,
         password: hashPassword,
+        cartId: uuidv4(),
         role: "MEMBER",
       }).then((rs) => rs.toObject());
       const { password, ...newUserWithoutPassword } = newUser;

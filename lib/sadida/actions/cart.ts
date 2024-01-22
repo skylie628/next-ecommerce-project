@@ -12,6 +12,7 @@ export async function getCartAction({ cartId }: { cartId: string }) {
 }
 export async function addLineToCartAction(params: { sku: string }) {
   let cartId = cookies().get("cartId")?.value || "";
+  console.log("cartId action la", cartId);
   const { sku } = params;
   console.log("sku la", sku);
   const returnedCartId = await addToCart({

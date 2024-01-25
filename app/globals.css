@@ -25,3 +25,129 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.img-couple-collection {
+  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/couple-collection-sm.webp);
+  background-size: 640px 500px;
+  background-repeat: no-repeat;
+  width: 640px;
+  height: 500px;
+}
+@media (min-width: 640px) {
+  .img-couple-collection {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/couple-collection-md.png);
+    background-size: 768px 548px;
+    background-repeat: no-repeat;
+    width: 768px;
+    height: 548px;
+  }
+}
+@media (min-width: 768px) {
+  .img-couple-collection {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/couple-collection-lg.png);
+    background-size: 1024px 617px;
+    background-repeat: no-repeat;
+    width: 1024px;
+    height: 617px;
+  }
+}
+@media (min-width: 1024px) {
+  .img-couple-collection {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/couple-collection-xxl.png);
+    background-size: 3008px 624px;
+    background-repeat: no-repeat;
+    width: 3008px;
+    height: 624px;
+  }
+}
+.img-glass-material-promo {
+  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/glass-material-promo-sm.png);
+  background-size: 768px 500px;
+  width: 768px;
+  height: 500px;
+}
+@media (min-width: 768px) {
+  .img-glass-material-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/glass-material-promo-md.png);
+    background-size: 506px 490px;
+    width: 506px;
+    height: 490px;
+  }
+}
+@media (min-width: 1024px) {
+  .img-glass-material-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/glass-material-promo-lg.png);
+    background-size: 1262px 580px;
+    width: 1262px;
+    height: 580px;
+  }
+}
+
+.img-silicon-v2-material-promo {
+  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-sm.png);
+  background-size: 768px 500px;
+  width: 768px;
+  height: 500px;
+}
+@media (min-width: 768px) {
+  .img-silicon-v2-material-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-md.png);
+    background-size: 506px 490px;
+    width: 506px;
+    height: 490px;
+  }
+}
+@media (min-width: 1024px) {
+  .img-silicon-v2-material-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-lg.png);
+    background-size: 1262px 580px;
+    width: 1262px;
+    height: 580px;
+  }
+}
+
+.img-eye-promo {
+  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/eye-promo-sm.png);
+  background-size: 768px 500px;
+  width: 768px;
+  height: 500px;
+}
+@media (min-width: 768px) {
+  .img-eye-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/eye-promo-md.png);
+    background-size: 506px 490px;
+    width: 506px;
+    height: 490px;
+  }
+}
+@media (min-width: 1024px) {
+  .img-eye-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/eye-promo-lg.png);
+    background-size: 1262px 580px;
+    width: 1262px;
+    height: 580px;
+  }
+}
+
+.img-color-promo {
+  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/color-promo-sm.png);
+  background-size: 768px 500px;
+  width: 768px;
+  height: 500px;
+}
+@media (min-width: 768px) {
+  .img-color-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/color-promo-md.png);
+    background-size: 506px 490px;
+    width: 506px;
+    height: 490px;
+  }
+}
+@media (min-width: 1024px) {
+  .img-color-promo {
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/color-promo-lg.png);
+    background-size: 1262px 580px;
+    width: 1262px;
+    height: 580px;
+  }
+}

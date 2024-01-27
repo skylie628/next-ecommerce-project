@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { ThreeItemGrid } from "@/components/grid/three-items";
 import HeroSection from "@/components/layout/hero/hero-section";
 import PromoteSection from "@/components/layout/hero/promote-section";
+import PrintSection from "@/components/layout/hero/print-section";
 import Footer from "@/components/layout/footer";
 export default function Home() {
   return (
@@ -42,13 +43,12 @@ export default function Home() {
             cta: "view more",
           },
         ]}
-      />
-      <ThreeItemGrid />
+      />{" "}
       <Suspense>
-        <Carousel />
-        <Suspense>
-          <Footer />
-        </Suspense>
+        <PrintSection />
+      </Suspense>
+      <Suspense>
+        <Footer />
       </Suspense>
     </>
   );

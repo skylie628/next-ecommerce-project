@@ -3,8 +3,8 @@ export default async function mergeGuestToUserCart({
   guestCartId,
   userCartId,
 }: {
-  guestCartId: String;
-  userCartId: String;
+  guestCartId: string;
+  userCartId: string;
 }) {
   console.log("params ", guestCartId, userCartId);
   const guestCart =

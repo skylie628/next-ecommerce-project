@@ -1,5 +1,4 @@
 import { SortFilterItem } from "@/lib/sadida/types";
-import FilterItemDropdown from "./dropdown";
 import { FilterItem } from "./item";
 
 export type ListItem = SortFilterItem | PathFilterItem;
@@ -31,9 +30,9 @@ export default function FilterList({
         <ul className="hidden md:block">
           <FilterItemList list={list} />
         </ul>
-        <ul className="md:hidden">
+        {/*<ul className="md:hidden">
           <FilterItemDropdown list={list} />
-        </ul>
+        </ul>*/}
       </nav>
     </>
   );

@@ -2,6 +2,9 @@ import { redis } from "@/lib/sadida/generated/redis";
 export default async function mergeGuestToUserCart({
   guestCartId,
   userCartId,
+}: {
+  guestCartId: String;
+  userCartId: String;
 }) {
   console.log("params ", guestCartId, userCartId);
   const guestCart =

@@ -5,6 +5,7 @@ export type ListItem = SortFilterItem | PathFilterItem;
 export type PathFilterItem = { name: string; path: string };
 
 function FilterItemList({ list }: { list: ListItem[] }) {
+  //new
   return (
     <>
       {list.map((item: ListItem, i) => (

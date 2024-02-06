@@ -1,4 +1,4 @@
-"use client";
+/*"use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -62,3 +62,4 @@ export default function FilterItemDropdown({ list }: { list: ListItem[] }) {
     </div>
   );
 }
+*/

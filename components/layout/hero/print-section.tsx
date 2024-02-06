@@ -23,7 +23,7 @@ export default function PrintSection() {
         </h3>
         <Link
           href=""
-          className="text-red-600 text-xl font-medium  flex flex-row justify-center gap-1 mt-1 md:mt-3 xl:mt-4"
+          className="text-blue-600 text-xl font-medium  flex flex-row justify-center gap-1 mt-1 md:mt-3 xl:mt-4"
         >
           <span className="hover:underline">Look over </span>
           <ChevronRightIcon className="h-4 w-4 text-blue-700 mt-auto mb-1 font-bold" />

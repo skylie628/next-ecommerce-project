@@ -22,6 +22,14 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "migrations/group.js", "migrations/product.js", "migrations/seed.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "migrations/group.js",
+    "migrations/product.js",
+    "migrations/seed.js"
+  ],
   "exclude": ["node_modules"]
 }

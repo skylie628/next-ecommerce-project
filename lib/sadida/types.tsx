@@ -1,4 +1,23 @@
-import { ProductOrderField } from "./generated/graphql";
+export enum ProductOrderField {
+  Group = "GROUP",
+  CreatedAt = "CREATED_AT",
+  Date = "DATE",
+  LastModified = "LAST_MODIFIED",
+  LastModifiedAt = "LAST_MODIFIED_AT",
+  MinimalPrice = "MINIMAL_PRICE",
+
+  Name = "NAME",
+  /**
+   * Sort products by price.
+   *
+   * This option requires a channel filter to work as the values can vary between channels.
+   */
+  Price = "PRICE",
+  /** Sort products by rating. */
+  Rating = "RATING",
+  /** Sort products by type. */
+  Type = "TYPE",
+}
 enum Role {
   Member = "MEMBER",
   Admin = "ADMIN",

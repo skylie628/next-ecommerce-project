@@ -6,7 +6,7 @@ import { ProductDescription } from "@/components/product/product-description";
 
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProduct } from "@/lib/sadida";
+import { getProduct } from "@/lib/sadida/actions/product";
 export default async function ProductPage({
   params,
 }: {

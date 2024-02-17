@@ -7,13 +7,14 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Search from "./search";
 import LogoSquare from "@/components/icons/logo-square";
-import { getCatalogues } from "@/lib/sadida";
+import { getCatalogues } from "@/lib/sadida/actions/catalogue";
 //type
 import { EcommerceCatalogues } from "@/lib/sadida/types";
 const { SITE_NAME } = process.env;
 export default async function Navbar() {
   //run on server
   const catalogues = (await getCatalogues()) || [];
+  console.log("catalogues la", catalogues);
   return (
     <div className="">
       <div className="flex justify-between p-2 lg:px-6 bg-white dark:bg-black dark:text-white">

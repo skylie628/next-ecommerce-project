@@ -15,7 +15,7 @@ const CataloguesSchema = new mongoose.Schema(
 );
 
 const CataloguesModel =
-  mongoose.models.catalogues ||
+  mongoose.models?.catalogues ||
   mongoose.model<CataloguesDocument>("catalogues", CataloguesSchema);
 
 export { CataloguesModel };

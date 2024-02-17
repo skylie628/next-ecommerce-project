@@ -24,6 +24,12 @@ const nextConfig = {
     config.externals = [...config.externals, "bcrypt"];
     return config;
   },
+
+  experimental: {
+    esmExternals: "loose", // <-- add this
+    serverComponentsExternalPackages: ["mongoose"], // <-- and this
+  },
+
   reactStrictMode: false,
 };
 

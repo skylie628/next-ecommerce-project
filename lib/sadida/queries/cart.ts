@@ -1,4 +1,4 @@
-export const getCartQuery = /* GraphQL */ `
+export const getCartQuery =  `
   query getCart($cartId: String!) {
     cart(cartId: $cartId) {
       id

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+console.log("mongoose la", mongoose.models);
 interface GroupDocument extends mongoose.Document {
   _id: string;
   name: string;
@@ -16,7 +16,7 @@ const GroupSchema = new mongoose.Schema(
 );
 
 const GroupModel =
-  mongoose.models.groups ||
+  (mongoose.models && mongoose.models.groups) ||
   mongoose.model<GroupDocument>("groups", GroupSchema);
 
 export { GroupModel };

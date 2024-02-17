@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { Suspense } from "react";
-import { getCollections } from "@/lib/sadida";
+import { getCollections } from "@/lib/sadida/actions/collection";
 import FilterList from "./filter";
 async function CollectionList({ catalogues }: { catalogues: string }) {
   const collections = await getCollections(catalogues);

@@ -1,4 +1,4 @@
-export const getCatalogueQuery = /* GraphQL */ `
+export const getCatalogueQuery = `
   query getCatalogues {
     catalogues {
       _id

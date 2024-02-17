@@ -1,7 +1,7 @@
 import Grid from "@/components/grid";
 import ProductGridItems from "@/components/layout/product-grid-items";
 import { defaultSort, sorting } from "@/lib/constants";
-import { getSadidaProducts } from "@/lib/sadida";
+import { getProducts } from "@/lib/sadida/actions/product";
 import { ProductQueryCriteria } from "@/lib/sadida/types";
 export const metadata = {
   title: "Search",
@@ -24,7 +24,7 @@ export default async function SearchPage({
     keyword,
     pageIndex: 1,
   };
-  const products = await getSadidaProducts({
+  const products = await getProducts({
     sortKey,
     reverse,
     query: queryCriteria,

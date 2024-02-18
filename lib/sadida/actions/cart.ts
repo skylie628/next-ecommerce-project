@@ -1,29 +1,85 @@
 "use server";
+import connectMongo from "../generated/mongoose/mongodb";
+import { redis } from "../generated/redis";
+import { VariantModel } from "../generated/mongoose/models/variant.model";
 import { cookies } from "next/headers";
-import {
-  addToCart,
-  decreaseLineQuantityFromCart,
-  removeLineFromCart,
-  getCart,
-} from "../index";
+import { v4 as uuidv4 } from "uuid";
 export async function getCartAction({ cartId }: { cartId: string }) {
-  const returnedCart = await getCart(cartId);
-  return returnedCart;
+  if (!cartId) {
+    throw new Error("Missing cart id");
+  }
+  await connectMongo();
+  const cart = await redis.hgetall(`cart:${cartId}`);
+  if (!cart) return;
+  console.log("error ", cart);
+  const cartMap = Object.entries(cart);
+  const variantIds = cartMap.map(([sku, quantity]) => sku);
+  const variants = await VariantModel.find({
+    sku: { $in: variantIds },
+  })
+    .populate("productId", "slug images title -_id")
+    .select("-_id")
+    .lean();
+
+  const formatVariants = variants.map((variant) => ({
+    sku: variant.sku,
+    title: variant.title,
+    price: variant.price,
+    options: variant.options,
+    images: variant.productId.images,
+    slug: variant.productId.slug,
+    productTitle: variant.productId.title,
+    quantity: isNaN(Number(cart[variant.sku]))
+      ? 0
+      : parseInt(cart[variant.sku]),
+  }));
+  const totalPrice = formatVariants.reduce(
+    (total, variant) => total + variant.price * variant.quantity,
+    0
+  );
+  return {
+    id: cartId,
+    totalPrice: totalPrice,
+    taxes: 0,
+    lines: formatVariants,
+  };
 }
 export async function addLineToCartAction(params: { sku: string }) {
   let cartId = cookies().get("cartId")?.value || "";
   console.log("cartId action la", cartId);
   const { sku } = params;
-  console.log("sku la", sku);
-  const returnedCartId = await addToCart({
-    cartId,
-    sku,
-  }).then((res) => res?.body?.data?.addLineToCart?.cartId);
-  console.log("cartId la", returnedCartId);
-  //if user is guess, set cartId to cookies
-
-  if (returnedCartId) {
-    cookies().set("cartId", returnedCartId);
+  await connectMongo();
+  console.log("addLineToCart", cartId, sku);
+  //check if variant is existed
+  const variant = await VariantModel.findOne({ sku });
+  if (!variant) throw new Error("Variant not found");
+  // cart not exist ? create new cart
+  if (!cartId) {
+    cartId = uuidv4();
+    /* const cart = await CartModel.create({
+      cartId,
+      status: "active",
+      line: [],
+      products_count: 0,
+    });*/
+    // Set an expiration time for the cart in Redis
+    const EXPIRE_TIME_IN_SECONDS = 60 * 5; // 24 hours
+    await redis.hset(`cart:${cartId}`, sku, "");
+    await redis.expire(`cart:${cartId}`, EXPIRE_TIME_IN_SECONDS);
+  }
+  //check if item is existed in redis cart or cart Expired
+  const cartLine = Number(await redis.hget(`cart:${cartId}`, sku));
+  if (cartLine > 0) {
+    //update item quantity
+    await redis.hincrby(`cart:${cartId}`, sku, 1);
+  }
+  //if item not existed in redis cart
+  else {
+    //add new item to redis cart
+    await redis.hset(`cart:${cartId}`, sku, 1);
+  }
+  if (cartId) {
+    cookies().set("cartId", cartId);
   }
   console.log("cartId la", cookies().get("cartId")?.value);
 }
@@ -31,8 +87,18 @@ export async function removeLineFromCartAction(params: { sku: string }) {
   let cartId = cookies().get("cartId")?.value;
   if (!cartId) return "missing cart id";
   const { sku } = params;
-  const res = await removeLineFromCart(cartId, sku);
-  console.log("res la", res.body.data.addLineToCart);
+  await connectMongo();
+  // cart not exist ? create new cart
+  if (!cartId) {
+    new Error("CartId expired");
+  }
+  redis.hdel(`cart:${cartId}`, sku, function (err, reply) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Key 'line:${sku}' removed from 'cart:${cartId}'`);
+    }
+  });
   if (!cartId) {
     // cookies().set("cartId", res.data.cartId);
   }
@@ -44,12 +110,31 @@ export async function decreaseLineQuantityFromCartAction({
 }) {
   let cartId = cookies().get("cartId")?.value;
   if (!cartId) return "missing cart id";
-  const res = await decreaseLineQuantityFromCart(cartId, sku);
-  console.log(res.data);
+  await connectMongo();
+  //check if variant is existed
+  const variant = await VariantModel.findOne({ sku });
+  if (!variant) throw new Error("Variant not found");
+  // cart not exist ? create new cart
+  if (!cartId) {
+    new Error("CartId expired");
+  }
+  //check if item is existed in redis cart
+  const cartLine = Number(await redis.hget(`cart:${cartId}`, sku));
+  //if line not existed inside cart => throw error
+  if (!cartLine) {
+    throw new Error("Item not existed in cart");
+  }
+  //if line existed inside cart and amount = 1 => remove line  from cart
+  if (cartLine === 1) {
+    await redis.hdel(`cart:${cartId}`, sku);
+  }
+  //if line existed inside cart and amount > 1 => decrease cart Item by 1
+  if (cartLine > 1) {
+    await redis.hincrby(`cart:${cartId}`, sku, -1);
+  }
   if (!cartId) {
     return "error";
     // cookies().set("cartId", res.data.cartId);
   }
-  console.log("res la", res);
   return "success";
 }

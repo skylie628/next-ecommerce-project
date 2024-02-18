@@ -3,7 +3,6 @@ import ProductGridItems from "@/components/layout/product-grid-items";
 import { defaultSort, sorting } from "@/lib/constants";
 import { ProductQueryCriteria } from "@/lib/sadida/types";
 import { getProducts } from "@/lib/sadida/actions/product";
-import connectMongo from "@/lib/sadida/generated/mongoose/mongodb";
 export const metadata = {
   title: "Search",
   description: "Search for products in the store.",

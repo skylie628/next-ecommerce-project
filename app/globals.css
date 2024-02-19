@@ -84,14 +84,14 @@ body {
 }
 
 .img-silicon-v2-material-promo {
-  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-sm.png);
+  background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-sm.jpg);
   background-size: 768px 500px;
   width: 768px;
   height: 500px;
 }
 @media (min-width: 768px) {
   .img-silicon-v2-material-promo {
-    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-md.png);
+    background-image: url(https://sadida.s3.ap-southeast-2.amazonaws.com/silicon-v2-material-promo-md.jpg);
     background-size: 506px 490px;
     width: 506px;
     height: 490px;
@@ -166,6 +166,7 @@ body {
     rgba(255, 255, 255, 1) 0.25em
   );
 }
+/*
 .canvas::after {
   opacity: 0;
   content: "";
@@ -174,16 +175,44 @@ body {
   filter: contrast(120%);
   position: absolute;
   background: url("https://sadida.s3.ap-southeast-2.amazonaws.com/background.png");
-  background-size: cover;
-  background-position: center;
+  object-position: center;
+  background-size: 640px 500px;
+  background-repeat: no-repeat;
+  width: 640px;
+  height: 500px;
   top: 0;
   left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
   background-repeat: no-repeat;
 }
+
+@media (min-width: 640px) {
+  .canvas::after {
+    background-image: url("https://sadida.s3.ap-southeast-2.amazonaws.com/background.png");
+    background-size: 768px 548px;
+    background-repeat: no-repeat;
+    width: 768px;
+    height: 548px;
+  }
+}
+@media (min-width: 768px) {
+  .canvas::after {
+    background-image: url("https://sadida.s3.ap-southeast-2.amazonaws.com/background.png");
+    background-size: 1024px 617px;
+    background-repeat: no-repeat;
+    width: 1024px;
+    height: 617px;
+  }
+}
+@media (min-width: 1024px) {
+  .canvas::after {
+    background-image: url("https://sadida.s3.ap-southeast-2.amazonaws.com/background.png");
+    background-size: 3008px 624px;
+    background-repeat: no-repeat;
+    width: 3008px;
+    height: 624px;
+  }
+}
+*/
 .canvas img {
   filter: grayscale(1) brightness(90%) contrast(150%) blur(3px);
   position: absolute;
@@ -240,11 +269,11 @@ body {
   }
 }
 .trigger-canvas-animation {
-  animation: canvasAnimation 5s forwards;
+  animation: canvasAnimation 3s forwards;
 }
 .trigger-canvas-img-animation {
-  animation: imgAnimation 5s forwards;
+  animation: imgAnimation 3s forwards;
 }
 .trigger-canvas-animation::after {
-  animation: backdropAnimate 5s forwards;
+  animation: backdropAnimate 3s forwards;
 }

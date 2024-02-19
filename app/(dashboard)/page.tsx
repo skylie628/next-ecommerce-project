@@ -9,9 +9,6 @@ import Footer from "@/components/layout/footer";
 export default function Home() {
   return (
     <>
-      <Suspense>
-        <PrintSection />
-      </Suspense>
       <HeroSection
         imageName="couple-collection"
         title="Couple Case"
@@ -47,6 +44,9 @@ export default function Home() {
           },
         ]}
       />{" "}
+      <Suspense>
+        <PrintSection />
+      </Suspense>
       <Suspense>
         <Footer />
       </Suspense>

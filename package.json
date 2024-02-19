@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/server": "^4.9.5",
     "@as-integrations/next": "^3.0.0",
     "@clerk/nextjs": "^4.27.2",
     "@graphql-typed-document-node/core": "^3.2.0",
@@ -17,7 +16,6 @@
     "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.3.2",
     "@mapbox/node-pre-gyp": "^1.0.11",
-    "@prisma/client": "^5.6.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
@@ -29,9 +27,6 @@
     "clsx": "^2.0.0",
     "cross-env": "^7.0.3",
     "crypto": "^1.0.1",
-    "graphql": "^16.8.1",
-    "graphql-request": "^6.1.0",
-    "graphql-tag": "^2.12.6",
     "heroicons": "^2.0.18",
     "http": "^0.0.1-security",
     "https": "^1.0.0",

@@ -12,7 +12,9 @@ export default function PrintSection() {
   return (
     <section
       ref={ref}
-      className={clsx("relative w-full lg:h-[640px] mt-[12px] pt-10 ")}
+      className={clsx(
+        "relative w-full h-[500px] sm:h-[548px] md-[617px] lg:h-[640px] mt-[12px] pt-10 "
+      )}
     >
       <div className="relative z-50 ">
         <h2 className="text-stone-100  text-3xl md:text-4xl lg:text-5xl  font-bold text-center">
@@ -30,11 +32,25 @@ export default function PrintSection() {
         </Link>
       </div>
       <div className={clsx("canvas ", inView && "trigger-canvas-animation")}>
-        <img
-          src="https://sadida.s3.ap-southeast-2.amazonaws.com/background.png"
-          alt=""
-          className={inView && "trigger-canvas-img-animation"}
-        />
+        <picture>
+          <source
+            media="(max-width: 640px)"
+            srcSet="https://sadida.s3.ap-southeast-2.amazonaws.com/ink-promote-sm.jpg"
+          />
+          <source
+            media="(max-width: 768px)"
+            srcSet="https://sadida.s3.ap-southeast-2.amazonaws.com/ink-promote-md.jpg"
+          />
+          <source
+            media="(max-width: 1024px)"
+            srcSet="https://sadida.s3.ap-southeast-2.amazonaws.com/ink-promote-lg.jpg"
+          />
+          <img
+            src="https://sadida.s3.ap-southeast-2.amazonaws.com/ink-promote-xl.jpg"
+            alt="green iguana background image"
+            className={clsx(inView && "trigger-canvas-img-animation")}
+          />
+        </picture>
       </div>
     </section>
   );

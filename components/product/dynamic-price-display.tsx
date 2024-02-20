@@ -2,12 +2,11 @@
 import Price from "@/components/ui/price";
 import { ProductVariant, Product } from "@/lib/sadida/types";
 import { useSearchParams } from "next/navigation";
+import { useAtom } from "jotai";
+import { selectedVariantAtom } from "./variant-selector";
 export default function DynamicPriceDisplay({ product }: { product: Product }) {
-  const searchParams = useSearchParams();
-  const material = searchParams.get("material");
-  const model = searchParams.get("model");
-  const { variants } = product || [];
-  if (!material || !model)
+  const [selectedVariant, setSelectedVariant] = useAtom(selectedVariantAtom);
+  if (!selectedVariant)
     return (
       <Price
         minPrice={product.minPrice}
@@ -15,21 +14,7 @@ export default function DynamicPriceDisplay({ product }: { product: Product }) {
         currencyCode="USD"
       />
     );
-  const selectedVariant =
-    variants.filter((variant) => {
-      const normalizeOptions =
-        variant.options.reduce(
-          (acc, option) => ({
-            ...acc,
-            [option.name.toLowerCase()]: option.value,
-          }),
-          {}
-        ) || {};
-      return (
-        normalizeOptions.material === material &&
-        normalizeOptions.model === model
-      );
-    })[0] || {};
+
   return (
     <Price
       minPrice={selectedVariant.price.toString()}

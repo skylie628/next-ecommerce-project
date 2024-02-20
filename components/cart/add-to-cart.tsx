@@ -7,36 +7,14 @@ import LoadingDots from "../LoadingDot";
 import { ProductVariant, Product } from "@/lib/sadida/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
+import { useAtom } from "jotai";
+import { selectedVariantAtom } from "../product/variant-selector";
 export function AddToCart({ product }: { product: Product }) {
   const { variants } = product || {};
   const router = useRouter();
   const searchParams = useSearchParams();
-  const material = searchParams.get("material");
-  const model = searchParams.get("model");
+  const [selectedVariant, setSelectedVariant] = useAtom(selectedVariantAtom);
   const [isPending, startTransition] = useTransition();
-  /*const variant = variants.find((variant: ProductVariant) =>
-    variant.selectedOptions.every(
-      (option) => option.value === searchParams.get(option.name.toLowerCase())
-    )
-  );*/
-  //options =[{name:material, value:'red'},{name:model,value:nddd}]
-  const selectedVariant =
-    variants.length > 0 && material && model
-      ? variants.filter((variant) => {
-          const normalizeOptions =
-            variant.options.reduce(
-              (acc, option) => ({
-                ...acc,
-                [option.name.toLowerCase()]: option.value,
-              }),
-              {}
-            ) || {};
-          return (
-            normalizeOptions.material === material &&
-            normalizeOptions.model === model
-          );
-        })[0]
-      : {};
   const availableForSale = selectedVariant?.reserved_available;
   const title =
     selectedVariant && selectedVariant.sku
@@ -52,7 +30,6 @@ export function AddToCart({ product }: { product: Product }) {
       onClick={() => {
         // Safeguard in case someone messes with `disabled` in devtools.
         if (!availableForSale || !selectedVariant) return;
-
         startTransition(async () => {
           //add new product to carts
           const res = await addLineToCartAction({ sku: selectedVariant.sku });

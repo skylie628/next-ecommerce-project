@@ -1,17 +1,18 @@
 "use client";
-
 import clsx from "clsx";
+import { atom, useAtom } from "jotai";
 import { ProductOption, ProductVariant } from "@/lib/sadida/types";
 import { createUrl } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useContext } from "react";
+import { useEffect } from "react";
 type Combination = {
   id: string;
   availableForSale: boolean;
   [key: string]: string | boolean; // ie. { color: 'Red', size: 'Large', ... }
 };
-
+export const selectedVariantAtom = atom(null);
 export function VariantSelector({
   options,
   variants,
@@ -21,16 +22,23 @@ export function VariantSelector({
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const material = searchParams.get("material");
+  const model = searchParams.get("model");
+  const [selectedVariant, setSelectedVariant] = useAtom(selectedVariantAtom);
   const hasNoOptionsOrJustOneOption =
     !options.length || (options.length === 1 && options[0]?.value.length === 1);
 
   if (hasNoOptionsOrJustOneOption) {
     return null;
   }
-
+  console.log(variants, "variants");
   const combinations: Combination[] = variants.map((variant) => ({
     id: variant.sku,
+    sku: variant.sku,
     availableForSale: variant.reserved_available > 0,
+    price: variant.price,
+    reserved_available: variant.reserved_available,
+    instock_available: variant.instock_available,
     // Adds key / value pairs for each variant (ie. "color": "Black" and "size": 'M").
     //flatten the variant from array to object
     ...variant.options.reduce(
@@ -41,7 +49,22 @@ export function VariantSelector({
       {}
     ),
   }));
-
+  useEffect(() => {
+    //get seletected variants
+    if (material && model) {
+      const selectedVariant = combinations.find(
+        (normalizeOptions) =>
+          normalizeOptions.material === material &&
+          normalizeOptions.model === model
+      );
+      console.log("selected ", combinations);
+      if (selectedVariant) {
+        console.log(selectedVariant);
+        setSelectedVariant(selectedVariant);
+        
+      }
+    }
+  }, [material, model]);
   return options.map((option) => (
     <dl className="mb-8" key={option.id}>
       <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>

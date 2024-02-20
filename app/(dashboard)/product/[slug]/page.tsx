@@ -12,7 +12,9 @@ export default async function ProductPage({
 }: {
   params: { slug: string };
 }) {
-  const product = await getProduct(params.slug);
+  let product = await getProduct(params.slug);
+  // Convert product to a plain object
+  product = JSON.parse(JSON.stringify(product));
   if (!product) return notFound();
   const productJsonLd = {
     "@context": "https://schema.org",

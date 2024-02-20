@@ -1,9 +1,10 @@
 "use server";
 import connectMongo from "../generated/mongoose/mongodb";
 import { redis } from "../generated/redis";
-import { VariantModel } from "../generated/mongoose/models/variant.model";
 import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
+import { VariantModel } from "../generated/mongoose/models/variant.model";
+import { ProductModel } from "../generated/mongoose/models/product.model";
 export async function getCartAction({ cartId }: { cartId: string }) {
   if (!cartId) {
     throw new Error("Missing cart id");
@@ -17,7 +18,11 @@ export async function getCartAction({ cartId }: { cartId: string }) {
   const variants = await VariantModel.find({
     sku: { $in: variantIds },
   })
-    .populate("productId", "slug images title -_id")
+    .populate({
+      path: "productId",
+      model: ProductModel,
+      select: "slug images title -_id",
+    })
     .select("-_id")
     .lean();
 

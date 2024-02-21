@@ -96,7 +96,7 @@ export const getProducts = async ({
       showingImagePath: product.images[0]
         ? `https://firebasestorage.googleapis.com/v0/b/skylie-store.appspot.com/o/Products%2FMedium%2Fstr%20image%2F${product.images[0]}.png?alt=media&token=dd117ea5-2906-48b3-919c-a28b05f31881`
         : "",
-      path: `/product/${product.slug}`,
+      path: `/catalogues/smartphone/product/${product.slug}`,
     })) || [];
   return returnedProducts;
 };

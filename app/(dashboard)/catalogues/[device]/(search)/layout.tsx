@@ -1,6 +1,6 @@
 import Footer from "@/components/layout/footer";
-import Collections from "../collections";
-import FilterList from "../filter";
+import Collections from "../../collections";
+import FilterList from "../../filter";
 import { sorting } from "@/lib/constants";
 import { Suspense } from "react";
 

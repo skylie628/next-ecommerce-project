@@ -1,6 +1,4 @@
 "use client";
-import Price from "@/components/ui/price";
-import { ProductVariant, Product } from "@/lib/sadida/types";
 import { useAtom } from "jotai";
 import { selectedVariantAtom } from "./variant-selector";
 export default function QuantityInfo() {

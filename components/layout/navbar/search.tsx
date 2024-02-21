@@ -7,7 +7,6 @@ export default function Search() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
-  console.log("search param la", searchParams);
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const val = e.target as HTMLFormElement;

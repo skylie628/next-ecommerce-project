@@ -13,6 +13,7 @@ function PathFilterItem({ item }: { item: PathFilterItem }) {
   const searchParams = useSearchParams();
   const active = pathname === item.path;
   const newParams = new URLSearchParams(searchParams.toString());
+  newParams.delete("keyword");
   newParams.delete("keyword", createUrl(item.path, newParams));
   const DynamicTag = active ? "p" : Link;
   console.log("pathname la");

@@ -1,65 +1,57 @@
-import Link from "next/link";
-
-import FooterCatalogues from "./footer-catalogue";
-import LogoSquare from "../logo-square";
-import { Catalogues } from "@/lib/sadida/types";
-import { Suspense } from "react";
-
-const { COMPANY_NAME, SITE_NAME } = process.env;
-
-export default async function Footer() {
-  const currentYear = new Date().getFullYear();
-  const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : "");
-  const skeleton =
-    "w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700";
-  const footerCatalogues: Catalogues[] = [
-    "About",
-    "Contact",
-    "Tos",
-    "Marketing",
-    "Analytics",
-  ].map((name, id) => ({ name, id: id + "", path: "" }));
-  const copyrightName = COMPANY_NAME || SITE_NAME || "";
-
+const Footer = () => {
   return (
-    <footer className="text-sm text-neutral-500 dark:text-neutral-400">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 border-t border-neutral-200 px-6 py-12 text-sm dark:border-neutral-700 md:flex-row md:gap-12 md:px-4 xl:px-0">
-        <div>
-          <Link
-            className="flex items-center gap-2 text-black dark:text-white md:pt-1"
-            href="/"
-          >
-            <LogoSquare size="sm" />
-            <span className="uppercase">{SITE_NAME}</span>
-          </Link>
+    <>
+      <footer class="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
+        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+          <div class="sm:flex sm:items-center sm:justify-between">
+            <a
+              href="https://flowbite.com/"
+              class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
+            >
+              <img
+                src="https://flowbite.com/docs/images/logo.svg"
+                class="h-8"
+                alt="Flowbite Logo"
+              />
+              <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                Flowbite
+              </span>
+            </a>
+            <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+              <li>
+                <a href="#" class="hover:underline me-4 md:me-6">
+                  About
+                </a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline me-4 md:me-6">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline me-4 md:me-6">
+                  Licensing
+                </a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline">
+                  Contact
+                </a>
+              </li>
+            </ul>
+          </div>
+          <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+          <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+            © 2023{" "}
+            <a href="https://flowbite.com/" class="hover:underline">
+              Flowbite™
+            </a>
+            . All Rights Reserved.
+          </span>
         </div>
-        <Suspense
-          fallback={
-            <div className="flex h-[188px] w-[200px] flex-col gap-2">
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-            </div>
-          }
-        >
-          <FooterCatalogues catalogues={footerCatalogues} />
-        </Suspense>
-      </div>
-      <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 xl:px-0">
-          <p>
-            &copy; {copyrightDate} {copyrightName}
-            {copyrightName.length && !copyrightName.endsWith(".")
-              ? "."
-              : ""}{" "}
-            All rights reserved.
-          </p>
-          <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
-}
+};
+
+export default Footer;

@@ -8,7 +8,7 @@ import PrintSection from "@/components/layout/hero/print-section";
 import Footer from "@/components/layout/footer";
 export default function Home() {
   return (
-    <>
+    <div className="bg-white">
       <HeroSection
         imageName="couple-collection"
         title="Couple Case"
@@ -50,6 +50,6 @@ export default function Home() {
       <Suspense>
         <Footer />
       </Suspense>
-    </>
+    </div>
   );
 }

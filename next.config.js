@@ -18,6 +18,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "firebasestorage.googleapis.com",
       },
+      {
+        protocol: "https",
+        hostname: "sadida.s3.ap-southeast-2.amazonaws.com",
+      },
     ],
   },
   webpack: (config) => {

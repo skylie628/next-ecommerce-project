@@ -11,8 +11,8 @@ export async function getCartAction({ cartId }: { cartId: string }) {
   }
   await connectMongo();
   const cart = await redis.hgetall(`cart:${cartId}`);
+  console.log("cart redis la", cart);
   if (!cart) return;
-  console.log("error ", cart);
   const cartMap = Object.entries(cart);
   const variantIds = cartMap.map(([sku, quantity]) => sku);
   const variants = await VariantModel.find({
@@ -42,6 +42,8 @@ export async function getCartAction({ cartId }: { cartId: string }) {
     (total, variant) => total + variant.price * variant.quantity,
     0
   );
+  console.log("cartId la: ", cartId);
+  console.log("line la: ", formatVariants);
   return {
     id: cartId,
     totalPrice: totalPrice,
@@ -51,10 +53,8 @@ export async function getCartAction({ cartId }: { cartId: string }) {
 }
 export async function addLineToCartAction(params: { sku: string }) {
   let cartId = cookies().get("cartId")?.value || "";
-  console.log("cartId action la", cartId);
   const { sku } = params;
   await connectMongo();
-  console.log("addLineToCart", cartId, sku);
   //check if variant is existed
   const variant = await VariantModel.findOne({ sku });
   if (!variant) throw new Error("Variant not found");
@@ -68,25 +68,29 @@ export async function addLineToCartAction(params: { sku: string }) {
       products_count: 0,
     });*/
     // Set an expiration time for the cart in Redis
-    const EXPIRE_TIME_IN_SECONDS = 60 * 5; // 24 hours
+    const EXPIRE_TIME_IN_1DAY = 60 * 60 * 24; // 24 hours
     await redis.hset(`cart:${cartId}`, sku, "");
-    await redis.expire(`cart:${cartId}`, EXPIRE_TIME_IN_SECONDS);
+    await redis.expire(`cart:${cartId}`, EXPIRE_TIME_IN_1DAY);
   }
   //check if item is existed in redis cart or cart Expired
   const cartLine = Number(await redis.hget(`cart:${cartId}`, sku));
+  console.log("cartLine la", cartLine, " id", cartId);
   if (cartLine > 0) {
     //update item quantity
+    console.log("update cart", cartId);
     await redis.hincrby(`cart:${cartId}`, sku, 1);
   }
   //if item not existed in redis cart
   else {
     //add new item to redis cart
+    //
+    console.log("set cart", cartId);
     await redis.hset(`cart:${cartId}`, sku, 1);
+    await redis.expire(`cart:${cartId}`, 60 * 60 * 24);
   }
   if (cartId) {
     cookies().set("cartId", cartId);
   }
-  console.log("cartId la", cookies().get("cartId")?.value);
 }
 export async function removeLineFromCartAction(params: { sku: string }) {
   let cartId = cookies().get("cartId")?.value;

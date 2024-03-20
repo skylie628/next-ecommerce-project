@@ -36,7 +36,6 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials, req) {
-        console.log("authorize");
         const user = await signInWithCredentials(
           credentials as {
             email: string;
@@ -65,7 +64,6 @@ export const authOptions: NextAuthOptions = {
       }
       ///merge cart
       //get guest's cartId from cookie
-      console.log("cartId la", cookies().get("cartId"));
       const guestCartId = cookies()?.get("cartId")?.value;
       // replace guest id with cart id
       cookies().set("cartId", user?.cartId);
@@ -102,16 +100,14 @@ export const authOptions: NextAuthOptions = {
       } else {
         // If the access token has expired, try to refresh it
         if (token.provider === "credentials") {
-          console.log("verify");
           const { decoded } = verifyJWT(token.refresh_token as string);
-          console.log("verify", decoded);
+
           if (!decoded) {
             //if refresh token expired, logout user and delete cartItem from cookies
             cookies().delete("cartId");
             throw new Error();
           }
           await connectMongo();
-          console.log("user decode la", decoded);
           const user = await UserModel.findOne({
             email: (decoded as any).email,
           });
@@ -131,7 +127,6 @@ export const authOptions: NextAuthOptions = {
     signOut: async (message) => {
       // remove cartId from cookie when user signout
       cookies().set("cartId", "");
-      console.log("User has signed out");
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

@@ -10,7 +10,6 @@ type CredentialsType = {
 export async function signInWithCredentials(credentials: CredentialsType) {
   await connectMongo();
   const user = await UserModel.findOne({ email: credentials.email }).lean();
-  console.log("user-signin", user);
   if (user) {
     const isValidPassword = await bcrypt.compare(
       credentials.password,

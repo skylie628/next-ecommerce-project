@@ -17,20 +17,20 @@ export default async function Navbar() {
   console.log("catalogues la", catalogues);
   return (
     <div className="">
-      <div className="flex justify-between p-2 lg:px-6 bg-white dark:bg-black dark:text-white">
+      <div className=" flex justify-between p-2 lg:px-6 bg-white dark:bg-black dark:text-white">
         <span>New Promotion up to 50% sale off this Christmas</span>
-        <ul className="flex gap-2 font-bold text-sm ">
+        <ul className="hidden md:flex  gap-2 font-bold text-sm ">
           <li>
-            <Link href="#" className=" hover:text-slate-500">
+            <Link href="#" className="text-md hover:text-slate-500">
               Find a store
             </Link>
           </li>
           <li>
-            <Link href="#" className=" hover:text-slate-500">
+            <Link href="#" className="text-md hover:text-slate-500">
               Help
             </Link>
           </li>
-          <AuthButtons />
+          <AuthButtons className="text-md hover:text-slate-500" />
         </ul>
       </div>
 

@@ -16,7 +16,6 @@ function PathFilterItem({ item }: { item: PathFilterItem }) {
   newParams.delete("keyword");
   newParams.delete("keyword", createUrl(item.path, newParams));
   const DynamicTag = active ? "p" : Link;
-  console.log("pathname la");
   return (
     <li className="mt-2 flex text-black dark:text-white" key={item.name}>
       <DynamicTag

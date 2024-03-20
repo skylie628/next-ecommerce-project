@@ -3,19 +3,19 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-export default function AuthButtons() {
+import clsx from "clsx";
+export default function AuthButtons({ className }) {
   const session = useSession();
   const router = useRouter();
-  console.log(session);
   return !session.data ? (
     <>
       <li>
-        <Link href="/auth/signup" className=" hover:text-slate-500">
+        <Link href="/auth/signup" className={clsx(className)}>
           Join us
         </Link>
       </li>
       <li>
-        <Link href="/auth/signin" className=" hover:text-slate-500">
+        <Link href="/auth/signin" className={clsx(className)}>
           Sign in
         </Link>
       </li>
@@ -25,10 +25,6 @@ export default function AuthButtons() {
       <Link
         href="#"
         onClick={() => {
-          console.log(
-            "signOut ",
-            `${process.env.NEXT_PUBLIC_SERVER}${window.location.pathname}`
-          );
           signOut({
             callbackUrl: `${process.env.NEXT_PUBLIC_SERVER}${window.location.pathname}`,
           });

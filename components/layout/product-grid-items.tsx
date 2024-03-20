@@ -8,7 +8,6 @@ export default function ProductGridItems({
 }: {
   products: SadidaBackdropEcommerceProduct[];
 }) {
-  console.log(products);
   return (
     <>
       {products.map((product) => (

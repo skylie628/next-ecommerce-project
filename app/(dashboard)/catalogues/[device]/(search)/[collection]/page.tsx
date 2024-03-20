@@ -21,7 +21,6 @@ export default async function CataloguesPage({
   const { sort } = searchParams as {
     [key: string]: string;
   };
-  console.log("queryCriteria ", params, searchParams);
   const { sortKey, reverse } =
     sorting.find((criteria) => criteria.slug === sort) || defaultSort;
   const queryCriteria: ProductQueryCriteria = {

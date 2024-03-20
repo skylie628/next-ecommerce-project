@@ -72,7 +72,7 @@ const SignIn = () => {
   }
 
   return (
-    <Card className="md:w-1/2 dark:bg-black">
+    <Card className="w-full md:w-1/2 dark:bg-black">
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
         <CardDescription>Enter your credentials.</CardDescription>

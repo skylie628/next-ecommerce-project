@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import Search from "./search";
 import Link from "next/link";
+import AuthButtons from "./auth-buttons";
 //icons
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 //hooks
@@ -95,6 +96,26 @@ export default function MobileCatalogues({
                     ))}
                   </ul>
                 ) : null}
+                <ul className="flex flex-col gap-2 border-t border-1 border-black border-opacity-20   mt-2">
+                  <div className="w-100 h-[2px]"></div>
+                  <li>
+                    <Link
+                      href="#"
+                      className=" py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
+                    >
+                      Find a store
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="#"
+                      className=" py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
+                    >
+                      Help
+                    </Link>
+                  </li>
+                  <AuthButtons className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white" />
+                </ul>
               </div>
             </Dialog.Panel>
           </Transition.Child>

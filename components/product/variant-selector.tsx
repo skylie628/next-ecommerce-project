@@ -31,7 +31,6 @@ export function VariantSelector({
   if (hasNoOptionsOrJustOneOption) {
     return null;
   }
-  console.log(variants, "variants");
   const combinations: Combination[] = variants.map((variant) => ({
     id: variant.sku,
     sku: variant.sku,
@@ -57,11 +56,8 @@ export function VariantSelector({
           normalizeOptions.material === material &&
           normalizeOptions.model === model
       );
-      console.log("selected ", combinations);
       if (selectedVariant) {
-        console.log(selectedVariant);
         setSelectedVariant(selectedVariant);
-        
       }
     }
   }, [material, model]);

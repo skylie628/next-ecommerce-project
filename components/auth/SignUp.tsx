@@ -79,7 +79,6 @@ const SignUp = () => {
             description: "No matching credentials",
             variant: "destructive",
           });
-          console.log("error la", err);
         });
     });
   }

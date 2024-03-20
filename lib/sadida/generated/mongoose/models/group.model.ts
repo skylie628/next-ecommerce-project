@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-console.log("mongoose la", mongoose.models);
 interface GroupDocument extends mongoose.Document {
   _id: string;
   name: string;

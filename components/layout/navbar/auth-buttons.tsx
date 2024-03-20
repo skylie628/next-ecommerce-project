@@ -30,7 +30,7 @@ export default function AuthButtons({ className }) {
           });
           router.refresh();
         }}
-        className=" hover:text-slate-500"
+        className={clsx(className)}
       >
         Logout
       </Link>

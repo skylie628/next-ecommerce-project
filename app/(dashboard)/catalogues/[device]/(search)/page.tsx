@@ -1,4 +1,5 @@
 import Grid from "@/components/grid";
+import BlankResult from "@/components/ui/blank-result";
 import ProductGridItems from "@/components/layout/product-grid-items";
 import { defaultSort, sorting } from "@/lib/constants";
 import { getProducts } from "@/lib/sadida/actions/product";
@@ -30,7 +31,13 @@ export default async function SearchPage({
     query: queryCriteria,
   });
   const resultsText = products.length > 1 ? "results" : "result";
-
+  if (products.length == 0) {
+    return (
+      <div className="w-full flex flex-col  h-full mt-20 items-center">
+        <BlankResult />
+      </div>
+    );
+  }
   return (
     <>
       {keyword ? (

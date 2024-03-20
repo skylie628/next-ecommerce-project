@@ -3,7 +3,7 @@ import Gallery from "@/components/product/gallery";
 import RelatedProducts from "@/components/product/related-products";
 import Footer from "@/components/layout/footer";
 import { ProductDescription } from "@/components/product/product-description";
-
+import BlankResult from "@/components/ui/blank-result";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProduct } from "@/lib/sadida/actions/product";
@@ -30,7 +30,6 @@ export default async function ProductPage({
       lowPrice: product.minPrice,
     },
   };
-
   return (
     <>
       <script

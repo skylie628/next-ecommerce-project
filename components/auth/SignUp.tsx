@@ -149,7 +149,7 @@ const SignUp = () => {
             <Button disabled={isPending} type="submit">
               Sign Up {isPending && <LoadingDots className="mb-3 bg-white" />}
             </Button>
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               have an account?
               <Link
                 href="/auth/signin"

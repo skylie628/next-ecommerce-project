@@ -75,8 +75,8 @@ const SignIn = () => {
       //handle signin
       auth
         .signIn("credentials", {
-          email: "khuongdinhvinh@gmail.com",
-          password: "Kh19001560",
+          email: "steve@gmail.com",
+          password: "12312345",
           redirect: false,
         })
         .then((res) => {
@@ -141,7 +141,7 @@ const SignIn = () => {
                 <LoadingDots className="mb-3 bg-white dark:bg-black" />
               )}
             </Button>
-            <span className="text-slate-400">
+            <span className="text-slate-500">
               haven't registered yet?
               <Link
                 href="/auth/signup"
@@ -151,7 +151,7 @@ const SignIn = () => {
                 Sign Up
               </Link>
             </span>
-            <div className="text-slate-400">or </div>
+            <div className="text-slate-500">OR </div>
             <Button
               onClick={(event) => {
                 event.preventDefault();

@@ -14,8 +14,7 @@ import { Input } from "@/components/ui/input";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { revalidatePath } from "next/cache";
-import { mutate } from "swr";
+import Link from "next/link";
 import {
   Form,
   FormControl,
@@ -71,6 +70,34 @@ const SignIn = () => {
     });
   }
 
+  const onSubmitDemo = () => {
+    startTransition(async () => {
+      //handle signin
+      auth
+        .signIn("credentials", {
+          email: "khuongdinhvinh@gmail.com",
+          password: "Kh19001560",
+          redirect: false,
+        })
+        .then((res) => {
+          if (res?.ok) {
+            toast({
+              title: "Sign in success",
+              description: "Shopping now!",
+            });
+            router.push("/", { shallow: true });
+            router.refresh();
+          } else {
+            toast({
+              title: "Sign in failed",
+              description: "No matching credentials",
+              variant: "destructive",
+            });
+          }
+        });
+    });
+  };
+
   return (
     <Card className="w-full md:w-1/2 dark:bg-black">
       <CardHeader>
@@ -107,12 +134,31 @@ const SignIn = () => {
               )}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col  gap-3">
             <Button disabled={isPending} type="submit">
               Sign in{" "}
               {isPending && (
                 <LoadingDots className="mb-3 bg-white dark:bg-black" />
               )}
+            </Button>
+            <span className="text-slate-400">
+              haven't registered yet?
+              <Link
+                href="/auth/signup"
+                className="text-blue-500 underline hover:text-blue-300 "
+              >
+                {" "}
+                Sign Up
+              </Link>
+            </span>
+            <div className="text-slate-400">or </div>
+            <Button
+              onClick={(event) => {
+                event.preventDefault();
+                onSubmitDemo();
+              }}
+            >
+              Signin with demo account
             </Button>
           </CardFooter>
         </form>

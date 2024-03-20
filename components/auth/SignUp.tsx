@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "../ui/use-toast";
 import LoadingDots from "../LoadingDot";
+import Link from "next/link";
 const SignUpFormSchema = z
   .object({
     name: z
@@ -144,10 +145,20 @@ const SignUp = () => {
               )}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col gap-3">
             <Button disabled={isPending} type="submit">
               Sign Up {isPending && <LoadingDots className="mb-3 bg-white" />}
             </Button>
+            <span className="text-slate-400">
+              have an account?
+              <Link
+                href="/auth/signin"
+                className="text-blue-500 underline hover:text-blue-300 "
+              >
+                {" "}
+                Sign In
+              </Link>
+            </span>
           </CardFooter>
         </form>
       </Form>

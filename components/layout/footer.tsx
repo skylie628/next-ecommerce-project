@@ -9,15 +9,15 @@ const footerItem = [
   },
   {
     title: "Supports",
-    items: ["Marketing", "Commerce", "Analytics", "Merchandise"],
+    items: ["Pricing", "Docs", "Audition", "Art Status"],
   },
   {
     title: "Delivery",
-    items: ["marketing", "Commerce", "Analytics", "Merchandise"],
+    items: ["Term", "Condition", "Privacy", "License"],
   },
   {
     title: "Documents",
-    items: ["marketing", "Commerce", "Analytics", "Merchandise"],
+    items: ["Countries", "Information", "Restrictions", "Payment"],
   },
 ];
 const Footer = () => {
@@ -39,10 +39,13 @@ const Footer = () => {
               </span>
             </div>
             <div className="flex gap-2">
-              <Link href="#"> {iconsHelper.github}</Link>
+              <Link href="https://github.com/skylie628">
+                {" "}
+                {iconsHelper.github}
+              </Link>
               <Link href="#"> {iconsHelper.instagram}</Link>
               <Link href="#">{iconsHelper.linkedin}</Link>
-              <Link href="#">{iconsHelper.instagram}</Link>
+              <Link href="#">{iconsHelper.twitter}</Link>
             </div>
           </div>
         </div>

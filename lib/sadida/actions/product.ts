@@ -23,7 +23,9 @@ export const getProducts = async ({
 }) => {
   console.log("start query ", query, sortKey, reverse);
   const { products } = await getOrSetCache(
-    `${query.pageIndex ?? "1"}${query.catalogues}${"none"}${sortKey}${reverse}`,
+    `${query.pageIndex ?? "1"}${query.catalogues}${
+      query.group || "none"
+    }${sortKey}${reverse}`,
     async () => {
       await connectMongo();
       const filterCriteria: Record<

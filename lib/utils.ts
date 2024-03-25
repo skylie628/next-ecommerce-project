@@ -29,7 +29,7 @@ export async function getOrSetCache(key: string, cb: () => Promise<any>) {
   });
   await redis.connect();
   const cache = await redis.get(key).catch((error: any) => console.log(error));
-  console.log("cache ", cache, key);
+  console.log("cache ", key);
   if (cache != null) {
     console.log("Cache hit");
     await redis.disconnect();

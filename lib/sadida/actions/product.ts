@@ -23,7 +23,7 @@ export const getProducts = async ({
 }) => {
   console.log("start query ", query, sortKey, reverse);
   const { products } = await getOrSetCache(
-    `${query.pageIndex ?? "1"}${query.catalogues}${
+    `${query.pageIndex ?? "1"}${query.catalogues}${query.keyword || "none"} ${
       query.group || "none"
     }${sortKey}${reverse}`,
     async () => {

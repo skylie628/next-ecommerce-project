@@ -14,7 +14,7 @@ const { SITE_NAME } = process.env;
 export default async function Navbar() {
   //run on server
   const catalogues = (await getCatalogues()) || [];
-  console.log("catalogues la", catalogues);
+
   return (
     <div className="">
       <div className=" flex justify-between p-2 lg:px-6 bg-white dark:bg-black dark:text-white">

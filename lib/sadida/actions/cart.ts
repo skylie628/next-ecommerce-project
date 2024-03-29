@@ -1,5 +1,7 @@
 "use server";
 import connectMongo from "../generated/mongoose/mongodb";
+import { revalidateTag } from "next/cache";
+import { TAGS } from "@/lib/constants";
 import { redis } from "../generated/redis";
 import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
@@ -11,10 +13,14 @@ export async function getCartAction({ cartId }: { cartId: string }) {
   }
   await connectMongo();
   const cart = await redis.hgetall(`cart:${cartId}`);
-  console.log("cart redis la", cart);
   if (!cart) return;
   const cartMap = Object.entries(cart);
-  const variantIds = cartMap.map(([sku, quantity]) => sku);
+  console.log("cart redis la", cartMap);
+  let totalQuantity = 0;
+  const variantIds = cartMap.map(([sku, quantity]) => {
+    totalQuantity += parseInt(quantity);
+    return sku;
+  });
   const variants = await VariantModel.find({
     sku: { $in: variantIds },
   })
@@ -46,7 +52,8 @@ export async function getCartAction({ cartId }: { cartId: string }) {
   console.log("line la: ", formatVariants);
   return {
     id: cartId,
-    totalPrice: totalPrice,
+    totalQuantity,
+    totalPrice,
     taxes: 0,
     lines: formatVariants,
   };
@@ -88,6 +95,7 @@ export async function addLineToCartAction(params: { sku: string }) {
     await redis.hset(`cart:${cartId}`, sku, 1);
     await redis.expire(`cart:${cartId}`, 60 * 60 * 24);
   }
+  revalidateTag(TAGS.cart);
   if (cartId) {
     cookies().set("cartId", cartId);
   }

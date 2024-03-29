@@ -8,5 +8,6 @@ export default async function Cart() {
   if (cartId) {
     cart = await getCartAction({ cartId });
   }
+  console.log("cart la", cart);
   return <CartModal cart={cart} />;
 }

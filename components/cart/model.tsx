@@ -18,54 +18,6 @@ import OpenCart from "./open-cart";
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
-/*
-cartModel  {
-  id: '171713b5-904d-4ad3-b563-6cd799d211e0',
-  totalPrice: 159,
-  taxes: 0,
-  lines: [
-    {
-      sku: 'SKU83882',
-      productTitle: 'Neymar Unique Design 01 x Neymar',
-      title: 'Neymar Unique Design 01 x Neymar glass iPhone XR',
-      price: 15,
-      options: [Array],
-      images: [Array],
-      slug: 'neymar-unique-design-01-x-neymar',
-      quantity: 3
-    },
-    {
-      sku: 'SKU10881',
-      productTitle: 'Neymar Unique Design 01 x Neymar',
-      title: 'Neymar Unique Design 01 x Neymar glass iPhone 11 Pro Max',
-      price: 12,
-      options: [Array],
-      images: [Array],
-      slug: 'neymar-unique-design-01-x-neymar',
-      quantity: 2
-    },
-    {
-      sku: 'SKU87889',
-      productTitle: 'Neymar Unique Design 01 x Neymar',
-      title: 'Neymar Unique Design 01 x Neymar glass iPhone 11 Pro',
-      price: 15,
-      options: [Array],
-      images: [Array],
-      slug: 'neymar-unique-design-01-x-neymar',
-      quantity: 2
-    },
-    {
-      sku: 'SKU77048',
-      productTitle: 'Neymar Unique Design 01 x Neymar',
-      title: 'Neymar Unique Design 01 x Neymar mirror iPhone 11 Pro Max',
-      price: 15,
-      options: [Array],
-      images: [Array],
-      slug: 'neymar-unique-design-01-x-neymar',
-      quantity: 4
-    }
-  ]
-}*/
 export default function CartModal({ cart }: { cart: Cart | null | undefined }) {
   const [isOpen, setIsOpen] = useState(false);
   const quantityRef = useRef(cart?.totalQuantity);
